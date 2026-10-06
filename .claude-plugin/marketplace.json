@@ -1,0 +1,26 @@
+{
+  "name": "sensei-ewok-skills",
+  "owner": {
+    "name": "Sensei Ewok Research Lab"
+  },
+  "metadata": {
+    "description": "Reusable agent skills from the Sensei Ewok Research Lab, an independent open-source lab building small tools for cystic fibrosis research. Each skill is its own plugin.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "cf-evidence-loop",
+      "description": "Answers a CF researcher's evidence questions (retractions, approvals, preprints, variants, funding) as evidence records with source, date, exact fields and a limitation.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-evidence-loop"]
+    },
+    {
+      "name": "site-seo-review",
+      "description": "A careful, honest search-and-sharing review of a small website, with a checker script for static sites and rules for health and research sites.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/site-seo-review"]
+    }
+  ]
+}

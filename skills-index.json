@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "repository": "senseiewok/cf-skills",
+  "marketplace": "sensei-ewok-skills",
+  "skills": [
+    {
+      "name": "cf-evidence-loop",
+      "description": "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, or see which projects NIH funds on a topic. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model.",
+      "license": "CC0-1.0",
+      "version": "1.0.0",
+      "path": ".claude/skills/cf-evidence-loop",
+      "capabilities": [
+        "network",
+        "python",
+        "runs-code"
+      ],
+      "optional_capabilities": [],
+      "install": {
+        "script": "python scripts/install_skill.py cf-evidence-loop --agent claude",
+        "gh": "gh skill install senseiewok/cf-skills .claude/skills/cf-evidence-loop --agent claude-code",
+        "claude_plugin": "/plugin install cf-evidence-loop@sensei-ewok-skills"
+      }
+    },
+    {
+      "name": "site-seo-review",
+      "description": "An honest SEO and discoverability review for small static or mostly-static websites, health and research sites included: a standard-library checker for titles, descriptions, canonicals, Open Graph, sitemap and robots agreement, headings, images, link text, preloads, third-party scripts and structured data, plus a workflow for reading the pages, proposing copy, getting the wording reviewed, and verifying the live site. Use when asked to improve how a site appears in search or when shared, to audit metadata before a launch, to check that structured data and descriptions claim nothing the page does not show, or to hand bounded parts of such a review to a smaller local model.",
+      "license": "CC0-1.0",
+      "version": "0.1.0",
+      "path": ".claude/skills/site-seo-review",
+      "capabilities": [
+        "python",
+        "reads-project-files",
+        "runs-code"
+      ],
+      "optional_capabilities": [
+        "browser",
+        "network"
+      ],
+      "install": {
+        "script": "python scripts/install_skill.py site-seo-review --agent claude",
+        "gh": "gh skill install senseiewok/cf-skills .claude/skills/site-seo-review --agent claude-code",
+        "claude_plugin": "/plugin install site-seo-review@sensei-ewok-skills"
+      }
+    }
+  ],
+  "agents": {
+    "claude": {
+      "project": ".claude/skills",
+      "user": ".claude/skills",
+      "gh_agent": "claude-code"
+    },
+    "copilot": {
+      "project": ".github/skills",
+      "user": ".copilot/skills",
+      "gh_agent": "github-copilot"
+    },
+    "codex": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "codex"
+    },
+    "gemini": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "gemini-cli"
+    },
+    "cursor": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "cursor"
+    },
+    "amp": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "amp"
+    },
+    "opencode": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "opencode"
+    },
+    "goose": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": "goose"
+    },
+    "windsurf": {
+      "project": ".agents/skills",
+      "user": ".agents/skills",
+      "gh_agent": null
+    },
+    "qwen": {
+      "project": ".qwen/skills",
+      "user": ".qwen/skills",
+      "gh_agent": "qwen-code"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "Body";
+  src: url("/fonts/body.woff2") format("woff2");
+  font-display: swap;
+}
+
+body {
+  font-family: "Body", system-ui, sans-serif;
+  margin: 0 auto;
+  max-width: 40rem;
+  padding: 0 1rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
