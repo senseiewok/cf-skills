@@ -55,6 +55,12 @@ python cf-skills/scripts/install_skill.py --how cf-evidence-loop --agent claude
 - **Tests and the maintainer decide what is kept.** The helper scripts here were drafted by a small local model against tests written first, then planned, reviewed and corrected with Claude models; the account, with its counts and limits, is linked from [How this repository was made](#how-this-repository-was-made).
 - **Before a skill is published here** it must be useful outside the lab, declare its licence and provenance, and ship runnable checks; a model's review is not a test. The list is under [Before a skill is published here](#before-a-skill-is-published-here).
 
+## Working with the other lab repositories
+
+This repository is one of three that sit side by side; the control repository, [`cf-lab`](https://github.com/senseiewok/cf-lab), holds the shared agent rules. If you work on the lab itself, start agent sessions from the `cf-lab` folder where you can, and add this one as a working directory: its section [Working across the sibling repos](https://github.com/senseiewok/cf-lab/blob/main/AGENTS.md#working-across-the-sibling-repos) says how, and what does and does not load.
+
+If you do start a session here, `.claude/settings.json` keeps the same secret-file deny rules as `cf-lab`, so the agent may not read `.env` files, keys or credential folders. A change that spans repositories is one pull request in each.
+
 ## To our CF community
 
 To people living with cystic fibrosis, families, caregivers and researchers: this repository holds the skills we hand on, folders an AI agent can read and use in your own project, so that the care we take over sources does not stay in one lab. The evidence tool returns records, not answers: a paper's retraction notice, a United States approval date, a trial's listing, each with its source, its date and what it does not establish. That is useful for checking a claim and useless for deciding anyone's treatment, and it is meant to be. None of this is medicine or medical advice; a label's text is a public document, not your eligibility, and a care team is the place for that conversation. The sixty-five roses on the lab's [CF story](https://senseiewok.ai/cf/) page are our tribute, independent of the Cystic Fibrosis Foundation. You deserve care, dignity and room for ordinary life, and you owe no one an inspiring story. If you use an agent we have not listed, or one of our install notes does not match what your agent actually does, open an issue here and tell us; that is how the notes get corrected.
@@ -117,6 +123,7 @@ Most agents load a skill by itself when your request matches its description. To
 ```text
 .claude/skills/<name>/     one folder per skill (SKILL.md, scripts/, references/, tests/): the folder Claude Code,
                            Copilot and Cursor read, so a clone of this repository works as a skills folder
+.claude/settings.json      Claude Code deny rules for a session started here: no reading .env files, keys or credentials
 template/SKILL.md          the smallest valid skill
 spec/README.md             the format, and what this repository adds to it
 docs/install.md            how each agent finds skills, with sources
