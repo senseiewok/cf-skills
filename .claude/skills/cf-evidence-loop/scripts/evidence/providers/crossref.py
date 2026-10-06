@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from ..http import Client, Fetch
 from ..record import Evidence, Status, now_utc
+from ..shape import ShapeError, need, error_record
 
 PROVIDER = "crossref/0.1"
 SOURCE = "crossref"
@@ -51,7 +52,17 @@ def parse_work(data: dict, question: str, url: str) -> Evidence:
 
 
 def parse_updates(data: dict, doi: str, question: str, url: str) -> list[Evidence]:
-    items = (data.get("message") or {}).get("items") or []
+    try:
+        msg = need(data, "message", "Crossref response")
+        items = need(msg, "items", "Crossref message")
+        if not isinstance(items, list):
+            raise ShapeError(f"Crossref message items is {type(items).__name__}, not a list")
+        for i, item in enumerate(items):
+            if not isinstance(item, dict):
+                raise ShapeError(f"Crossref message items[{i}] is {type(item).__name__}, not an object")
+    except ShapeError as exc:
+        return [error_record(exc, question=question, source_id=SOURCE, url=url, provider=PROVIDER,
+                             fields={"doi": doi})]
     if not items:
         return [Evidence(status=Status.FOUND, question=question, source_id=SOURCE, url=url, provider=PROVIDER,
                          fields={"doi": doi, "update_notices": 0, "clean": True}, limitations=CLEAN_LIMITATION)]
