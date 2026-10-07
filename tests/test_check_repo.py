@@ -131,6 +131,39 @@ class CheckRepoTests(unittest.TestCase):
         self.assertEqual(code, 1, text)
         self.assertTrue(any("license" in e.lower() for e in errs), errs)
 
+    def test_a_frontmatter_key_outside_the_format_is_reported_and_the_defined_keys_are_allowed(self):
+        self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", "license: CC0-1.0\nallowed-tools: Read\ncompatibility: Needs Python 3.\n")
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), "every key the format defines is allowed: " + text)
+        self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", "license: CC0-1.0\nversion: 2\nauthor: someone\n")
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("skills/alpha/SKILL.md" in e and "unexpected" in e and "author, version" in e for e in errs), errs)
+
+    def test_angle_brackets_in_a_description_are_reported(self):
+        for bad in ("Use <this> tag.", "Use when a > b.", "Open the page <b"):
+            with self.subTest(bad=bad):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", "Does a thing. Use it when asked about the thing.", bad)
+                code, errs, text = self.errors()
+                self.assertEqual(code, 1, text)
+                self.assertTrue(any("description" in e and "angle brackets" in e for e in errs), errs)
+
+    def test_a_block_description_marker_is_not_also_reported_as_an_angle_bracket(self):
+        self.edit(".claude/skills/alpha/SKILL.md", 'description: "Does a thing. Use it when asked about the thing."', "description: >")
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertFalse(any("angle" in e for e in errs), errs)
+
+    def test_a_compatibility_over_500_characters_is_reported_and_500_is_allowed(self):
+        self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", "license: CC0-1.0\ncompatibility: " + "x" * 500 + "\n")
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), "exactly 500 characters is allowed: " + text)
+        self.edit(".claude/skills/alpha/SKILL.md", "x" * 500, "x" * 501)
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("compatibility" in e and "500" in e for e in errs), errs)
+
     def test_a_skill_without_frontmatter_is_reported_not_a_crash(self):
         (self.root / ".claude" / "skills" / "alpha" / "SKILL.md").write_text("# no frontmatter here\n", encoding="utf-8")
         code, errs, text = self.errors()

@@ -7,8 +7,10 @@ The format is the open Agent Skills specification: <https://agentskills.io/speci
 `scripts/check_repo.py` checks, for every `.claude/skills/<name>/`:
 
 - the folder name equals `name`, and `name` is lowercase letters, digits and hyphens, at most 64 characters;
-- `description` is present and at most 1,024 characters;
+- `description` is present, at most 1,024 characters, and has no angle brackets (`<` or `>`);
 - `license` is declared;
+- `compatibility`, when present, is at most 500 characters;
+- the frontmatter has no key outside `name`, `description`, `license`, `allowed-tools`, `metadata` and `compatibility`;
 - relative links resolve in `README.md`, in the Markdown files under `docs/`, `spec/` and `template/`, and in each `SKILL.md` (not in other files, and not inside code fences);
 - the Claude Code plugin marketplace in `.claude-plugin/marketplace.json` lists each skill once and only skills that exist;
 - nothing that looks like a local path, a key or an email address is in the README, the Markdown files under `docs/`, `spec/` and `template/`, and each `SKILL.md` and `references/*.md`;

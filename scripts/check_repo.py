@@ -21,6 +21,11 @@ from pathlib import Path
 SKILLS_REL = ".claude/skills"
 SKILLS_DIR = Path(".claude") / "skills"
 
+# The frontmatter keys of the Agent Skills format. The same set, plus the angle-bracket and compatibility-length rules below, is what
+# skill-creator's quick_validate.py in Anthropic's public skills enforces (Apache-2.0; the rules are written here from reading that script).
+ALLOWED_KEYS = {"name", "description", "license", "allowed-tools", "metadata", "compatibility"}
+_BLOCK_MARKERS = (">", "|", ">-", "|-", ">+", "|+")
+
 
 # ---------------------------------------------------------------------------
 # helpers
@@ -119,7 +124,7 @@ def _check_skill_meta(root: Path, folder_name: str, errors: list):
 
     # description
     desc = fm.get("description")
-    if desc in (">", "|", ">-", "|-", ">+", "|+"):
+    if desc in _BLOCK_MARKERS:
         errors.append("ERROR {}: description must be a one-line string (a folded or literal block is not read by this checker)".format(rel_md))
     elif desc is None or desc == "":
         errors.append(
@@ -130,9 +135,25 @@ def _check_skill_meta(root: Path, folder_name: str, errors: list):
             "ERROR {}: description is longer than 1024 characters".format(rel_md)
         )
 
+    # angle brackets can be read as markup by an agent that puts the description into its prompt
+    if desc and desc not in _BLOCK_MARKERS and ("<" in desc or ">" in desc):
+        errors.append("ERROR {}: description must not contain angle brackets (< or >)".format(rel_md))
+
     # license
     if "license" not in fm or fm["license"] == "":
         errors.append("ERROR {}: missing required field 'license' in frontmatter".format(rel_md))
+
+    # compatibility (optional)
+    compat = fm.get("compatibility")
+    if compat and compat not in _BLOCK_MARKERS and len(compat) > 500:
+        errors.append("ERROR {}: compatibility is longer than 500 characters".format(rel_md))
+
+    # keys outside the Agent Skills format are not read the same way by every agent
+    unknown = sorted(set(fm) - ALLOWED_KEYS)
+    if unknown:
+        errors.append(
+            "ERROR {}: unexpected frontmatter key(s): {}. Allowed: {}".format(rel_md, ", ".join(unknown), ", ".join(sorted(ALLOWED_KEYS)))
+        )
 
 
 # ---------------------------------------------------------------------------
