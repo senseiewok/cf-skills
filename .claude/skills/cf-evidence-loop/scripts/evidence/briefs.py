@@ -119,20 +119,20 @@ def _value(rec: Evidence | None, key: str) -> Any:
     return NOT_STATED if v is None or v == "" or v == [] else v
 
 
-def _run(name: str, source_id: str, question: str, call: Callable[[], list[Evidence]]) -> Step:
-    """Run one source query. A refusal or failure becomes a record; it never stops the brief."""
+def _run(name: str, source_id: str, question: str, call: Callable[[], list[Evidence]], provider: str = BRIEF_PROVIDER) -> Step:
+    """Run one source query. A refusal or failure becomes a record; it never stops the brief (or a cite-check)."""
     try:
         recs = call()
     except REFUSALS as exc:
-        recs = [Evidence(status=Status.BLOCKED, question=question, source_id=source_id, url=NOT_STATED, provider=BRIEF_PROVIDER,
+        recs = [Evidence(status=Status.BLOCKED, question=question, source_id=source_id, url=NOT_STATED, provider=provider,
                          fields={"refused": f"{type(exc).__name__}: {str(exc)[:200]}"},
                          limitations="Refused by this tool's conduct rules before or instead of a request; establishes nothing about the subject.")]
     except Exception as exc:  # noqa: BLE001  a provider failure in one step must not stop the others
-        recs = [Evidence(status=Status.ERROR, question=question, source_id=source_id, url=NOT_STATED, provider=BRIEF_PROVIDER,
+        recs = [Evidence(status=Status.ERROR, question=question, source_id=source_id, url=NOT_STATED, provider=provider,
                          fields={"error": f"{type(exc).__name__}: {str(exc)[:200]}"},
                          limitations="This query failed inside the tool; establishes nothing about the subject.")]
     if not recs:
-        recs = [Evidence(status=Status.NOT_FOUND, question=question, source_id=source_id, url=NOT_STATED, provider=BRIEF_PROVIDER,
+        recs = [Evidence(status=Status.NOT_FOUND, question=question, source_id=source_id, url=NOT_STATED, provider=provider,
                          fields={}, limitations="The query returned no record at all; establishes nothing about the subject.")]
     return Step(name, source_id, recs)
 
