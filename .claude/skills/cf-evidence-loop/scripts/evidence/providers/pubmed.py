@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from ..http import Client
 from ..record import Evidence, Status
-from ..shape import ShapeError, error_record, esearch_result
+from ..shape import ShapeError, error_record, esearch_result, esummary_result
 
 PROVIDER = "pubmed/0.1"
 SOURCE = "ncbi-eutils"
@@ -34,9 +34,10 @@ def review_term(term: str) -> str:
 
 
 def parse_summaries(data: dict, question: str, url: str, limitation: str = LIMITATION) -> list[Evidence]:
-    res = data.get("result") or {}
+    """FOUND records, one per uid. Raises ShapeError when the answer is not an esummary result (see shape.esummary_result)."""
+    res, uids = esummary_result(data, "PubMed summary")
     out = []
-    for uid in res.get("uids") or []:
+    for uid in uids:
         s = res.get(uid) or {}
         ids = {a.get("idtype"): a.get("value") for a in (s.get("articleids") or [])}
         out.append(Evidence(
@@ -66,7 +67,14 @@ def _run(client: Client, term: str, question: str, limit: int, limitation: str, 
     if g.status is not Status.FOUND:
         return [Evidence(status=g.status, question=question, source_id=SOURCE, url=g.url, provider=PROVIDER,
                          fields={"http_status": g.http_status}, limitations="Summary fetch failed.")]
-    recs = parse_summaries(g.data, question, g.url, limitation)
+    try:
+        recs = parse_summaries(g.data, question, g.url, limitation)
+    except ShapeError as exc:
+        return [error_record(exc, question=question, source_id=SOURCE, url=g.url, provider=PROVIDER, fields={"search_total": total})]
+    if not recs:
+        return [Evidence(status=Status.NOT_FOUND, question=question, source_id=SOURCE, url=g.url, provider=PROVIDER,
+                         fields={"term": term, "search_total": total},
+                         limitations="The search named records but the summary answer listed none; absence of a summary is not absence of literature.")]
     for r in recs:
         r.fields["search_total"] = total
         r.fields["query"] = term

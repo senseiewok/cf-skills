@@ -6,7 +6,8 @@ The rules (see references/NETWORK-RULES.md for the reasoning; each has a test):
   R2  Paperwork gate for APIs: an `api` source must carry `terms_url` and `max_rps` or it is refused.
   R3  Robots gate for documents: a `fetch` source's path must be allowed by the host's robots.txt for our
       agent and for `*`; 404/410 means no restrictions; 401/403 means refuse; 5xx or timeout means refuse this run.
-      robots.txt is fetched once per host per process.
+      robots.txt is fetched once per host per process, paced (R4), capped (R10) and without following a redirect (R1);
+      a redirect or an oversized body counts as unreachable.
   R4  Pacing: never faster than the catalog's `max_rps`, never faster than the hard ceiling of 3 requests/second,
       default 1 request/second. Single-threaded by construction.
   R5  Budget: a hard ceiling of MAX_REQUESTS_PER_PROCESS requests per process. The environment can lower it, never raise it.
@@ -25,6 +26,7 @@ There is deliberately no way to set a browser user agent, disable certificate ch
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import time
@@ -147,20 +149,24 @@ class Client:
         host = urlparse(url).netloc.lower()
         body = self._robots.get(host)
         if body is None:
-            body = self._load_robots(host)
+            body = self._load_robots(source_id, host)
             self._robots[host] = body
         if body in ("__refused__", "__unreachable__"):
             raise RobotsDisallow(f"{host}: robots.txt {body.strip('_')}; fetching documents from this host is refused")
         if not robots_allows(body, urlparse(url).path or "/", PROJECT_UA.split("/")[0]):
             raise RobotsDisallow(f"{host}: robots.txt disallows {urlparse(url).path} for our agent or for *")
 
-    def _load_robots(self, host: str) -> str:
+    def _load_robots(self, source_id: str, host: str) -> str:
+        url = f"https://{host}/robots.txt"
         if self.dry_run:
-            self.planned.append(("GET", f"https://{host}/robots.txt"))
+            self.planned.append(("GET", url))
             return ""
+        self._pace(source_id)                                  # R4: the robots fetch is a request to the host like any other
+        self._count(host, "/robots.txt")
         try:
-            self._count(host, "/robots.txt")
-            r = self.session.get(f"https://{host}/robots.txt", timeout=ROBOTS_TIMEOUT_S)
+            # R1: a redirect is not followed; a 30x falls through to "unreachable" below. R10: the body is capped.
+            r = self.session.get(url, timeout=ROBOTS_TIMEOUT_S, allow_redirects=False, stream=True)
+            r = _read_capped(r, url)                           # over the cap: a 599 stand-in, so "unreachable" below
         except requests.RequestException:
             return "__unreachable__"
         if r.status_code == 200:
@@ -229,6 +235,11 @@ class Client:
                 return Fetch(Status.RATE_LIMITED, resp.status_code, resp.url, text=resp.text[:500])
             self._rate_limited_once.add(host)
             ra = _retry_after(resp)
+            if ra is not None and (not math.isfinite(ra) or ra < 0):
+                # time.sleep raises on a negative or NaN value; that would lose the record and the accounting line (R8)
+                self._trip(host, f"rate limited ({resp.status_code}), Retry-After {str(resp.headers.get('Retry-After'))[:20]!r} "
+                                 "is not a usable number of seconds")
+                return Fetch(Status.RATE_LIMITED, resp.status_code, resp.url, text=resp.text[:500])
             if ra is None or ra > MAX_RETRY_AFTER_S:
                 why = "no Retry-After header" if ra is None else f"Retry-After {ra:.0f}s exceeds the {MAX_RETRY_AFTER_S:.0f}s we will wait"
                 self._trip(host, f"rate limited ({resp.status_code}), {why}")

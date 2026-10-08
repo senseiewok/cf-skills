@@ -7,6 +7,8 @@ corrections and expressions of concern as ``update-to`` relations on the notice.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from ..http import Client, Fetch
 from ..record import Evidence, Status, now_utc
 from ..shape import ShapeError, need, error_record
@@ -88,7 +90,8 @@ def _fail(f: Fetch, question: str) -> Evidence:
 
 def work(client: Client, doi: str) -> Evidence:
     q = f"What does Crossref hold for DOI {doi}?"
-    f = client.get(SOURCE, f"works/{doi}")
+    # A DOI's own '/' stays a path separator; '?', '#', '%' and the like are escaped so they cannot change the URL's structure.
+    f = client.get(SOURCE, f"works/{quote(doi, safe='/')}")
     return parse_work(f.data, q, f.url) if f.status is Status.FOUND else _fail(f, q)
 
 
