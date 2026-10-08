@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from ..http import Client
 from ..record import Evidence, Status
-from ..shape import ShapeError, error_record, esearch_result
+from ..shape import ShapeError, error_record, esearch_result, esummary_result
 
 PROVIDER = "clinvar/0.1"
 SOURCE = "ncbi-eutils"
@@ -28,9 +28,10 @@ def _common(client: Client) -> dict:
 
 
 def parse_summaries(data: dict, question: str, url: str) -> list[Evidence]:
-    res = data.get("result") or {}
+    """FOUND records, one per uid. Raises ShapeError when the answer is not an esummary result (see shape.esummary_result)."""
+    res, uids = esummary_result(data, "ClinVar summary")
     out = []
-    for uid in res.get("uids") or []:
+    for uid in uids:
         s = res.get(uid) or {}
         g = s.get("germline_classification") or {}
         out.append(Evidence(
@@ -61,7 +62,14 @@ def variants(client: Client, term: str, limit: int = MAX_IDS) -> list[Evidence]:
     if g.status is not Status.FOUND:
         return [Evidence(status=g.status, question=q, source_id=SOURCE, url=g.url, provider=PROVIDER,
                          fields={"http_status": g.http_status}, limitations="Summary fetch failed.")]
-    recs = parse_summaries(g.data, q, g.url)
+    try:
+        recs = parse_summaries(g.data, q, g.url)
+    except ShapeError as exc:
+        return [error_record(exc, question=q, source_id=SOURCE, url=g.url, provider=PROVIDER, fields={"search_total": total})]
+    if not recs:
+        return [Evidence(status=Status.NOT_FOUND, question=q, source_id=SOURCE, url=g.url, provider=PROVIDER,
+                         fields={"term": term, "search_total": total},
+                         limitations="The search named records but the summary answer listed none; try the HGVS or legacy name.")]
     for r in recs:
         r.fields["search_total"] = total
     return recs
