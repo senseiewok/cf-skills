@@ -1,0 +1,36 @@
+{
+  "tool": "Example chat helper (an invented tool, for illustration only)",
+  "purpose": "Drafting plain-language versions of general clinic handouts, never for questions about one person",
+  "reviewed_by": "CF nurse, dietitian, social worker, parent representative, adult with CF",
+  "date": "2026-10-08",
+  "rows": [
+    {"stage": "design", "question": "Who built it, and were people with CF lived experience and CF clinicians involved?",
+     "found": "The vendor page names a clinical advisor; it says nothing about people with lived experience.",
+     "where": "document: vendor about page, read 2026-10-08", "unknown": false, "owner": "parent representative"},
+    {"stage": "development", "question": "What data trained it, and how well does it represent people with CF of different ages, languages, regions and access?",
+     "found": "", "where": "", "unknown": true, "owner": "CF nurse"},
+    {"stage": "deployment", "question": "What do the terms say about storing and reusing chats?",
+     "found": "The terms say chats are kept and may be used to improve the service unless the account owner turns this off.",
+     "where": "document: terms of service, section on data, read 2026-10-08", "unknown": false, "owner": "social worker"},
+    {"stage": "monitoring", "question": "How are errors and made-up content watched for, and who can see the reports?",
+     "found": "In our test, one of five invented handout rewrites changed a number; nothing in the tool warned us.",
+     "where": "test: five invented handouts, 2026-10-08", "unknown": false, "owner": "dietitian"},
+    {"stage": "evaluation", "question": "What happens when it is wrong, and how do we stop using it?",
+     "found": "", "where": "", "unknown": true, "owner": "CF nurse"}
+  ],
+  "red_flags": [
+    {"flag": "asks-for-identifiers", "seen": "no", "note": "Sign-up asks for an email only."},
+    {"flag": "no-sources-shown", "seen": "yes", "note": "Answers show no sources."},
+    {"flag": "no-plain-statement-on-chats", "seen": "no", "note": "The terms state it, in a long section."}
+  ],
+  "decision": {
+    "choice": "use-only-for",
+    "use_for": "drafting rewrites of general handouts that contain no personal information",
+    "checks": [
+      "A staff member compares every number, name and rule with the original before use",
+      "Chat history setting turned off, and checked again each quarter",
+      "Review again in six months or after any change to the tool"
+    ],
+    "decided_by": "CF nurse lead and parent representative, after the group discussion"
+  }
+}
