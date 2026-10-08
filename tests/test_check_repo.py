@@ -18,6 +18,9 @@ description: "{desc}"
 license: CC0-1.0
 metadata:
     version: "1.0.0"
+    audience: "researchers, builders"
+    level: "base"
+    category: "evidence"
 ---
 
 # {name}
@@ -176,6 +179,100 @@ class CheckRepoTests(unittest.TestCase):
         code, errs, text = self.errors()
         self.assertEqual(code, 1, text)
         self.assertTrue(any("skills/empty" in e and "SKILL.md" in e for e in errs), errs)
+
+    # ---- audience, level and category (required under metadata)
+    def test_an_unknown_audience_is_reported_with_the_skill_and_the_allowed_words(self):
+        self.edit(".claude/skills/alpha/SKILL.md", 'audience: "researchers, builders"', 'audience: "researchers, parents"')
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("skills/alpha/SKILL.md" in e and "unknown audience 'parents'" in e and "patients-families, care-teams, researchers, builders" in e for e in errs), errs)
+        self.assertFalse(any("researchers'" in e for e in errs), "the valid word in the same list is not reported: " + text)
+
+    def test_every_audience_word_and_both_levels_and_every_category_are_allowed(self):
+        cases = [('audience: "researchers, builders"', f'audience: "{a}"') for a in
+                 ("patients-families", "care-teams", "researchers", "builders", "patients-families, care-teams, researchers, builders")]
+        cases += [('level: "base"', f'level: "{v}"') for v in ("base", "advanced")]
+        cases += [('category: "evidence"', f'category: "{c}"') for c in ("safe-ai-use", "communication", "evidence", "tool-evaluation", "web")]
+        for old, new in cases:
+            with self.subTest(new=new):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", old, new)
+                code, errs, text = self.errors()
+                self.assertEqual((code, errs), (0, []), text)
+
+    def test_a_missing_audience_level_or_category_is_reported_with_the_allowed_words(self):
+        cases = {
+            "audience": ('    audience: "researchers, builders"\n', "patients-families, care-teams, researchers, builders"),
+            "level": ('    level: "base"\n', "base, advanced"),
+            "category": ('    category: "evidence"\n', "safe-ai-use, communication, evidence, tool-evaluation, web"),
+        }
+        for key, (line, allowed) in cases.items():
+            with self.subTest(key=key):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", line, "")
+                code, errs, text = self.errors()
+                self.assertEqual(code, 1, text)
+                self.assertTrue(any("skills/alpha/SKILL.md" in e and f"missing metadata '{key}'" in e and allowed in e for e in errs), errs)
+
+    def test_an_empty_audience_is_reported_as_missing(self):
+        self.edit(".claude/skills/alpha/SKILL.md", 'audience: "researchers, builders"', 'audience: ""')
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("missing metadata 'audience'" in e for e in errs), errs)
+
+    def test_a_bad_level_or_category_is_reported_with_the_allowed_words(self):
+        for old, new, needle in (('level: "base"', 'level: "expert"', "unknown level 'expert'"),
+                                 ('category: "evidence"', 'category: "science"', "unknown category 'science'"),
+                                 ('level: "base"', 'level: "base, advanced"', "unknown level 'base, advanced'")):
+            with self.subTest(new=new):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", old, new)
+                code, errs, text = self.errors()
+                self.assertEqual(code, 1, text)
+                self.assertTrue(any("skills/alpha/SKILL.md" in e and needle in e and "allowed" in e for e in errs), errs)
+
+    def test_audience_at_the_top_level_is_reported_with_a_hint_to_move_it_under_metadata(self):
+        self.edit(".claude/skills/alpha/SKILL.md", '    audience: "researchers, builders"\n', "")
+        self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", 'license: CC0-1.0\naudience: "researchers"\n')
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("unexpected" in e and "audience" in e and "under metadata" in e for e in errs), errs)
+        self.assertTrue(any("missing metadata 'audience'" in e for e in errs), errs)
+
+    def test_a_key_of_the_same_name_outside_metadata_does_not_count(self):
+        # an indented 'level' under another top-level key is not metadata
+        self.edit(".claude/skills/alpha/SKILL.md", '    level: "base"\n', "")
+        self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", 'license: CC0-1.0\nallowed-tools: Read\n    level: "base"\n')
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("missing metadata 'level'" in e for e in errs), errs)
+
+    def test_a_copy_of_the_repository_template_passes(self):
+        template = SCRIPT.parents[1] / "template" / "SKILL.md"
+        text = template.read_text(encoding="utf-8").replace("name: template-skill", "name: alpha")
+        (self.root / ".claude" / "skills" / "alpha" / "SKILL.md").write_text(text, encoding="utf-8")
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), text)
+        # negative control: the same copy without its level fails
+        p = self.root / ".claude" / "skills" / "alpha" / "SKILL.md"
+        p.write_text(p.read_text(encoding="utf-8").replace('    level: "base"\n', ""), encoding="utf-8")
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("missing metadata 'level'" in e for e in errs), errs)
+
+    def test_the_vocabularies_match_the_index_builder(self):
+        import ast
+        def consts(path):
+            tree = ast.parse(Path(path).read_text(encoding="utf-8"))
+            out = {}
+            for node in tree.body:
+                if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and node.targets[0].id in ("AUDIENCES", "LEVELS", "CATEGORIES"):
+                    out[node.targets[0].id] = ast.literal_eval(node.value)
+            return out
+        a = consts(SCRIPT)
+        b = consts(SCRIPT.parent / "make_index.py")
+        self.assertEqual(set(a), {"AUDIENCES", "LEVELS", "CATEGORIES"})
+        self.assertEqual(a, b)
 
     # ---- links
     def test_a_broken_relative_link_in_a_skill_is_reported_with_its_target(self):

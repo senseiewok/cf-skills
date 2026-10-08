@@ -26,6 +26,13 @@ SKILLS_DIR = Path(".claude") / "skills"
 ALLOWED_KEYS = {"name", "description", "license", "allowed-tools", "metadata", "compatibility"}
 _BLOCK_MARKERS = (">", "|", ">-", "|-", ">+", "|+")
 
+# Who a skill is for, how much it asks of the reader, and what kind of help it is. Required for every skill, as strings under `metadata:`,
+# so docs/skills-by-audience.md (written by scripts/make_index.py) can list each skill where its readers will look. Keep these lists equal
+# to the ones in scripts/make_index.py.
+AUDIENCES = ("patients-families", "care-teams", "researchers", "builders")
+LEVELS = ("base", "advanced")
+CATEGORIES = ("safe-ai-use", "communication", "evidence", "tool-evaluation", "web")
+
 
 # ---------------------------------------------------------------------------
 # helpers
@@ -80,6 +87,59 @@ def _parse_frontmatter(text: str):
             val = val[1:-1]
         fm[key] = val
     return fm
+
+
+def _parse_metadata(text: str) -> dict:
+    """Return the indented ``key: value`` pairs under a top-level ``metadata:`` key in the frontmatter.
+
+    Values are strings with their outer quotes stripped. Returns an empty dict when there is no metadata block.
+    """
+    meta = {}
+    in_meta = False
+    for line in text.splitlines()[1:]:
+        if line.strip() == "---":
+            break
+        if not line.strip():
+            continue
+        if line[0] not in (" ", "\t"):
+            in_meta = bool(re.match(r"^metadata:\s*$", line))
+            continue
+        if not in_meta:
+            continue
+        m = re.match(r"^\s+([A-Za-z][\w-]*):\s*(.*)$", line)
+        if not m:
+            continue
+        val = m.group(2).strip()
+        if len(val) >= 2 and val[0] == val[-1] and val[0] in ('"', "'"):
+            val = val[1:-1]
+        meta[m.group(1)] = val
+    return meta
+
+
+def _check_audience_keys(rel_md: str, meta: dict, errors: list):
+    """audience, level and category: required under metadata, each value from its fixed list."""
+    raw = meta.get("audience")
+    if raw is None or not raw.strip():
+        errors.append(
+            "ERROR {}: missing metadata 'audience'; add it under metadata: as a comma-separated string of one or more of: {}".format(
+                rel_md, ", ".join(AUDIENCES))
+        )
+    else:
+        for word in [w.strip() for w in raw.split(",")]:
+            if word and word not in AUDIENCES:
+                errors.append(
+                    "ERROR {}: unknown audience '{}' in metadata; allowed (comma-separated): {}".format(rel_md, word, ", ".join(AUDIENCES))
+                )
+    for key, allowed in (("level", LEVELS), ("category", CATEGORIES)):
+        val = meta.get(key)
+        if val is None or not val.strip():
+            errors.append(
+                "ERROR {}: missing metadata '{}'; add it under metadata: as one of: {}".format(rel_md, key, ", ".join(allowed))
+            )
+        elif val.strip() not in allowed:
+            errors.append(
+                "ERROR {}: unknown {} '{}' in metadata; allowed (exactly one): {}".format(rel_md, key, val.strip(), ", ".join(allowed))
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -151,9 +211,14 @@ def _check_skill_meta(root: Path, folder_name: str, errors: list):
     # keys outside the Agent Skills format are not read the same way by every agent
     unknown = sorted(set(fm) - ALLOWED_KEYS)
     if unknown:
+        hint = ""
+        if set(unknown) & {"audience", "level", "category", "capabilities", "optional-capabilities", "version"}:
+            hint = " (audience, level, category, capabilities and version go indented under metadata:)"
         errors.append(
-            "ERROR {}: unexpected frontmatter key(s): {}. Allowed: {}".format(rel_md, ", ".join(unknown), ", ".join(sorted(ALLOWED_KEYS)))
+            "ERROR {}: unexpected frontmatter key(s): {}. Allowed: {}{}".format(rel_md, ", ".join(unknown), ", ".join(sorted(ALLOWED_KEYS)), hint)
         )
+
+    _check_audience_keys(rel_md, _parse_metadata(text), errors)
 
 
 # ---------------------------------------------------------------------------
