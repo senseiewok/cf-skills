@@ -172,7 +172,7 @@ def test_r6_403_trips_cooldown_for_the_host(monkeypatch, no_sleep):
     with pytest.raises(HostInCooldown):
         c.get("crossref", "works/b")
     assert len(s.calls) == 1
-    assert "api.crossref.org" in c.accounting.blocked_hosts
+    assert any(h == "api.crossref.org" for h in c.accounting.blocked_hosts)
 
 
 def test_r6_second_rate_limit_trips_cooldown(monkeypatch, no_sleep):
