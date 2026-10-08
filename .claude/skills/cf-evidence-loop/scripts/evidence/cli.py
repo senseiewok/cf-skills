@@ -17,9 +17,13 @@
     python -m evidence.cli brief drug TRIKAFTA
     python -m evidence.cli brief variant "CFTR[gene] AND F508del"
     python -m evidence.cli brief trial NCT05033080
+    python -m evidence.cli cite-check notes/draft.md --ledger evidence/ledger.jsonl
 
 Every command accepts --json (one JSON object per line) and --ledger PATH (append records). With --json, a brief prints its
 records and then one more object, {"brief": ...}, holding its sources, copied fields, cross-checks and footer; the ledger gets the records only.
+cite-check FILE looks up every DOI, PMID and NCT id in a text file (at most --max-ids, default 30; more is refused, never
+truncated). With --json it prints the records and then one object, {"cite_check": ...}. Its exit code is 3 when any lookup was
+blocked, rate limited or failed, 1 when any id is NOT FOUND or the file holds no identifier at all, else 0.
 --contact must be a plain email address.
 With EVIDENCE_DRY_RUN=1 nothing is sent; each planned request is printed to stderr as "planned: METHOD url".
 Exit code 0 when every record is found/not_found, 3 when any record is blocked, rate_limited or error, or when a
@@ -29,9 +33,10 @@ conduct rule refused the request before it was sent. The last stderr line is alw
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 
-from . import briefs, catalog
+from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import clinvar, crossref, europepmc, openfda, preprints, pubmed, reporter, trials
 from .record import Evidence, Status, append_ledger, clean_for_terminal
@@ -73,6 +78,9 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("cited", help="Europe PMC record for a DOI: citation count and open-access status"); p.add_argument("doi")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
+    p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
+    p.add_argument("--max-ids", type=int, default=cite_check.DEFAULT_MAX_IDS,
+                   help=f"refuse a file with more distinct identifiers than this (default {cite_check.DEFAULT_MAX_IDS}, at most {cite_check.HARD_MAX_IDS})")
 
     a = ap.parse_args(argv)
     if a.cmd == "sources":
@@ -88,8 +96,16 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     recs: list[Evidence]
     brief = None
+    report = None
+    if a.cmd == "cite-check":
+        early = _cite_check_preflight(a, client)
+        if isinstance(early, int):
+            return early
     try:
-        if a.cmd == "brief":                      # each step catches its own refusal, so a brief always returns
+        if a.cmd == "cite-check":                 # each lookup catches its own refusal, so a cite-check always returns
+            report = cite_check.Report(a.file, cite_check.resolve(client, early))
+            recs = report.records
+        elif a.cmd == "brief":                      # each step catches its own refusal, so a brief always returns
             brief = briefs.run(client, a.recipe, a.subject)
             recs = brief.records
         else:
@@ -99,13 +115,17 @@ def main(argv: list[str] | None = None) -> int:
         print(client.accounting.summary(), file=sys.stderr)
         return 3
 
-    if brief is not None and not a.json:
+    if report is not None and not a.json:
+        print(report.text())
+    elif brief is not None and not a.json:
         print(brief.text())
     else:
         for r in recs:
             print(r.to_json() if a.json else r.one_line())
         if brief is not None:
             print(brief.summary_json())
+        if report is not None:
+            print(report.summary_json())
     if a.ledger:
         n = append_ledger(a.ledger, recs)
         print(f"ledger: appended {n} record(s) to {a.ledger}", file=sys.stderr)
@@ -115,7 +135,36 @@ def main(argv: list[str] | None = None) -> int:
         print("dry run: requests whose URLs depend on an earlier response (summaries for the ids a search finds, further pages) are not listed",
               file=sys.stderr)
     print(client.accounting.summary(), file=sys.stderr)
+    if report is not None:
+        return report.exit_code(dry_run=client.dry_run)
     return 3 if any(r.status in BAD for r in recs) else 0
+
+
+def _cite_check_preflight(a, client: Client):
+    """The identifiers to look up, or an exit code when nothing may be sent: an unreadable file or a bad --max-ids (2),
+    a file with no identifier (1: fail closed, not a pass), or more identifiers than --max-ids (2: refused, never truncated)."""
+    def stop(code: int, message: str, stream=sys.stderr) -> int:
+        print(message, file=stream)
+        print(client.accounting.summary(), file=sys.stderr)
+        return code
+
+    if not 1 <= a.max_ids <= cite_check.HARD_MAX_IDS:
+        return stop(2, f"refused: --max-ids must be between 1 and {cite_check.HARD_MAX_IDS}")
+    try:
+        text = cite_check.read_text(a.file)
+    except OSError as exc:
+        return stop(2, f"refused: cannot read {a.file}: {type(exc).__name__}")
+    found = cite_check.extract(text)
+    if not found:
+        msg = (json.dumps({"cite_check": {"file": a.file, "identifiers": [], "counts": {"identifiers": 0},
+                                          "result": "no identifiers found", "footer": cite_check.FOOTER}}, sort_keys=True)
+               if a.json else f"no identifiers found in {a.file}; nothing was checked, so this is not a pass\n\n{cite_check.FOOTER}")
+        return stop(1, msg, sys.stdout)
+    if len(found) > a.max_ids:
+        kinds = ", ".join(f"{sum(f.kind == k for f in found)} {k}" for k in ("DOI", "PMID", "NCT"))
+        return stop(2, f"refused: {len(found)} distinct identifiers found ({kinds}), more than --max-ids {a.max_ids}; "
+                       "nothing was looked up. Split the file or raise --max-ids; the list is never truncated.")
+    return found
 
 
 def _dispatch(a, ap, client: Client) -> list[Evidence]:
