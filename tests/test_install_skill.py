@@ -152,17 +152,40 @@ class InstallSkillTests(unittest.TestCase):
         self.assertFalse(names & {"socket", "urllib", "http", "requests", "subprocess", "ftplib", "smtplib", "runpy", "importlib"}, names)
 
     # ---- linking
-    def test_link_makes_a_symlink_to_the_skill_or_says_why_it_could_not(self):
+    def symlinks_refused_for_privilege(self):
+        """True only when this OS refuses a folder link for lack of privilege (Windows error 1314); any other failure is not an excuse."""
+        probe = self.tmp / "probe-link"
+        try:
+            probe.symlink_to(self.repo, target_is_directory=True)
+        except OSError as exc:
+            if getattr(exc, "winerror", None) == 1314:
+                return True
+            raise
+        probe.unlink()
+        return False
+
+    def test_link_makes_a_working_folder_link_to_the_skill(self):
+        if self.symlinks_refused_for_privilege():
+            self.skipTest("this Windows account lacks the privilege to create symbolic links (error 1314)")
         code, out = self.run_script("alpha", "--link")
         dest = self.proj / ".claude" / "skills" / "alpha"
-        if dest.is_symlink():
-            self.assertEqual(code, 0, out)
-            self.assertEqual(dest.resolve(), (self.repo / ".claude" / "skills" / "alpha").resolve())
-            self.assertTrue((dest / "SKILL.md").is_file())
-        else:
-            self.assertEqual(code, 1, out)  # for example Windows without the privilege to create links
-            self.assertRegex(out.lower(), r"link|symlink|privilege|permission")
-            self.assertFalse(dest.exists(), "a failed link leaves nothing half-made")
+        self.assertEqual(code, 0, out)
+        self.assertTrue(dest.is_symlink(), f"no link was created: {out}")
+        self.assertEqual(dest.resolve(), (self.repo / ".claude" / "skills" / "alpha").resolve())
+        self.assertTrue(dest.is_dir(), "the link does not open as a folder")
+        self.assertTrue((dest / "SKILL.md").is_file())
+        self.assertTrue((dest / "scripts" / "run.py").is_file())
+
+    def test_link_without_the_privilege_says_why_in_plain_words_and_leaves_nothing(self):
+        if not self.symlinks_refused_for_privilege():
+            self.skipTest("this system allows symbolic links; the refusal path cannot be reached")
+        code, out = self.run_script("alpha", "--link")
+        dest = self.proj / ".claude" / "skills" / "alpha"
+        self.assertEqual(code, 1, out)
+        self.assertIn("could not create symlink for alpha", out)
+        self.assertIn("Developer Mode", out)
+        self.assertIn("without --link", out)
+        self.assertFalse(dest.exists() or dest.is_symlink(), "a failed link leaves nothing half-made")
 
     # ---- output
     def test_install_all_copies_every_skill(self):

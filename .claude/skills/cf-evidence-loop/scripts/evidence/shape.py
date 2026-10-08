@@ -49,6 +49,21 @@ def esearch_result(data: Any, what: str) -> tuple[list, int]:
     return ids, total
 
 
+def esummary_result(data: Any, what: str) -> tuple[dict, list]:
+    """(result, uids) from an NCBI esummary answer: ``result`` an object with a list ``uids``.
+
+    NCBI can answer HTTP 200 with ``{"error": ...}`` and no ``result``; that is a failure, not an empty summary."""
+    if isinstance(data, dict) and "result" not in data and "error" in data:
+        raise ShapeError(f"{what} has no 'result'; the answer's 'error' is {_shown(data['error'])}")
+    res = need(data, "result", what)
+    if not isinstance(res, dict):
+        raise ShapeError(f"{what} result is {type(res).__name__}, not an object")
+    uids = need(res, "uids", f"{what} result")
+    if not isinstance(uids, list):
+        raise ShapeError(f"{what} result uids is {type(uids).__name__}, not a list")
+    return res, uids
+
+
 def error_record(exc: ShapeError, *, question: str, source_id: str, url: str, provider: str, fields: dict | None = None) -> Evidence:
     return Evidence(status=Status.ERROR, question=question, source_id=source_id, url=url, provider=provider,
                     fields={**(fields or {}), "shape_error": str(exc)},
