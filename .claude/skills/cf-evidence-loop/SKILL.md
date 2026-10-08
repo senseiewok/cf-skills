@@ -1,11 +1,11 @@
 ---
 name: cf-evidence-loop
-description: "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, or see which projects NIH funds on a topic. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model."
+description: "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, or run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model."
 license: CC0-1.0
 compatibility: "Python 3.10+ with requests and PyYAML; outbound HTTPS to api.crossref.org, eutils.ncbi.nlm.nih.gov, www.ebi.ac.uk, clinicaltrials.gov, api.fda.gov, api.biorxiv.org and api.reporter.nih.gov. No API keys required. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
 metadata:
     version: "1.0.0"
-    last-updated: "2026-10-04"
+    last-updated: "2026-10-08"
     capabilities: "network, python, runs-code"
     optional-capabilities: ""
 ---
@@ -35,6 +35,7 @@ Research, not medical advice. The records this tool returns describe public docu
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
 | What may this tool reach at all? | `sources` | the catalog |
+| What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 
 What the client code refuses to do: reach any host not permitted in `catalog.yaml` (a redirect is never followed); present itself as a browser; skip certificate checks; retry past a refusal. The package also never calls a language model and queries no source that holds individual-level data; those two are properties of what it contains, not checks in the client.
 
@@ -48,6 +49,24 @@ python scripts/evidence_cli.py variants "CFTR[gene] AND F508del" --limit 5
 ```
 
 Flags on every command: `--json` for one JSON object per record, `--ledger PATH` to append records to a JSONL evidence ledger. Exit code 0 when every record is `found` or `not_found`; 3 when any is `blocked`, `rate_limited` or `error`.
+
+### Briefs
+
+A brief asks one question of several sources through the same client, so the catalog gate, pacing, budget and circuit breaker all still apply. It prints every record each source returned, the status of each source, the fields it compared, and a short cross-checks block.
+
+| Recipe | Runs | Cross-checks |
+| --- | --- | --- |
+| `brief drug TRIKAFTA` | `approval`, `label`, `trials` by term (5), `pubmed` for the brand (5) | each source's status; that the label's effective-date year is not earlier than the Drugs@FDA first-approval year |
+| `brief variant "CFTR[gene] AND F508del"` | `variants`, `pubmed` for the same term (5) | each source's status; how many ClinVar records matched, with classification and review status for every one |
+| `brief trial NCT05033080` | `trial`, `pubmed` for the NCT id (5) | each source's status; the registry record's id; which returned papers name the trial in their title |
+
+How to read the cross-checks:
+
+- `PASS`: the values agree, or the source answered. It is not a finding about the drug, variant or trial.
+- `CHECK`: a person should look. A source did not answer; several ClinVar records matched (all are listed, none is chosen); or the label's effective date is earlier than the drug's first approval, which cannot be right, so one of the two records is inconsistent. A label's effective date is its latest revision, so a label year equal to or later than the approval year is expected and is `PASS`.
+- `NOT STATED`: a source did not give the value, so nothing was compared. PubMed records carry no abstract or full text, so a paper that does not name the trial in its title is `NOT STATED`, not "does not mention it".
+
+What a brief does not do: it adds no fact of its own. Every value it prints is copied from a record field or is a labelled count or year gap, and a missing value prints as `not stated`. A blocked, rate-limited or failing source does not stop the other sources; it is listed with its status and the exit code is 3. With `--json`, the records come first and one last object, `{"brief": ...}`, holds the sources, fields, cross-checks and footer; `--ledger` stores the records only. Every brief ends with: Research, not medical advice. A brief lists public documents; it does not interpret anything for a person.
 
 Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields.
 
@@ -145,7 +164,7 @@ Run on 2026-10-04, the three commands returned: a 2020 *JAMA Network Open* artic
 python -m pytest -q tests
 ```
 
-Offline tests, including at least one per network-conduct rule in `tests/test_conduct.py`, and `tests/test_hardening.py` for defects found in review (each was reproduced by a failing test first). `tests/test_gate.py` fails any test that opens a socket, proving that `forbidden`, `manual` and unknown sources are refused before the network. `tests/test_providers.py` runs each parser on a saved response in `tests/fixtures/`, captured 2026-10-04 and trimmed to the fields the parsers read.
+Offline tests, including at least one per network-conduct rule in `tests/test_conduct.py`, and `tests/test_hardening.py` for defects found in review (each was reproduced by a failing test first). `tests/test_briefs.py` runs each brief recipe on scripted responses, including a blocked source, a missing field, and a disagreeing and an agreeing approval-year pair. `tests/test_gate.py` fails any test that opens a socket, proving that `forbidden`, `manual` and unknown sources are refused before the network. `tests/test_providers.py` runs each parser on a saved response in `tests/fixtures/`, captured 2026-10-04 and trimmed to the fields the parsers read.
 
 Live check, if you have network access: `python scripts/evidence_cli.py retractions 10.1016/S0140-6736(97)11096-0` must return two notices, a 2004 correction and a 2010 retraction.
 
