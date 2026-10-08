@@ -6,6 +6,7 @@ The drug recipe makes five requests in this order: Drugs@FDA, label, ClinicalTri
 from __future__ import annotations
 
 import json
+import urllib.parse
 from pathlib import Path
 
 from evidence import briefs, cli
@@ -78,7 +79,7 @@ def test_drug_trials_step_searches_by_term_without_a_condition(monkeypatch, no_s
     c = make_client(monkeypatch, s)
     monkeypatch.setattr(c.session, "request", spy)
     briefs.drug(c, "TRIKAFTA")
-    trials_params = [p for u, p in seen if "clinicaltrials.gov" in u][0]
+    trials_params = [p for u, p in seen if urllib.parse.urlparse(u).hostname == "clinicaltrials.gov"][0]
     assert trials_params["query.term"] == "TRIKAFTA" and "query.cond" not in trials_params
     assert trials_params["pageSize"] == briefs.TRIALS_LIMIT
     pubmed_params = [p for u, p in seen if "esearch" in u][0]
