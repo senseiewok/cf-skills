@@ -1,6 +1,6 @@
 ---
 name: cf-evidence-loop
-description: "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, or run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model."
+description: "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks, or check that every DOI, PMID and trial id cited in a note exists. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model."
 license: CC0-1.0
 compatibility: "Python 3.10+ with requests and PyYAML; outbound HTTPS to api.crossref.org, eutils.ncbi.nlm.nih.gov, www.ebi.ac.uk, clinicaltrials.gov, api.fda.gov, api.biorxiv.org and api.reporter.nih.gov. No API keys required. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
 metadata:
@@ -36,6 +36,7 @@ Research, not medical advice. The records this tool returns describe public docu
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
+| Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30]` | Crossref, PubMed, ClinicalTrials.gov (see Cite-check) |
 
 What the client code refuses to do: reach any host not permitted in `catalog.yaml` (a redirect is never followed); present itself as a browser; skip certificate checks; retry past a refusal. The package also never calls a language model and queries no source that holds individual-level data; those two are properties of what it contains, not checks in the client.
 
@@ -67,6 +68,20 @@ How to read the cross-checks:
 - `NOT STATED`: a source did not give the value, so nothing was compared. PubMed records carry no abstract or full text, so a paper that does not name the trial in its title is `NOT STATED`, not "does not mention it".
 
 What a brief does not do: it adds no fact of its own. Every value it prints is copied from a record field or is a labelled count or year gap, and a missing value prints as `not stated`. A blocked, rate-limited or failing source does not stop the other sources; it is listed with its status and the exit code is 3. With `--json`, the records come first and one last object, `{"brief": ...}`, holds the sources, fields, cross-checks and footer; `--ledger` stores the records only. Every brief ends with: Research, not medical advice. A brief lists public documents; it does not interpret anything for a person.
+
+### Cite-check
+
+The lab's rule 5: citations go through the evidence record, and one that cannot be resolved is deleted or fixed from a source, never repaired from memory. `cite-check FILE` applies it to a whole note. It finds every DOI, every PubMed id written as `PMID 123`, `PMID: 123` or a `pubmed/123` URL, and every `NCT` id, removes duplicates (keeping the line of first occurrence), and looks each one up with the single-lookup code: `doi` for a DOI, a PubMed search on the `[pmid]` field for a PMID (two requests), `trial` for an NCT id. The usual client applies: catalog gate, pacing, budget, circuit breaker, accounting.
+
+| Line | Meaning |
+| --- | --- |
+| `PASS` | The source returned a record; its title and year or dates are printed, `not stated` where absent |
+| `NOT FOUND` | The source answered that there is no such id. Delete it or fix it from a source; never guess |
+| `UNRESOLVED` | The lookup was blocked, rate limited or failed. Unresolved is not the same as nonexistent |
+| `TITLE PASS` / `TITLE CHECK` | A quoted or emphasised phrase of four or more words on the same line shares at least 0.6 (or less) of the shorter side's words with the record's title, ignoring case, punctuation and common short words. `TITLE CHECK` asks a person to look; it is never an error by itself |
+| `TITLE NOT STATED` | The line gives no title, so nothing was compared |
+
+Exit code: 3 when any lookup was unresolved, 1 when any id is `NOT FOUND`, else 0. A file with no identifier prints `no identifiers found` and exits 1: nothing checked is not a pass. More distinct ids than `--max-ids` (default 30, at most 100) is refused before any request, never truncated. With `--json` the records come first and one last object, `{"cite_check": ...}`, holds each id's verdict and the counts; `--ledger` stores the records only. It ends with: Research, not medical advice. This checks that an identifier exists and roughly matches the wording; it does not check that the source supports the sentence.
 
 Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields.
 
@@ -164,7 +179,7 @@ Run on 2026-10-04, the three commands returned: a 2020 *JAMA Network Open* artic
 python -m pytest -q tests
 ```
 
-Offline tests, including at least one per network-conduct rule in `tests/test_conduct.py`, and `tests/test_hardening.py` for defects found in review (each was reproduced by a failing test first). `tests/test_briefs.py` runs each brief recipe on scripted responses, including a blocked source, a missing field, and a disagreeing and an agreeing approval-year pair. `tests/test_gate.py` fails any test that opens a socket, proving that `forbidden`, `manual` and unknown sources are refused before the network. `tests/test_providers.py` runs each parser on a saved response in `tests/fixtures/`, captured 2026-10-04 and trimmed to the fields the parsers read.
+Offline tests, including at least one per network-conduct rule in `tests/test_conduct.py`, and `tests/test_hardening.py` for defects found in review (each was reproduced by a failing test first). `tests/test_briefs.py` runs each brief recipe on scripted responses, including a blocked source, a missing field, and a disagreeing and an agreeing approval-year pair. `tests/test_cite_check.py` covers identifier extraction, found, not-found and blocked lookups, the id cap, and the title cross-check with a deliberately wrong title as a negative control. `tests/test_gate.py` fails any test that opens a socket, proving that `forbidden`, `manual` and unknown sources are refused before the network. `tests/test_providers.py` runs each parser on a saved response in `tests/fixtures/`, captured 2026-10-04 and trimmed to the fields the parsers read.
 
 Live check, if you have network access: `python scripts/evidence_cli.py retractions 10.1016/S0140-6736(97)11096-0` must return two notices, a 2004 correction and a 2010 retraction.
 
