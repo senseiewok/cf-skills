@@ -15,6 +15,12 @@
         "runs-code"
       ],
       "optional_capabilities": [],
+      "audience": [
+        "researchers",
+        "builders"
+      ],
+      "level": "advanced",
+      "category": "evidence",
       "install": {
         "script": "python scripts/install_skill.py cf-evidence-loop --agent claude",
         "gh": "gh skill install senseiewok/cf-skills .claude/skills/cf-evidence-loop --agent claude-code",
@@ -36,6 +42,11 @@
         "browser",
         "network"
       ],
+      "audience": [
+        "builders"
+      ],
+      "level": "advanced",
+      "category": "web",
       "install": {
         "script": "python scripts/install_skill.py site-seo-review --agent claude",
         "gh": "gh skill install senseiewok/cf-skills .claude/skills/site-seo-review --agent claude-code",

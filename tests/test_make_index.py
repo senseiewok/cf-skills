@@ -20,10 +20,20 @@ metadata:
     version: "{version}"
     capabilities: "{caps}"
     optional-capabilities: "{opt}"
+    audience: "{aud}"
+    level: "{level}"
+    category: "{cat}"
 ---
 
 # {name}
 """
+
+
+def skill(name, desc, version="1.0.0", caps="python", opt="", aud="researchers", level="base", cat="evidence"):
+    return SKILL.format(name=name, desc=desc, version=version, caps=caps, opt=opt, aud=aud, level=level, cat=cat)
+
+
+README = "# Repo\n\nIntro stays.\n\n## Skills\n\n<!-- skills-table:start -->\nold table\n<!-- skills-table:end -->\n\nAfter stays.\n"
 
 
 class MakeIndexTests(unittest.TestCase):
@@ -31,11 +41,14 @@ class MakeIndexTests(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp(prefix="make-index-"))
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         self.root = self.tmp / "repo"
-        for name, desc, version, caps, opt in (("beta", "Does beta.", "2.0.0", "runs-code, python", "browser"), ("alpha", "Does alpha.", "1.0.0", "network, runs-code, python", "")):
+        for name, desc, version, caps, opt, aud, level, cat in (
+                ("beta", "Does beta. Then more about beta.", "2.0.0", "runs-code, python", "browser", "builders, researchers", "advanced", "tool-evaluation"),
+                ("alpha", "Does alpha.", "1.0.0", "network, runs-code, python", "", "patients-families", "base", "safe-ai-use")):
             d = self.root / ".claude" / "skills" / name
             d.mkdir(parents=True)
-            (d / "SKILL.md").write_text(SKILL.format(name=name, desc=desc, version=version, caps=caps, opt=opt), encoding="utf-8")
+            (d / "SKILL.md").write_text(skill(name, desc, version, caps, opt, aud, level, cat), encoding="utf-8")
         self.out = self.root / "skills-index.json"
+        self.page = self.root / "docs" / "skills-by-audience.md"
 
     def run_script(self, *args):
         r = subprocess.run([sys.executable, str(SCRIPT), str(self.root), *args], capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -94,7 +107,7 @@ class MakeIndexTests(unittest.TestCase):
         self.build()
         code, out = self.run_script("--check")
         self.assertEqual(code, 0, out)
-        (self.root / ".claude" / "skills" / "alpha" / "SKILL.md").write_text(SKILL.format(name="alpha", desc="Changed.", version="1.0.0", caps="python", opt=""), encoding="utf-8")
+        (self.root / ".claude" / "skills" / "alpha" / "SKILL.md").write_text(skill("alpha", "Changed.", aud="patients-families", level="base", cat="safe-ai-use"), encoding="utf-8")
         code, out = self.run_script("--check")
         self.assertEqual(code, 1, out)
         self.assertIn("skills-index.json", out)
@@ -125,6 +138,138 @@ class MakeIndexTests(unittest.TestCase):
         self.assertEqual(code, 1, out)
         self.assertIn("empty", out)
         self.assertNotIn("Traceback", out)
+
+    # ---- audience, level and category
+    def edit_alpha(self, old, new):
+        p = self.root / ".claude" / "skills" / "alpha" / "SKILL.md"
+        s = p.read_text(encoding="utf-8")
+        self.assertIn(old, s, "test setup")
+        p.write_text(s.replace(old, new), encoding="utf-8")
+
+    def section(self, page, heading):
+        """The text of one '## heading' section of the generated page."""
+        part = page.split("## " + heading + "\n", 1)[1]
+        return part.split("\n## ", 1)[0]
+
+    def test_each_entry_carries_audience_as_a_list_in_vocabulary_order_and_level_and_category(self):
+        a, b = self.build()["skills"]
+        self.assertEqual((a["audience"], a["level"], a["category"]), (["patients-families"], "base", "safe-ai-use"))
+        self.assertEqual((b["audience"], b["level"], b["category"]), (["researchers", "builders"], "advanced", "tool-evaluation"),
+                         "written 'builders, researchers'; listed in the fixed order")
+
+    def test_an_unknown_or_missing_audience_level_or_category_is_an_error_and_nothing_is_written(self):
+        cases = (
+            ('audience: "patients-families"', 'audience: "parents"', "unknown audience 'parents'"),
+            ('audience: "patients-families"', 'audience: ""', "missing metadata 'audience'"),
+            ('    level: "base"\n', "", "missing metadata 'level'"),
+            ('level: "base"', 'level: "expert"', "unknown level 'expert'"),
+            ('category: "safe-ai-use"', 'category: "science"', "unknown category 'science'"),
+        )
+        for old, new, needle in cases:
+            with self.subTest(needle=needle):
+                self.setUp()
+                self.edit_alpha(old, new)
+                code, out = self.run_script()
+                self.assertEqual(code, 1, out)
+                self.assertIn(needle, out)
+                self.assertIn("alpha", out)
+                self.assertFalse(self.out.exists() or self.page.exists(), "nothing is written when a skill is incomplete")
+
+    def test_the_page_lists_each_skill_under_each_of_its_audiences_and_nowhere_else(self):
+        self.build()
+        page = self.page.read_text(encoding="utf-8")
+        self.assertIn("python scripts/make_index.py", page.split("\n## ", 1)[0], "the header names the command that generates it")
+        self.assertIn("`alpha`", self.section(page, "Patients and families"))
+        self.assertNotIn("`beta`", self.section(page, "Patients and families"))
+        for heading in ("Researchers", "Builders"):
+            self.assertIn("`beta`", self.section(page, heading))
+            self.assertNotIn("`alpha`", self.section(page, heading))
+        self.assertIn("No skill for this group yet.", self.section(page, "Care teams"))
+
+    def test_a_skill_with_two_audiences_appears_twice_and_one_with_one_appears_once(self):
+        self.build()
+        page = self.page.read_text(encoding="utf-8")
+        self.assertEqual(page.count("[`beta`]"), 2)
+        self.assertEqual(page.count("[`alpha`]"), 1)
+
+    def test_a_page_row_has_level_category_the_first_sentence_and_the_install_pointer(self):
+        self.build()
+        row = [ln for ln in self.page.read_text(encoding="utf-8").splitlines() if ln.startswith("| [`beta`]")][0]
+        self.assertIn("| advanced | tool-evaluation | Does beta. |", row)
+        self.assertNotIn("Then more", row, "only the first sentence")
+        self.assertIn("(install.md)", row)
+        self.assertIn("(../.claude/skills/beta/SKILL.md)", row)
+
+    def test_a_pipe_in_a_description_does_not_break_the_table(self):
+        self.edit_alpha("Does alpha.", "Does a or b.")
+        self.edit_alpha("Does a or b.", "Does a | b.")
+        self.build()
+        row = [ln for ln in self.page.read_text(encoding="utf-8").splitlines() if ln.startswith("| [`alpha`]")][0]
+        self.assertIn("Does a \\| b.", row)
+
+    def test_check_fails_on_a_stale_page_and_passes_after_regeneration(self):
+        self.build()
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 0, out)
+        self.page.write_text(self.page.read_text(encoding="utf-8") + "hand edit\n", encoding="utf-8")
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 1, out)
+        self.assertIn("docs/skills-by-audience.md", out)
+        self.assertNotIn("ERROR skills-index.json", out, "only the stale file is named")
+        self.build()
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 0, out)
+
+    def test_check_fails_when_a_skills_audience_changes_and_the_page_was_not_rebuilt(self):
+        self.build()
+        self.edit_alpha('audience: "patients-families"', 'audience: "patients-families, care-teams"')
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 1, out)
+        self.assertIn("docs/skills-by-audience.md", out)
+
+    def test_the_readme_table_is_written_between_the_markers_and_the_rest_is_kept(self):
+        (self.root / "README.md").write_text(README, encoding="utf-8")
+        self.build()
+        text = (self.root / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Intro stays.", text)
+        self.assertIn("After stays.", text)
+        self.assertNotIn("old table", text)
+        inner = text.split("<!-- skills-table:start -->", 1)[1].split("<!-- skills-table:end -->", 1)[0]
+        self.assertIn("| Skill | For whom | Level |", inner)
+        self.assertIn("| [`alpha`](.claude/skills/alpha/SKILL.md) | Patients and families | base |", inner)
+        self.assertIn("| [`beta`](.claude/skills/beta/SKILL.md) | Researchers, Builders | advanced |", inner)
+
+    def test_the_readme_keeps_its_own_line_endings(self):
+        (self.root / "README.md").write_bytes(README.replace("\n", "\r\n").encode("utf-8"))
+        self.build()
+        raw = (self.root / "README.md").read_bytes()
+        self.assertNotIn(b"\n", raw.replace(b"\r\n", b""), "every line end stays CRLF")
+
+    def test_check_fails_on_a_stale_readme_table_and_passes_after_regeneration(self):
+        (self.root / "README.md").write_text(README, encoding="utf-8")
+        self.build()
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 0, out)
+        self.edit_alpha('level: "base"', 'level: "advanced"')
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 1, out)
+        self.assertIn("README.md", out)
+        self.build()
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 0, out)
+
+    def test_a_readme_without_the_markers_is_an_error_and_is_left_alone(self):
+        (self.root / "README.md").write_text("# Repo\n\nNo markers.\n", encoding="utf-8")
+        code, out = self.run_script()
+        self.assertEqual(code, 1, out)
+        self.assertIn("skills-table:start", out)
+        self.assertEqual((self.root / "README.md").read_text(encoding="utf-8"), "# Repo\n\nNo markers.\n")
+
+    def test_check_never_writes_the_page_or_the_readme(self):
+        (self.root / "README.md").write_text(README, encoding="utf-8")
+        self.run_script("--check")
+        self.assertFalse(self.page.exists())
+        self.assertIn("old table", (self.root / "README.md").read_text(encoding="utf-8"))
 
     def test_a_missing_root_is_a_usage_error(self):
         r = subprocess.run([sys.executable, str(SCRIPT), str(self.tmp / "nowhere")], capture_output=True, text=True)

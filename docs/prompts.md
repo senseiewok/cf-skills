@@ -14,6 +14,17 @@ An agent that cannot open web addresses cannot do the first step. Then clone or 
 
 Where an agent has no documented install step (see the status column in [install.md](install.md)), its prompt asks for a plain folder copy. Check the result with the agent's own command, named in each prompt.
 
+## Which skill should I start with?
+
+[skills-by-audience.md](skills-by-audience.md) lists every skill under the people it was written for. A **base** skill needs no setup and works in a plain chat; an **advanced** one needs a tool, a script or care to apply.
+
+- **Patients and families:** see [the patients and families table](skills-by-audience.md#patients-and-families) and start with a base skill. None of these skills is medical advice; treatment questions belong with your care team.
+- **Care teams:** see [the care teams table](skills-by-audience.md#care-teams); base skills work in a plain chat, advanced ones need a tool or a script.
+- **Researchers:** see [the researchers table](skills-by-audience.md#researchers), and read what each skill says it does not establish.
+- **Builders:** see [the builders table](skills-by-audience.md#builders), then read a skill's `SKILL.md` and scripts before an agent runs them.
+
+When you have picked one, change `cf-evidence-loop` to its name in the prompt for your agent below.
+
 ## Claude Code
 
 ```text
