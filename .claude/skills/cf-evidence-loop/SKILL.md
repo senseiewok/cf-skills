@@ -8,6 +8,9 @@ metadata:
     last-updated: "2026-10-08"
     capabilities: "network, python, runs-code"
     optional-capabilities: ""
+    audience: "researchers, builders"
+    level: "advanced"
+    category: "evidence"
 ---
 
 # CF evidence loop

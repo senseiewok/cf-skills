@@ -8,6 +8,9 @@ metadata:
     last-updated: "2026-10-05"
     capabilities: "python, reads-project-files, runs-code"
     optional-capabilities: "browser, network"
+    audience: "builders"
+    level: "advanced"
+    category: "web"
 ---
 
 # Site SEO review
