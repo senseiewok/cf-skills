@@ -1,5 +1,7 @@
 # Copy-paste prompts
 
+**Not a developer?** You do not need these prompts. To use a CF care skill in a chat app with no install, see [Where to paste](paste-ready.md).
+
 Paste one of these into your agent to have it install a skill from this repository for you. They are written for `cf-evidence-loop`; to install another skill, change `cf-evidence-loop` to its folder name in the address and in the folder paths.
 
 What every prompt does, on purpose:
@@ -18,7 +20,7 @@ Where an agent has no documented install step (see the status column in [install
 
 [skills-by-audience.md](skills-by-audience.md) lists every skill under the people it was written for. A **base** skill needs no setup and works in a plain chat; an **advanced** one needs a tool, a script or care to apply.
 
-- **Patients and families:** see [the patients and families table](skills-by-audience.md#patients-and-families) and start with a base skill. None of these skills is medical advice; treatment questions belong with your care team.
+- **Patients and families:** see [the patients and families table](skills-by-audience.md#patients-and-families) and start with a base skill. Its "Use it now" link needs no install and no prompt. None of these skills is medical advice; treatment questions belong with your care team.
 - **Care teams:** see [the care teams table](skills-by-audience.md#care-teams); base skills work in a plain chat, advanced ones need a tool or a script.
 - **Researchers:** see [the researchers table](skills-by-audience.md#researchers), and read what each skill says it does not establish.
 - **Builders:** see [the builders table](skills-by-audience.md#builders), then read a skill's `SKILL.md` and scripts before an agent runs them.

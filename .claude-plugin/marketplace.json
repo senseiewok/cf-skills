@@ -21,6 +21,41 @@
       "source": "./",
       "strict": false,
       "skills": ["./.claude/skills/site-seo-review"]
+    },
+    {
+      "name": "cf-ai-safe-use",
+      "description": "Baseline rules for an AI assistant answering CF or health questions: general information only, no doses, diagnosis or eligibility, no identifying details, and it says what each answer rests on.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-ai-safe-use"]
+    },
+    {
+      "name": "cf-plain-language-rewrite",
+      "description": "Rewrites a CF handout or message in plain language without adding, dropping or changing any fact, with a verify-before-use list and scripts for reading level and fact differences.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-plain-language-rewrite"]
+    },
+    {
+      "name": "cf-visit-prep",
+      "description": "Helps a person with CF, a parent or a carer turn their worries into a short, ordered list of questions for the CF care team, without answering the medical question.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-visit-prep"]
+    },
+    {
+      "name": "cf-answer-check",
+      "description": "Checks an AI answer about CF one claim at a time against primary sources and marks what could not be checked as unverified, with a script that drafts a claims worksheet.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-answer-check"]
+    },
+    {
+      "name": "cf-ai-tool-review",
+      "description": "A structured review of an AI tool before a CF care team or patient group uses it, where every answer points to a document, demo or test, and people make the decision.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./.claude/skills/cf-ai-tool-review"]
     }
   ]
 }
