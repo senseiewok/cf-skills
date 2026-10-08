@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from urllib.parse import quote
 
 from ..http import Client
 from ..record import Evidence, Status
@@ -41,7 +42,8 @@ def parse_details(data: dict, server: str, question: str, url: str, pattern: str
 def details(client: Client, server: str, doi: str) -> list[Evidence]:
     assert server in SERVERS, server
     q = f"What does {server} hold for preprint DOI {doi}?"
-    f = client.get(SOURCE, f"details/{server}/{doi}")
+    # A DOI's own '/' stays a path separator; '?', '#', '%' and the like are escaped so they cannot change the URL's structure.
+    f = client.get(SOURCE, f"details/{server}/{quote(doi, safe='/')}")
     if f.status is not Status.FOUND:
         return [Evidence(status=f.status, question=q, source_id=SOURCE, url=f.url, provider=PROVIDER,
                          fields={"http_status": f.http_status}, limitations="No data returned.")]

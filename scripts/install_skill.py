@@ -128,11 +128,19 @@ def copy_skill(src, dest):
     shutil.copytree(src, dest, ignore=ignore, symlinks=False)
 
 
+WINDOWS_PRIVILEGE_NOT_HELD = 1314  # ERROR_PRIVILEGE_NOT_HELD: this account may not create symbolic links
+
+
 def link_skill(src, dest):
     try:
-        dest.symlink_to(src)
+        # A skill is a folder; on Windows a link is a file link or a folder link, so say which.
+        dest.symlink_to(src, target_is_directory=True)
         return True, None
     except OSError as exc:
+        if getattr(exc, "winerror", None) == WINDOWS_PRIVILEGE_NOT_HELD:
+            return False, ("Windows did not allow this account to create a symbolic link. Python's documentation for "
+                           "os.symlink says Windows needs Developer Mode turned on, or the privilege to create symbolic "
+                           "links (for example by running as administrator). Or install by copying: run the same command without --link.")
         return False, str(exc)
 
 

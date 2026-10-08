@@ -101,7 +101,7 @@ Not sure which way suits your machine? `python cf-skills/scripts/install_skill.p
 | Agent | Where its skills live (project) | Docs status |
 | --- | --- | --- |
 | Claude Code | `.claude/skills/<name>/`, or `~/.claude/skills/<name>/` for all projects. As a plugin: `/plugin marketplace add senseiewok/cf-skills`, then `/plugin install cf-evidence-loop@sensei-ewok-skills` | documented (the plugin page was read directly, the skills page through a summary) |
-| GitHub Copilot (VS Code, CLI, cloud agent) | `.github/skills/`, `.claude/skills/` or `.agents/skills/`. Install from GitHub with `gh skill install senseiewok/cf-skills <skill>` | documented |
+| GitHub Copilot (VS Code, CLI, cloud agent) | `.github/skills/`, `.claude/skills/` or `.agents/skills/`. Install from GitHub with `gh skill install senseiewok/cf-skills .claude/skills/<skill>` (the path form [docs/install.md](docs/install.md#gh-skill) gives; unverified: check your tool's own documentation) | documented |
 | OpenAI Codex | `.agents/skills/` | partial: no documented install-from-URL step |
 | Gemini CLI | `.gemini/skills/` or `.agents/skills/`. `gemini skills install <git-url> --path .claude/skills/<skill>` | documented |
 | Cursor | `.cursor/skills/`, `.agents/skills/` or `.claude/skills/` | documented |
@@ -134,7 +134,7 @@ skills-index.json          what each skill can do (capabilities) and how to inst
 scripts/install_skill.py   copies or links one skill into the folder your agent reads; --how shows the ways that work on your machine
 scripts/make_index.py      builds skills-index.json from each skill's frontmatter (--check for a pull request)
 scripts/check_repo.py      checks every skill's frontmatter and links (run it before a pull request)
-tests/                     tests for check_repo.py (python -m unittest discover tests)
+tests/                     tests for check_repo.py, make_index.py and install_skill.py (python -m unittest discover tests)
 ```
 
 Each skill is its own plugin in the marketplace, which is meant to let you install one without the others. That is a difference from the Anthropic repository, whose plugins bundle many skills. A plugin brings the skill's scripts too; read them first. Once releases are tagged, pin an install with `/plugin marketplace add senseiewok/cf-skills#<tag>`.

@@ -43,8 +43,9 @@ class Script:
             raise item
         return item
 
-    def get(self, url, timeout=None):
+    def get(self, url, timeout=None, allow_redirects=True, stream=False):
         self.calls.append(("get", url))
+        self.get_kwargs = {"allow_redirects": allow_redirects, "stream": stream}
         return self.responses.pop(0)
 
 

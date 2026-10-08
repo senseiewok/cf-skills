@@ -180,7 +180,7 @@ Live check, if you have network access: `python scripts/evidence_cli.py retracti
 
 ## 9. Adding a provider
 
-1. Add the source to `catalog.yaml` with tested `access`, `base_url` and a check date. No entry, no provider.
+1. Add the source to the lab's canonical catalog with tested `access`, `base_url` and a check date, then regenerate this skill's `catalog.yaml` with `sync_skill_catalog.py` (the file says not to edit it by hand). No entry, no provider.
 2. Write `scripts/evidence/providers/<name>.py` with a pure `parse_*()` and a thin query function that calls `client.get` or `client.post` by `source_id`.
 3. Write the `limitations` sentence first.
 4. Save a trimmed fixture and add a parse test.
