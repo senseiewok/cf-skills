@@ -15,14 +15,14 @@ metadata:
 
 # CF: plain-language rewrite
 
-A handout only helps if the person can read it. This skill rewrites CF material in plain words **without changing what it says**. The rewrite is a draft. A person checks it against the original before anyone uses it.
+This skill rewrites CF material in plain words **without changing what it says**. The rewrite is a draft: a person checks it against the original before anyone uses it.
 
-This is not medical advice. A rewrite of a handout is not a new instruction for anyone's care.
+This is not medical advice. A rewritten handout is not a new instruction for anyone's care.
 
 ## Before you start
 
 - Ask for the original text, the reader (for example a parent, a teenager, a new family) and the reading level. The default is sixth grade.
-- Ask the person not to paste anything with names, dates of birth, record numbers or other details about one person. If they do, stop and ask them to remove the details first. Do not repeat them.
+- Ask the person not to paste names, dates of birth, record numbers or other details about one person. If they do, stop, ask them to remove the details, and do not repeat them.
 - If the original contains advice for one person (a dose, a plan), say that the rewrite must be checked by the care team who wrote it.
 
 ## Rules for the rewrite
@@ -49,7 +49,7 @@ This is not medical advice. A rewrite of a handout is not a new instruction for 
 
 ## Check with the scripts (optional)
 
-`scripts/readability.py` measures the Flesch-Kincaid grade level and the average sentence length, using a documented syllable rule. The same text always gives the same number. It is an estimate within about one grade, and it measures word and sentence length only, not clarity or correctness.
+`scripts/readability.py` estimates the Flesch-Kincaid grade level and the average sentence length, using a documented syllable rule. The same text always gives the same number. It measures word and sentence length only, not clarity or correctness.
 
 `scripts/fact_diff.py` lists numbers (with their units), dates and capitalised names that were added, dropped or changed between the original and the rewrite.
 
@@ -60,11 +60,11 @@ python scripts/fact_diff.py original.txt rewrite.txt
 
 Exit codes: `readability.py` gives `0` when measured and within `--max-grade`, `1` when above it, `2` on a usage error. `fact_diff.py` gives `0` when nothing differs, `1` on any difference, `2` on a usage error. Both take `--json`.
 
-**What the scripts cannot see.** `fact_diff.py` compares the surface only. It misses a change in words ("before meals" became "after meals"), a number moved to the wrong step, and a new instruction with no number or name. A clean result is not a check of meaning. A person still reads the rewrite against the original, line by line.
+**What the scripts cannot see.** `fact_diff.py` compares the surface only. It misses a change in words ("before meals" became "after meals"), a number moved to the wrong step, and a new instruction with no number or name. A clean result is not a check of meaning: a person still reads the rewrite against the original, line by line.
 
 ## Files
 
 - `references/paste-ready.md`: the same steps to paste into any chat assistant, no install needed.
-- `references/claims-to-source.md`: statements that need a primary source before anyone publishes them.
+- `references/evidence.md`: what supports each rule, with sources, quotes and strength; which rules are our judgement.
 - `evals/cases.json`: scenarios to test your own assistant.
 - `scripts/` and `tests/`: the two checkers and their tests.

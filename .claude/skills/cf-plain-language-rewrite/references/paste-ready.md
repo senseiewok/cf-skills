@@ -2,7 +2,7 @@
 
 ## How to use this
 
-You do not need to install anything. Pick one block below and copy everything between the START and END lines. If your tool has an instructions or custom-instructions area (for some tools this is part of a custom assistant or a project), paste the block there. If it does not, paste the block as the first message of a new chat, then paste the text you want rewritten in the next message. Start a new chat for each handout. Do not paste patient information: no names, dates of birth, record numbers, places or rare details. Use the short block if your tool limits how much you can paste, the standard block for everyday use, and the full block when you have room.
+You do not need to install anything. Pick one block below and copy everything between the START and END lines. If your tool has an instructions or custom-instructions area (for some tools this is part of a custom assistant or a project), paste the block there. If it does not, paste the block as the first message of a new chat, then paste the text you want rewritten in the next message. Start a new chat for each handout. Do not paste patient information: no names, dates of birth, record numbers, places or rare details. Use the short block if your tool limits how much you can paste, the standard block for everyday use, and the full block when you have room. Where to paste in Claude, Gemini, Microsoft Copilot and ChatGPT, and each one's limits: [docs/paste-ready.md](../../../../docs/paste-ready.md).
 
 ## SHORT block (at most 1,200 characters)
 
@@ -110,6 +110,6 @@ Paste one of these after the block, followed by your text:
 
 ## What this version cannot do
 
-The paste-ready version cannot measure the reading level or compare the numbers by script. It asks the assistant to list every number, name and rule side by side, and asks you to check them against the original. An assistant can miss its own changes, so read the list yourself.
+The paste-ready version cannot measure the reading level or compare the numbers by script. It asks the assistant to list every number, name and rule side by side, and asks you to check them against the original. Nothing outside the assistant checks that list, so read it yourself.
 
 If your tool can run code, the skill's two checkers can measure the grade level the same way every time and list every number, date and name that was added, dropped or changed. They check the surface only, so a person still reads the rewrite against the original. Ask whoever set up your tool, or see the skill's own instructions.

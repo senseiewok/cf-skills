@@ -6,6 +6,8 @@
 
 Find your group below, pick a skill, then install it the way [install.md](install.md) describes for your agent, or paste a prompt from [prompts.md](prompts.md). A skill can be listed under more than one group.
 
+Some skills also have a `references/paste-ready.md`: plain text to copy into any chat assistant, with no install. [paste-ready.md](paste-ready.md) says where to paste it in common AI products.
+
 - **base**: a person can follow it with no setup, in a plain chat.
 - **advanced**: needs a tool, a script or care to apply.
 
@@ -13,21 +15,34 @@ Read a skill's `SKILL.md` and its scripts before you let an agent run them. Rese
 
 ## Patients and families
 
-No skill for this group yet.
+| Skill | Level | Category | What it does | Install |
+| --- | --- | --- | --- | --- |
+| [`cf-ai-safe-use`](../.claude/skills/cf-ai-safe-use/SKILL.md) | base | safe-ai-use | Baseline rules an AI assistant follows whenever someone asks it about cystic fibrosis (CF) or health, or asks it to help write CF material for patients, families or care teams. | [install](install.md) |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | advanced | evidence | Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. | [install](install.md) |
+| [`cf-plain-language-rewrite`](../.claude/skills/cf-plain-language-rewrite/SKILL.md) | base | communication | Rewrite a CF handout, letter, leaflet or message in plain language at a chosen reading level (sixth grade by default) without adding, dropping or changing any fact. | [install](install.md) |
+| [`cf-visit-prep`](../.claude/skills/cf-visit-prep/SKILL.md) | base | communication | Help a person with CF, a parent or a carer get ready for a CF clinic visit: turn their own worries and observations into a short, ordered list of questions for the care team, plus a one-page summary they choose to hand over, and a what-to-bring list. | [install](install.md) |
 
 ## Care teams
 
-No skill for this group yet.
+| Skill | Level | Category | What it does | Install |
+| --- | --- | --- | --- | --- |
+| [`cf-ai-safe-use`](../.claude/skills/cf-ai-safe-use/SKILL.md) | base | safe-ai-use | Baseline rules an AI assistant follows whenever someone asks it about cystic fibrosis (CF) or health, or asks it to help write CF material for patients, families or care teams. | [install](install.md) |
+| [`cf-ai-tool-review`](../.claude/skills/cf-ai-tool-review/SKILL.md) | advanced | tool-evaluation | A structured way for a CF care team, a patient group or a builder to review an AI tool before using it with people with cystic fibrosis: question sets for design, development, deployment, monitoring and evaluation, a worksheet where every answer points to a document, demo or test or stays unknown, a red-flag list, and a one-page review whose decision is chosen by people, not the assistant. | [install](install.md) |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | advanced | evidence | Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. | [install](install.md) |
+| [`cf-plain-language-rewrite`](../.claude/skills/cf-plain-language-rewrite/SKILL.md) | base | communication | Rewrite a CF handout, letter, leaflet or message in plain language at a chosen reading level (sixth grade by default) without adding, dropping or changing any fact. | [install](install.md) |
 
 ## Researchers
 
 | Skill | Level | Category | What it does | Install |
 | --- | --- | --- | --- | --- |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | advanced | evidence | Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. | [install](install.md) |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | advanced | evidence | Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. | [install](install.md) |
 
 ## Builders
 
 | Skill | Level | Category | What it does | Install |
 | --- | --- | --- | --- | --- |
+| [`cf-ai-tool-review`](../.claude/skills/cf-ai-tool-review/SKILL.md) | advanced | tool-evaluation | A structured way for a CF care team, a patient group or a builder to review an AI tool before using it with people with cystic fibrosis: question sets for design, development, deployment, monitoring and evaluation, a worksheet where every answer points to a document, demo or test or stays unknown, a red-flag list, and a one-page review whose decision is chosen by people, not the assistant. | [install](install.md) |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | advanced | evidence | Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. | [install](install.md) |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | advanced | evidence | Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. | [install](install.md) |
 | [`site-seo-review`](../.claude/skills/site-seo-review/SKILL.md) | advanced | web | An honest SEO and discoverability review for small static or mostly-static websites, health and research sites included: a standard-library checker for titles, descriptions, canonicals, Open Graph, sitemap and robots agreement, headings, images, link text, preloads, third-party scripts and structured data, plus a workflow for reading the pages, proposing copy, getting the wording reviewed, and verifying the live site. | [install](install.md) |

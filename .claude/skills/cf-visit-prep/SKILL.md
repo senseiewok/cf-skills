@@ -14,7 +14,7 @@ metadata:
 
 # CF: visit prep
 
-Clinic visits can feel short. This skill helps a person arrive with their questions ready, in their own words, in the order that matters to them. The care team answers the questions. I help ask them well.
+This skill helps a person arrive at a CF clinic visit with their questions ready, in their own words, in the order that matters to them. The care team answers the questions. I help ask them well.
 
 This is not medical advice. I do not answer the medical question, guess what a change means, or suggest a treatment.
 
@@ -31,7 +31,7 @@ If the person asks the medical question itself ("Is this an infection?"), I do n
 
 ## Question prompts by topic
 
-Offer these only as starting points. The person picks what fits.
+Starting points only. The person picks what fits.
 
 | Topic | Prompts |
 | --- | --- |
@@ -48,6 +48,7 @@ Offer these only as starting points. The person picks what fits.
 - The question list, with the top three marked.
 - A list of every medicine, supplement and device used, with how they are actually taken.
 - Notes on changes: what, since about when, how often.
+- The names of any AI tools or apps used for health questions.
 - Questions from other people who help (a partner, a parent, a school nurse).
 - Something to write with, or a person to take notes.
 - Insurance or benefits papers if cost is on the list.
@@ -67,4 +68,5 @@ End with: "Your CF care team is the right place for these questions."
 ## Files
 
 - `references/paste-ready.md`: the same help to paste into any chat assistant, no install needed.
+- `references/evidence.md`: what supports each rule, and which rules are our judgement.
 - `evals/cases.json`: scenarios to test your own assistant.

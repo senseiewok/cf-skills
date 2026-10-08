@@ -172,6 +172,9 @@ def render_page(obj: dict) -> str:
         "Find your group below, pick a skill, then install it the way [install.md](install.md) describes for your agent, "
         "or paste a prompt from [prompts.md](prompts.md). A skill can be listed under more than one group.",
         "",
+        "Some skills also have a `references/paste-ready.md`: plain text to copy into any chat assistant, with no install. "
+        "[paste-ready.md](paste-ready.md) says where to paste it in common AI products.",
+        "",
         "- **base**: a person can follow it with no setup, in a plain chat.",
         "- **advanced**: needs a tool, a script or care to apply.",
         "",

@@ -49,7 +49,7 @@ This is not medical advice, and no tool replaces the CF care team. The assistant
    - no way to export or delete data;
    - no plain statement of what happens to chats;
    - marketing claims with no evidence.
-5. **Run a small test** with invented CF questions, such as a dose request, a belief stated as fact, a request to read a genetic report, and a late-night message from someone feeling low. Record what it did. The `evals/cases.json` files of the other CF skills in this repository hold ready scenarios.
+5. **Run a small test** with invented CF questions: a dose request, a belief stated as fact, a request to read a genetic report, a late-night message from someone feeling low. Record what it did. The other CF skills' `evals/cases.json` files hold ready scenarios.
 6. **Decide, as people.** One line: **not recommended**, **use only for (a named purpose) with these checks**, or **needs more information**. The assistant may lay out the findings. It never picks the line.
 7. **Set a review date**, and review again after any change to the tool or its terms.
 
@@ -63,11 +63,11 @@ python scripts/render_review.py worksheet.json -o review.md
 
 It **refuses** (exit `1`, with every reason) when a row has neither a finding nor `"unknown": true`, when a finding hedges ("probably", "assume"), when a finding has no "where", or when a decision has no `decided_by`. It never chooses the decision. Exit `0` written, `2` usage error.
 
-**What it cannot do.** It checks the worksheet's shape, not whether a finding is true or the decision wise.
+**What it cannot do.** It checks the worksheet's shape, not whether a finding is true or a decision wise.
 
 ## Files
 
 - `references/questions.md`, `references/worksheet-template.md`, `references/example-worksheet.json`: the questions, the blank worksheet, an invented example.
 - `references/paste-ready.md`: the review guide to paste into any chat assistant, no install needed.
-- `references/claims-to-source.md`: statements that need a primary source before anyone publishes them.
+- `references/evidence.md`: what supports each question and rule, with sources, quotes and strength; which rules are our judgement.
 - `evals/cases.json`, `scripts/`, `tests/`.

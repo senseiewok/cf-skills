@@ -2,7 +2,7 @@
 
 ## How to use this
 
-You do not need to install anything. Pick one block below and copy everything between the START and END lines. If your tool has an instructions or custom-instructions area (for some tools this is part of a custom assistant or a project), paste the block there. If it does not, paste the block as the first message of a new chat, then paste the AI answer you want to check in the next message. Start a new chat for each answer you check. Do not paste patient information: no names, dates of birth, record numbers, places or rare details. Use the short block if your tool limits how much you can paste, the standard block for everyday use, and the full block when you have room.
+You do not need to install anything. Pick one block below and copy everything between the START and END lines. If your tool has an instructions or custom-instructions area (for some tools this is part of a custom assistant or a project), paste the block there. If it does not, paste the block as the first message of a new chat, then paste the AI answer you want to check in the next message. Start a new chat for each answer you check. Do not paste patient information: no names, dates of birth, record numbers, places or rare details. Use the short block if your tool limits how much you can paste, the standard block for everyday use, and the full block when you have room. Where to paste in Claude, Gemini, Microsoft Copilot and ChatGPT, and each one's limits: [docs/paste-ready.md](../../../../docs/paste-ready.md).
 
 ## SHORT block (at most 1,200 characters)
 

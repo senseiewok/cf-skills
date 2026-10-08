@@ -17,9 +17,7 @@ metadata:
 
 An answer can read well and still be wrong. This skill checks an AI answer one claim at a time, against the source the claim should come from. What cannot be checked is marked unverified, not guessed.
 
-This is not medical advice. Checking an answer does not make it advice for one person. Medical questions go to the CF care team.
-
-Do not paste anything with names, dates of birth, record numbers or other details about one person.
+This is not medical advice. Checking an answer does not make it advice for one person. Medical questions go to the CF care team. Do not paste names, dates of birth, record numbers or other details about one person.
 
 ## The tiers
 
@@ -53,7 +51,7 @@ A primary source is the original: a regulator page, a registry report, a paper, 
 
 ## The worksheet script
 
-`scripts/claim_worksheet.py` reads an answer and writes a JSON worksheet: one entry per sentence that has a number, percentage, year, drug name (a small built-in list, or your own with `--drugs`), widening word or absence phrase. Each entry is `{id, claim, source, quote, kind, scope}` with the last four empty for a person to fill. `kind` is `observed`, `computed` or `inferred`.
+`scripts/claim_worksheet.py` reads an answer and writes a JSON worksheet: one entry per sentence with a number, percentage, year, drug name (a small built-in list, or yours with `--drugs`), widening word or absence phrase. Each entry is `{id, claim, source, quote, kind, scope}`, the last four left for a person to fill; `kind` is `observed`, `computed` or `inferred`.
 
 ```bash
 python scripts/claim_worksheet.py answer.txt -o worksheet.json --flags flags.json
@@ -68,6 +66,6 @@ People who have the cf-research repository can run its claims checker (`tools/cl
 ## Files
 
 - `references/paste-ready.md`: the same steps to paste into any chat assistant, no install needed.
-- `references/claims-to-source.md`: statements that need a primary source before anyone publishes them.
+- `references/evidence.md`: what supports each rule, with sources, quotes and strength; which rules are our judgement.
 - `evals/cases.json`: scenarios to test your own assistant.
 - `scripts/` and `tests/`: the worksheet script and its tests.

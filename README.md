@@ -21,7 +21,7 @@ Reusable agent skills from the Sensei Ewok Research Lab, an independent open-sou
 
 > *Whoever lit the lamp is not the one who reads by it.*
 
-**Two skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own licence. Research, not medical advice.
+**Seven skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own licence. Research, not medical advice.
 
 ## What this is
 
@@ -29,7 +29,9 @@ A skill is a folder: a `SKILL.md` that an agent reads when your task matches its
 
 **`cf-evidence-loop`** is the skill the lab's website uses for its evidence records. A researcher does not begin with an answer; they walk a fixed set of questions against the public record. This skill gives an agent that walk as a command line: eight kinds of question through fifteen commands (what has been published, whether a paper was retracted, when a drug was approved in the United States and what its label says, which trials list a condition, what a preprint is, how a variant is classified, who NIH funds on a topic, and what the tool may reach at all). Every answer is an evidence record with its source, the date it was read, the exact fields relied on and a limitation that the code refuses to leave empty. It never calls a language model, and it reaches only the sources its catalog permits, under network rules that are code with tests: `robots.txt` obeyed, one request at a time, a budget, a circuit breaker, one honest user agent. **`site-seo-review`** is a careful search-and-sharing review for a small website, with rules for health and research sites; it is not specific to CF.
 
-Both are "in review": the maintainer has not yet confirmed every licence or read every file, and the install notes were read from vendors' pages, not tested in each client. Read a skill's `SKILL.md` and its scripts before you let an agent run them.
+**Five skills for people who use AI in cystic fibrosis care**: `cf-ai-safe-use`, `cf-plain-language-rewrite`, `cf-visit-prep`, `cf-answer-check` and `cf-ai-tool-review`. They are for patients, families and care teams as well as builders. Each has a paste-ready version you copy into the AI tool your organisation already approves: no install and no scripts. [Where to paste](docs/paste-ready.md) says how, product by product, and [skills by audience](docs/skills-by-audience.md) says who each skill is for. They give general information only, never medical advice, and every rule's evidence (or the lack of it) is in the skill's `references/evidence.md`.
+
+These skills are "in review": the maintainer has not yet confirmed every licence or read every file, and the install notes were read from vendors' pages, not tested in each client. Read a skill's `SKILL.md` and its scripts before you let an agent run them.
 
 What this is not: a medical device, a clinical tool, or a claim about treatment. An approval date is not anyone's eligibility, a label's text is a public document and not advice, and a record is a thing to check, not a conclusion.
 
@@ -79,15 +81,27 @@ Research, not medical advice. Nothing here is a medical device, a clinical tool 
 | --- | --- | --- |
 | [`cf-evidence-loop`](.claude/skills/cf-evidence-loop/SKILL.md) | A command line that answers a CF researcher's evidence questions (retractions, FDA approvals and labels, preprints, ClinVar classifications, NIH funding) as evidence records: source, date, exact fields and a limitation every time. It reaches only the sources its catalog permits and follows the network rules in its `references/`. | v1.0.0, offline tests, in review |
 | [`site-seo-review`](.claude/skills/site-seo-review/SKILL.md) | A careful, honest search-and-sharing review of a small website: a checker script for static sites, a review workflow, rules for health and research sites, and a way to hand the mechanical parts to a small local model with a test as the judge. Not specific to CF. | draft, in review |
+| [`cf-ai-safe-use`](.claude/skills/cf-ai-safe-use/SKILL.md) | Baseline rules for an AI assistant asked about CF or health: general information only, no doses, diagnosis or eligibility, no identifying details, and a label for what each answer rests on. A small script flags cheap failures in an answer. | draft, in review |
+| [`cf-plain-language-rewrite`](.claude/skills/cf-plain-language-rewrite/SKILL.md) | Rewrites a CF handout or message in plain language without adding, dropping or changing any fact, with a verify-before-use list and scripts for reading level and fact differences. | draft, in review |
+| [`cf-visit-prep`](.claude/skills/cf-visit-prep/SKILL.md) | Helps a person with CF, a parent or a carer turn their worries into a short, ordered list of questions for the care team. It never answers the medical question. | draft, in review |
+| [`cf-answer-check`](.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF one claim at a time against primary sources, and marks what could not be checked as unverified. | draft, in review |
+| [`cf-ai-tool-review`](.claude/skills/cf-ai-tool-review/SKILL.md) | A structured review of an AI tool before a CF care team or patient group uses it: every answer points to a document, demo or test, and people make the decision. | draft, in review |
 
 "In review" means the maintainer has not yet confirmed the licence or read every file. Read a skill's `SKILL.md` and scripts before you let an agent run them.
+
+The five CF care skills also come as plain text to paste into any chat assistant, with no install: [docs/paste-ready.md](docs/paste-ready.md) says where to paste it in Claude, Gemini, Microsoft Copilot and ChatGPT.
 
 <!-- skills-table:start -->
 Who each skill is for (generated by `python scripts/make_index.py`; a table per group, with categories, in [docs/skills-by-audience.md](docs/skills-by-audience.md)):
 
 | Skill | For whom | Level |
 | --- | --- | --- |
+| [`cf-ai-safe-use`](.claude/skills/cf-ai-safe-use/SKILL.md) | Patients and families, Care teams | base |
+| [`cf-ai-tool-review`](.claude/skills/cf-ai-tool-review/SKILL.md) | Care teams, Builders | advanced |
+| [`cf-answer-check`](.claude/skills/cf-answer-check/SKILL.md) | Patients and families, Care teams, Researchers, Builders | advanced |
 | [`cf-evidence-loop`](.claude/skills/cf-evidence-loop/SKILL.md) | Researchers, Builders | advanced |
+| [`cf-plain-language-rewrite`](.claude/skills/cf-plain-language-rewrite/SKILL.md) | Patients and families, Care teams | base |
+| [`cf-visit-prep`](.claude/skills/cf-visit-prep/SKILL.md) | Patients and families | base |
 | [`site-seo-review`](.claude/skills/site-seo-review/SKILL.md) | Builders | advanced |
 <!-- skills-table:end -->
 
@@ -137,6 +151,7 @@ template/SKILL.md          the smallest valid skill
 spec/README.md             the format, and what this repository adds to it
 docs/install.md            how each agent finds skills, with sources
 docs/prompts.md            copy-paste prompts, one per agent
+docs/paste-ready.md        where to paste a skill's paste-ready text in common AI products
 docs/skills-by-audience.md which skill suits patients and families, care teams, researchers or builders; generated by scripts/make_index.py
 docs/recommended.md        useful skills from other people, with their licences and read-first notes (nothing copied here)
 .claude-plugin/            a Claude Code plugin marketplace listing each skill on its own
