@@ -6,6 +6,8 @@ Five CF skills in this repository have a `paste-ready.md` file: [`cf-ai-safe-use
 
 **Use the standard box where your tool accepts it; if your tool says the text is too long, use the short box.**
 
+**Where the boxes have been tried, and where not yet:** [tested-with.md](tested-with.md). Claude models have been run; Gemini, ChatGPT and Microsoft Copilot are still pending, so do not assume the boxes work there.
+
 > **Before you paste**
 >
 > - If you are on a care team, use the AI tool your organisation approves. If the question is about your own or your family's health, think about who can see your chats. A work account belongs to your workplace, so check its policy, or use a personal account.
