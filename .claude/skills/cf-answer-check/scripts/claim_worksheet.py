@@ -6,14 +6,26 @@ Usage:
 
 Reads ANSWER, or standard input when ANSWER is missing or "-". Splits it into sentences and keeps a
 sentence as a candidate claim when it has any of:
-    a number, a percentage or a year
+    a number, a percentage or a year, or a number word (two to ninety, hundred, thousand, "nine out
+        of ten"), twice, half or double ("one" alone is too common to count)
     a drug name from a small list (see DRUG_NAMES below, or give your own list with --drugs)
+    a CF variant name: F508del, p.Phe508del, G551D, N1303K, 621+1G>T, c.1521_1523del and the like
+    a claim word: approved, approval, safe, safely, effective, works, worked, recommended, proven
     a widening word: only, all, every, each, never, always, none, no one, same, identical, first, last,
         no longer, new, new in, now, agrees, consistent, stronger, strongest, most, majority, any,
-        entire, whole, completely, both, neither, unique, cause, causes, caused, because
+        entire, whole, completely, both, neither, unique, cause, causes, caused, because.
+        Not counted: a widening word that opens a sentence and is followed by a comma ("First, ...",
+        "Now, ..."), and each or every before visit, time, day or person when the sentence has no
+        number and no drug name ("Each visit is a chance to ask.")
     an absence phrase: does not say, not stated, no evidence, absent, never reported, there is no,
-        there are no, no known, not available, not approved
+        there are no, no known, not available, not approved, and their contractions (there's no,
+        isn't approved, doesn't say, aren't available...)
 With --all, every sentence becomes a candidate.
+
+Lines are joined into one paragraph (a blank line, a list item, a heading or a table row starts a new
+one) before the text is split into sentences, so a sentence wrapped over two lines stays one claim;
+the line given for a claim is the line where it starts. Decimals and a few abbreviations (e.g., i.e.,
+Dr., U.S., U.K.) do not end a sentence.
 
 The worksheet is a JSON list. Each entry has exactly these fields:
     {"id": "c1", "claim": "...", "source": "", "quote": "", "kind": "", "scope": ""}
@@ -22,9 +34,9 @@ inferred) and scope (what was searched and where, needed for widening words and 
 This is the claims-file shape used by the claims checker in the cf-research repository
 (tools/claims/check_claims.py), which fails on an empty field, so an unfilled worksheet never passes.
 
-What was found in each sentence (numbers, drug names, widening words, absence phrases) is printed as
-a checklist, and written to --flags as JSON when asked. It is kept out of the worksheet on purpose,
-because the claims checker rejects any field it does not know.
+What was found in each sentence (numbers, drug names, variants, claim words, widening words, absence
+phrases) is printed as a checklist, and written to --flags as JSON when asked. It is kept out of the
+worksheet on purpose, because the claims checker rejects any field it does not know.
 
 Exit codes:
     0  a worksheet was written
@@ -32,7 +44,7 @@ Exit codes:
     2  usage error: unreadable file, not UTF-8, or an unreadable --drugs list
 
 This finds sentences worth checking. It does not check anything, and it misses claims made without
-numbers, names or the words above. Python 3.9+, standard library only, no network.
+numbers, names or the words above. English only. Python 3.9+, standard library only, no network.
 """
 
 from __future__ import annotations
@@ -61,43 +73,115 @@ WIDENING = [
 ABSENCE = [
     "does not say", "not stated", "no evidence", "absent", "never reported", "there is no",
     "there are no", "no known", "not available", "not approved",
+    "there's no", "there isn't", "there aren't", "isn't approved", "aren't approved", "wasn't approved",
+    "isn't available", "aren't available", "doesn't say", "don't say", "didn't say", "hasn't been",
+    "haven't been", "isn't known", "isn't stated",
+]
+ASSERTIONS = ["approved", "approval", "safe", "safely", "effective", "works", "worked", "recommended", "proven"]
+NUMBER_WORDS = [
+    "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+    "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", "forty",
+    "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "hundreds", "thousand", "thousands",
+    "twice", "half", "double", "doubled", "triple", "tripled",
 ]
 
 NUMBER_RE = re.compile(r"(?<![\w.])\d+(?:[.,]\d+)*\s?%?|\b(?:percent|per cent)\b", re.I)
-ABBREVIATIONS = ("e.g.", "i.e.", "etc.", "Dr.", "vs.", "approx.", "et al.", "No.", "Fig.")
+NUMBER_WORD_RE = re.compile(r"(?<![\w-])(?:" + "|".join(NUMBER_WORDS) + r")(?![\w-])", re.I)
+ABBREVIATIONS = ("U.S.A.", "U.S.", "U.K.", "e.g.", "i.e.", "etc.", "Dr.", "vs.", "approx.", "et al.", "No.", "Fig.")
+VARIANT_RE = re.compile(
+    r"(?<![\w.])(?:F508del|delta\s?F508|ΔF508|p\.\(?[A-Z][a-z]{2}\d+(?:[A-Z][a-z]{2}|del|dup|fs|\*|X)\w*\)?|"
+    r"c\.[\d_+*-]+(?:[ACGT]>[ACGT]|del\w*|dup\w*|ins\w*)|[A-Z]\d{2,4}(?:[A-Z]|del|dup|fs)|"
+    r"\d{2,4}[+-]\d+(?:kb)?[ACGT]>[ACGT])(?![\w>])")
+LEADING_COMMA_RE = re.compile(r"^\W*(\w+),")
+ROUTINE_RE = re.compile(r"\b(?:each|every)\s+(?:visit|visits|time|day|person|morning|evening|night|week)\b", re.I)
 
 
 def _phrase_re(phrases):
     alt = "|".join(re.escape(p).replace(r"\ ", r"\s+") for p in sorted(phrases, key=len, reverse=True))
+    alt = alt.replace("'", "['’]")    # a straight apostrophe in a phrase also matches a curly one
     return re.compile(r"(?<![\w-])(?:" + alt + r")(?![\w-])", re.I)
 
 
 WIDENING_RE = _phrase_re(WIDENING)
 ABSENCE_RE = _phrase_re(ABSENCE)
+ASSERTION_RE = _phrase_re(ASSERTIONS)
+_NEW_UNIT_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)]|#+)\s+|^\s*\|")
+
+
+def _units(text: str):
+    """Yield lists of (line_number, line): paragraphs, where a list item, heading or table row starts a new one."""
+    unit = []
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        if not line.strip():
+            if unit:
+                yield unit
+            unit = []
+            continue
+        if unit and _NEW_UNIT_RE.match(line):
+            yield unit
+            unit = []
+        unit.append((line_no, line))
+        if line.lstrip().startswith(("#", "|")):
+            yield unit
+            unit = []
+    if unit:
+        yield unit
 
 
 def split_sentences(text: str):
-    """Return a list of (line_number, sentence). Decimals, a few abbreviations and list markers are handled."""
+    """Return a list of (line_number, sentence). Lines are joined per paragraph first; decimals, a few
+    abbreviations, list markers and headings are handled. The line number is where the sentence starts."""
     out = []
-    for line_no, line in enumerate(text.splitlines(), start=1):
-        protected = line
-        for abbr in ABBREVIATIONS:
-            protected = protected.replace(abbr, abbr.replace(".", "\u0000"))
-        protected = re.sub(r"(?<=\d)\.(?=\d)", "\u0000", protected)
-        protected = re.sub(r"^\s*(?:[-*+]|\d+[.)])\s+", "", protected)
-        protected = re.sub(r"^\s*#+\s*", "", protected)
-        for part in re.split(r"(?<=[.!?])[\"')\]]*\s+", protected):
+    for unit in _units(text):
+        pieces, starts, pos = [], [], 0
+        for line_no, line in unit:
+            protected = line
+            for abbr in ABBREVIATIONS:
+                protected = protected.replace(abbr, abbr.replace(".", "\u0000"))
+            protected = re.sub(r"(?<=\d)\.(?=\d)", "\u0000", protected)
+            protected = re.sub(r"^\s*(?:[-*+]|\d+[.)])\s+", "", protected)
+            protected = re.sub(r"^\s*#+\s*", "", protected)
+            protected = protected.strip()
+            starts.append((pos, line_no))
+            pieces.append(protected)
+            pos += len(protected) + 1
+        joined = " ".join(pieces)
+        offset = 0
+        for part in re.split(r"((?<=[.!?])[\"')\]]*\s+)", joined):
+            start = offset
+            offset += len(part)
+            if not part.strip() or re.fullmatch(r"[\"')\]]*\s+", part):
+                continue
+            line_no = max(no for p, no in starts if p <= start)
             part = part.strip().replace("\u0000", ".")
             if re.search(r"[A-Za-z0-9]", part):
                 out.append((line_no, part))
     return out
 
 
+def _widening(sentence: str, has_number_or_drug: bool) -> list:
+    lead = LEADING_COMMA_RE.match(sentence)
+    routine = [] if has_number_or_drug else [m.span() for m in ROUTINE_RE.finditer(sentence)]
+    out = []
+    for m in WIDENING_RE.finditer(sentence):
+        if lead and m.span() == lead.span(1):
+            continue    # "First, ..." or "Now, ..." opening a sentence orders the steps; it claims nothing
+        if any(s <= m.start() < e for s, e in routine):
+            continue    # "each visit", "every day" with no number or drug name
+        out.append(m.group(0).lower())
+    return out
+
+
 def find(sentence: str, drugs_re) -> dict:
+    numbers = [m.group(0).strip() for m in NUMBER_RE.finditer(sentence)]
+    numbers += [m.group(0).lower() for m in NUMBER_WORD_RE.finditer(sentence)]
+    drugs = sorted({m.group(0) for m in drugs_re.finditer(sentence)}) if drugs_re else []
     return {
-        "numbers": [m.group(0).strip() for m in NUMBER_RE.finditer(sentence)],
-        "drugs": sorted({m.group(0) for m in drugs_re.finditer(sentence)}) if drugs_re else [],
-        "widening": [m.group(0).lower() for m in WIDENING_RE.finditer(sentence)],
+        "numbers": numbers,
+        "drugs": drugs,
+        "variants": [m.group(0) for m in VARIANT_RE.finditer(sentence)],
+        "assertions": [m.group(0).lower() for m in ASSERTION_RE.finditer(sentence)],
+        "widening": _widening(sentence, bool(numbers or drugs)),
         "absence": [m.group(0).lower() for m in ABSENCE_RE.finditer(sentence)],
     }
 
@@ -129,9 +213,9 @@ def _read_list(path):
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
-        description="Write a JSON worksheet of candidate claims (one per sentence with numbers, drug names, widening "
-                    "words or absence phrases) with empty source, quote, kind and scope fields for a person to fill. "
-                    "It finds sentences worth checking; it checks nothing.",
+        description="Write a JSON worksheet of candidate claims (one per sentence with numbers, drug names, variants, "
+                    "claim words, widening words or absence phrases) with empty source, quote, kind and scope fields "
+                    "for a person to fill. It finds sentences worth checking; it checks nothing.",
         epilog="Exit codes: 0 worksheet written, 1 no candidate claims found, 2 usage error.")
     parser.add_argument("answer", nargs="?", default="-", help="the answer as UTF-8 text; '-' or nothing reads standard input")
     parser.add_argument("-o", "--output", help="write the worksheet here (default: standard output)")
@@ -174,7 +258,7 @@ def main(argv=None) -> int:
 
     for f in flags:
         bits = []
-        for key in ("numbers", "drugs", "widening", "absence"):
+        for key in ("numbers", "drugs", "variants", "assertions", "widening", "absence"):
             if f[key]:
                 bits.append(f"{key}: {', '.join(f[key])}")
         need = " -- fill 'scope' (what was searched and where)" if f["needs_scope"] else ""

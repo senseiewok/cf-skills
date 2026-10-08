@@ -46,7 +46,7 @@ def test_expected_sentences_are_candidates_and_plain_ones_are_not():
     assert any(c.startswith("Exampledrug was the first") for c in claims)   # widening word
     assert any(c.startswith("There is no evidence") for c in claims)        # absence phrase
     assert any(c.startswith("Ivacaftor") for c in claims)                   # drug name, any case
-    assert any("2019 to 2023" in c for c in claims)                         # years, list marker removed
+    assert "The report covered 2019 to 2023." in claims                     # years, list marker removed
     # negative controls: no number, drug, widening word or absence phrase
     assert not any(c.startswith("Thanks for asking") for c in claims)
     assert not any(c.startswith("I hope this helps") for c in claims)
@@ -86,6 +86,67 @@ def test_plain_sentences_are_not_candidates(sentence):
 def test_decimals_and_abbreviations_do_not_split():
     ws, _ = cw.build("The value was 2.5 in one group, e.g. the older one. Next sentence has 3 items.")
     assert [e["claim"] for e in ws] == ["The value was 2.5 in one group, e.g. the older one.", "Next sentence has 3 items."]
+
+
+# ---------------------------------------------------------------- red-team cases (RT-11, RT-12): each a single claim
+
+@pytest.mark.parametrize("answer", [
+    "Nine out of ten people in the trial got better.",
+    "Twice as many people improved in the treatment group.",
+    "Half of the people in the study had no change.",
+    "This medicine is approved for children.",
+    "It works for people with the F508del variant.",
+    "There's no link between this diet and lung function.",
+    "There’s no link between this diet and lung function.",
+    "It isn't approved for that group.",
+    "It is safe in pregnancy.",
+    "It is recommended for older children.",
+    "ETI works for most people with CF.",
+    "The modulator was approved in the U.S. in 2019 for older children.",
+    "A large percent of people improved.",
+])
+def test_red_team_claims_are_found_whole(answer):
+    ws, _ = cw.build(answer)
+    assert [e["claim"] for e in ws] == [answer]
+
+
+def test_wrapped_sentence_is_one_claim_on_its_first_line():
+    ws, flags = cw.build("Thanks.\nIn one study of people with CF, forty-two percent\nimproved after a year.")
+    assert [e["claim"] for e in ws] == ["In one study of people with CF, forty-two percent improved after a year."]
+    assert flags[0]["line"] == 2
+
+
+def test_list_items_and_headings_are_not_joined_to_the_next_line():
+    ws, _ = cw.build("## 2019 results\nThe trial had 40 people.\n- Item with 3 parts\n- Item with 4 parts")
+    assert [e["claim"] for e in ws] == ["2019 results", "The trial had 40 people.", "Item with 3 parts", "Item with 4 parts"]
+
+
+def test_variant_names_are_found():
+    _, flags = cw.build("People with G551D or 621+1G>T were in the trial group.")
+    assert flags[0]["variants"] == ["G551D", "621+1G>T"]
+    _, flags = cw.build("The p.Phe508del change was the most common.")
+    assert flags[0]["variants"] == ["p.Phe508del"]
+
+
+@pytest.mark.parametrize("answer", [
+    "First, write down your questions.",
+    "Now, let's look at your list.",
+    "Each visit is a chance to ask.",
+    "Every time you go, bring the list.",
+    "Double-check your list with the nurse.",
+    "One way to start is to write your questions.",
+])
+def test_ordering_and_routine_words_are_not_claims(answer):
+    assert cw.build(answer)[0] == []
+
+
+@pytest.mark.parametrize("answer", [
+    "First, 9 out of 10 people improved.",
+    "Each visit, ivacaftor levels were measured.",
+    "Now is the first time it was tried in children.",
+])
+def test_nearby_sentences_with_markers_stay_claims(answer):
+    assert len(cw.build(answer)[0]) == 1
 
 
 def test_all_flag_includes_every_sentence():

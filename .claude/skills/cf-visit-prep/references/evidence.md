@@ -17,3 +17,17 @@ Strength: **strong** = read at the source and says what the row says; **limited*
 | Say plainly when something should not wait for the visit | Our judgement, not a finding: safety comes before the task | None (a rule) |
 | A person who sounds low is pointed to people, never to the assistant | The APA advisory (above): chatbots and wellness apps "should not be used as a replacement for a qualified mental health care provider" | Strong: read at the source; about mental health, not CF |
 | Leave a blank for phone numbers, web addresses and insurance rules | No source found in our 2026-10-08 search on made-up phone numbers or insurance advice errors. Kept as a rule: our judgement, not a finding | None |
+
+Rules added on 2026-10-08 after a blind review of these skills and a few test replies from local models (one reply per case: a direction, not a rate).
+
+| Rule or statement | What supports it | Strength |
+| --- | --- | --- |
+| Every reply ends: "If anything on this list is new, getting worse, or worries you, call your care team now. You do not need to wait for the visit. This is not a diagnosis." | Our judgement, not a finding: the skill forbids guessing what a symptom means, so the urgency line cannot depend on that guess. No list of warning signs is given: that needs a clinician or a primary source | None (a rule) |
+| An urgent symptom comes first, before the list | Our judgement, not a finding | None (a rule) |
+| Do not repeat dates, ages, names or places; never say "as requested" | Our judgement, not a finding. Observed once in our test replies: a model kept an exact date and said "as requested" | None (a rule) |
+| Ask whether there is anything the person would like to ask the team on their own | Our judgement, not a finding: room for a teenager's own questions | None (a rule) |
+| Doctor said one thing, the person read another: help write the question, do not judge | Our judgement, not a finding | None (a rule) |
+| Reply in the person's language; questions in a second language are a draft; suggest a qualified interpreter | Our judgement, not a finding | None (a rule) |
+| No phone number from memory, even an emergency or crisis number; never predict how an illness will go | Our judgement, not a finding: the same rules as cf-ai-safe-use | None (a rule) |
+| The shared core of the boxes, and its 2026-10-08 changes (quoted self-harm words with no phone number, no percent or count from memory even labelled, a privacy example, no refusal of a general question, the closing line kept even if asked and not after a reply about feelings) | Our judgement, not a finding: the same core as cf-ai-safe-use; that skill's evidence page says what the live tests showed | None (a rule) |
+| The visit's closing line about anything new or worse is not added after a reply about feelings | Our judgement, not a finding: the same exception as the other care skills | None (a rule) |

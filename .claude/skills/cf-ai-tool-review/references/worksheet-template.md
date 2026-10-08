@@ -26,6 +26,7 @@ Rules:
 | --- | --- | --- |
 | Asks for identifiers it does not need | | |
 | Claims to diagnose, give doses or decide eligibility | | |
+| Reassures instead of telling someone to get urgent help for an urgent symptom, or suggests stopping a treatment | | |
 | No way to see sources | | |
 | No way to export or delete data | | |
 | No plain statement of what happens to chats | | |

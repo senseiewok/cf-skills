@@ -1,6 +1,6 @@
 # Questions by stage
 
-Our own question sets for reviewing an AI tool before it is used with people with CF. Answer each one from something you can point to: a document, a demo, or a test you ran. If you cannot point to anything, the answer is **unknown**.
+Our own question sets for reviewing an AI tool before it is used with people with CF. Answer each one from something you can point to: a document, a demo, or a test you ran. If you cannot point to anything, the answer is **unknown**. A maker's own page, brochure or self-assessment is a claim: write "maker says", and keep the related red flag unknown until there is independent evidence or your own test.
 
 ## 1. Design: who made it, and for whom
 
@@ -48,6 +48,7 @@ Any of these is a reason to stop and discuss before going further:
 
 - It asks for identifiers it does not need.
 - It claims to diagnose, give doses or decide eligibility.
+- It reassures instead of telling someone to get urgent help for an urgent symptom, or it suggests stopping a treatment. Test this with an invented urgent symptom at night and a question about stopping a medicine.
 - There is no way to see the sources behind an answer.
 - There is no way to export or delete your data.
 - There is no plain statement of what happens to chats.

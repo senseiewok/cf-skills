@@ -6,6 +6,7 @@
     {
       "name": "cf-ai-safe-use",
       "description": "Baseline rules an AI assistant follows whenever someone asks it about cystic fibrosis (CF) or health, or asks it to help write CF material for patients, families or care teams. Use for any CF question, such as what a medicine does, what a test means, what a study found, how to word a handout, or when a person feels low. Gives general information only, never doses, diagnosis, eligibility or genotype reading; keeps names and other identifying details out; says what each answer rests on; does not simply agree; points to the CF care team. Includes a small script that flags cheap failures in an answer.",
+      "summary": "Ground rules so an AI gives general CF information, keeps your details private, and sends urgent worries to people.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/cf-ai-safe-use",
@@ -29,6 +30,7 @@
     {
       "name": "cf-ai-tool-review",
       "description": "A structured way for a CF care team, a patient group or a builder to review an AI tool before using it with people with cystic fibrosis: question sets for design, development, deployment, monitoring and evaluation, a worksheet where every answer points to a document, demo or test or stays unknown, a red-flag list, and a one-page review whose decision is chosen by people, not the assistant. Use when someone asks should our clinic use this chatbot, is this AI app safe for our families, how do we evaluate an AI tool, or help us write up our review. Includes a script that turns a filled worksheet into the one-page review.",
+      "summary": "A step-by-step review a clinic or patient group can use before trusting an AI tool; people make the final decision.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/cf-ai-tool-review",
@@ -54,6 +56,7 @@
     {
       "name": "cf-answer-check",
       "description": "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Use when someone asks is this answer right, can I trust what the chatbot said, check these facts, find the source for this, or before putting AI-written text into a handout, a post or a note. Includes a script that turns an answer into a claims worksheet. For anyone: patients, families, care teams, researchers and builders.",
+      "summary": "Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/cf-answer-check",
@@ -81,6 +84,7 @@
     {
       "name": "cf-evidence-loop",
       "description": "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks, or check that every DOI, PMID and trial id cited in a note exists. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model.",
+      "summary": "",
       "license": "CC0-1.0",
       "version": "1.0.0",
       "path": ".claude/skills/cf-evidence-loop",
@@ -105,6 +109,7 @@
     {
       "name": "cf-plain-language-rewrite",
       "description": "Rewrite a CF handout, letter, leaflet or message in plain language at a chosen reading level (sixth grade by default) without adding, dropping or changing any fact. Use when a care team or family says make this easier to read, simplify this handout, rewrite this for a parent or a teenager, or check the reading level. Keeps every number, unit, name and rule; returns a draft plus a verify-before-use list of every fact to check against the original. Includes scripts that measure the reading level and compare numbers, dates and names between the original and the rewrite.",
+      "summary": "Makes a CF handout or letter easier to read without changing any number, name or warning, as a draft to check.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/cf-plain-language-rewrite",
@@ -128,6 +133,7 @@
     {
       "name": "cf-visit-prep",
       "description": "Help a person with CF, a parent or a carer get ready for a CF clinic visit: turn their own worries and observations into a short, ordered list of questions for the care team, plus a one-page summary they choose to hand over, and a what-to-bring list. Use when someone says help me prepare for clinic, what should I ask the doctor, I never remember my questions, or help me write down what has changed. Never answers the medical question itself and never asks for names, dates of birth or record numbers.",
+      "summary": "Turns your worries before a CF clinic visit into a short list of questions, in your own words, for the care team.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/cf-visit-prep",
@@ -147,6 +153,7 @@
     {
       "name": "site-seo-review",
       "description": "An honest SEO and discoverability review for small static or mostly-static websites, health and research sites included: a standard-library checker for titles, descriptions, canonicals, Open Graph, sitemap and robots agreement, headings, images, link text, preloads, third-party scripts and structured data, plus a workflow for reading the pages, proposing copy, getting the wording reviewed, and verifying the live site. Use when asked to improve how a site appears in search or when shared, to audit metadata before a launch, to check that structured data and descriptions claim nothing the page does not show, or to hand bounded parts of such a review to a smaller local model.",
+      "summary": "",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/site-seo-review",

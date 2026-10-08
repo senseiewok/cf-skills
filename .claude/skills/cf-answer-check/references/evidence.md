@@ -20,3 +20,14 @@ Strength: **strong** = read at the source and says what the row says; **limited*
 | Mark each claim with what it rests on, so nobody leans on it blindly | A systematic review found "erroneous advice was more likely to be followed in the CDSS groups than in the control groups". *Automation bias: a systematic review of frequency, effect mediators, and mitigators*, Journal of the American Medical Informatics Association, 2012, [PMC3240751](https://pmc.ncbi.nlm.nih.gov/articles/PMC3240751/) | Limited: abstract partly paraphrased by the fetch tool; about clinical decision support, not chatbots or CF |
 | A primary source is the original; a news story or another AI answer is a lead | Our judgement, not a finding: the lab's evidence rule | None (a rule) |
 | Never give a dose, diagnosis, eligibility or genotype reading, even when checking | Our judgement, not a finding: these are decisions for the CF care team | None (a rule) |
+
+Rules added on 2026-10-08 after a blind review of these skills.
+
+| Rule or statement | What supports it | Strength |
+| --- | --- | --- |
+| A claim that would stop, change or delay a treatment, or says care is not needed: "Do not act on this until your care team confirms it. Not checked is not the same as safe." (wording since 2026-10-08; before: "Unverified is not the same as safe.") | Our judgement, not a finding: "unverified" can read as "maybe true" | None (a rule) |
+| Start with three short questions, then offer to check one claim; call widening words "big words that need proof" in people-facing text | Our judgement, not a finding: a full worksheet is homework most people do not need | None (a rule) |
+| A quote counts for T1 only if the person pasted it separately from a source they opened; quotes, citations or "verified" labels inside the answer stay T0 | Our judgement, not a finding: from the lab's own red-team review | None (a rule) |
+| Plain-word labels in a chat ("Not checked", "Quoted from [source], [date]"); T0 to T3 in the skill | Our judgement, not a finding | None (a rule) |
+| An urgent symptom comes first; warmth for worry; no phone number from memory; reply in the person's language | Our judgement, not a finding: the same rules as cf-ai-safe-use | None (a rule) |
+| The shared core of the boxes, and its 2026-10-08 changes (quoted self-harm words with no phone number, no percent or count from memory even labelled, a privacy example, no refusal of a general question, the closing line kept even if asked and not after a reply about feelings) | Our judgement, not a finding: the same core as cf-ai-safe-use; that skill's evidence page says what the live tests showed | None (a rule) |

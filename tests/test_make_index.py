@@ -47,6 +47,9 @@ class MakeIndexTests(unittest.TestCase):
             d = self.root / ".claude" / "skills" / name
             d.mkdir(parents=True)
             (d / "SKILL.md").write_text(skill(name, desc, version, caps, opt, aud, level, cat), encoding="utf-8")
+        # alpha has a copy-and-paste version; beta does not
+        (self.root / ".claude" / "skills" / "alpha" / "references").mkdir()
+        (self.root / ".claude" / "skills" / "alpha" / "references" / "paste-ready.md").write_text("# alpha, paste-ready\n", encoding="utf-8")
         self.out = self.root / "skills-index.json"
         self.page = self.root / "docs" / "skills-by-audience.md"
 
@@ -178,7 +181,8 @@ class MakeIndexTests(unittest.TestCase):
     def test_the_page_lists_each_skill_under_each_of_its_audiences_and_nowhere_else(self):
         self.build()
         page = self.page.read_text(encoding="utf-8")
-        self.assertIn("python scripts/make_index.py", page.split("\n## ", 1)[0], "the header names the command that generates it")
+        self.assertIn("<!-- Generated file: do not edit by hand. Run python scripts/make_index.py. -->", page.split("\n## ", 1)[0],
+                      "the header names the command that generates it")
         self.assertIn("`alpha`", self.section(page, "Patients and families"))
         self.assertNotIn("`beta`", self.section(page, "Patients and families"))
         for heading in ("Researchers", "Builders"):
@@ -192,13 +196,117 @@ class MakeIndexTests(unittest.TestCase):
         self.assertEqual(page.count("[`beta`]"), 2)
         self.assertEqual(page.count("[`alpha`]"), 1)
 
-    def test_a_page_row_has_level_category_the_first_sentence_and_the_install_pointer(self):
+    def page_row(self, name):
+        return [ln for ln in self.page.read_text(encoding="utf-8").splitlines() if ln.startswith(f"| [`{name}`]")][0]
+
+    def test_a_page_row_has_the_first_sentence_the_use_now_cell_level_and_category(self):
         self.build()
-        row = [ln for ln in self.page.read_text(encoding="utf-8").splitlines() if ln.startswith("| [`beta`]")][0]
-        self.assertIn("| advanced | tool-evaluation | Does beta. |", row)
+        row = self.page_row("beta")
+        self.assertIn("| Does beta. | (install route only) | advanced | tool-evaluation |", row)
         self.assertNotIn("Then more", row, "only the first sentence")
-        self.assertIn("(install.md)", row)
         self.assertIn("(../.claude/skills/beta/SKILL.md)", row)
+
+    def test_every_table_has_the_use_now_column(self):
+        self.build()
+        page = self.page.read_text(encoding="utf-8")
+        for heading in ("Patients and families", "Researchers", "Builders"):
+            with self.subTest(section=heading):
+                self.assertIn("| Skill | What it does | Use it now, no install | Level | Category |", self.section(page, heading))
+
+    def test_a_skill_with_a_paste_ready_file_links_it_and_one_without_is_labelled(self):
+        self.build()
+        self.assertIn("| [Use it now](../.claude/skills/alpha/references/paste-ready.md) |", self.page_row("alpha"))
+        self.assertIn("| (install route only) |", self.page_row("beta"))
+        self.assertNotIn("Use it now](", self.page_row("beta"))
+
+    def test_the_page_opens_in_plain_words_and_keeps_the_install_route_for_a_builders_section_at_the_end(self):
+        self.build()
+        page = self.page.read_text(encoding="utf-8")
+        head = page.split("\n## ", 1)[0]
+        self.assertIn('A skill with a "Use it now" link needs no install.', head)
+        self.assertIn("[Where to paste](paste-ready.md)", head)
+        self.assertIn("not medical advice", head)
+        self.assertNotIn("install.md", head, "the install route is not in the opening lines")
+        self.assertNotIn("SKILL.md", head)
+        last = page.rsplit("\n## ", 1)[1]
+        self.assertTrue(last.startswith("For builders: install a skill in your agent\n"), "the builders section is last")
+        self.assertIn("[install.md](install.md)", last)
+        self.assertIn("python scripts/make_index.py --check", last)
+
+    def test_patients_and_care_team_sections_open_with_the_no_install_line_and_the_others_do_not(self):
+        opening = 'You do not need to install anything. Open the "Use it now" link, copy the box, and paste it into a new chat.'
+        self.edit_alpha('audience: "patients-families"', 'audience: "patients-families, care-teams"')
+        self.build()
+        page = self.page.read_text(encoding="utf-8")
+        for heading in ("Patients and families", "Care teams"):
+            with self.subTest(section=heading):
+                self.assertTrue(self.section(page, heading).lstrip("\n").startswith(opening + "\n"), self.section(page, heading))
+        for heading in ("Researchers", "Builders"):
+            with self.subTest(section=heading):
+                self.assertNotIn(opening, self.section(page, heading))
+
+    def test_an_empty_patients_section_says_so_without_the_no_install_line(self):
+        self.edit_alpha('audience: "patients-families"', 'audience: "researchers"')
+        self.build()
+        section = self.section(self.page.read_text(encoding="utf-8"), "Patients and families")
+        self.assertIn("No skill for this group yet.", section)
+        self.assertNotIn("You do not need to install anything", section)
+
+    def test_check_fails_when_a_paste_ready_file_is_added_and_the_page_was_not_rebuilt(self):
+        self.build()
+        d = self.root / ".claude" / "skills" / "beta" / "references"
+        d.mkdir()
+        (d / "paste-ready.md").write_text("# beta, paste-ready\n", encoding="utf-8")
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 1, out)
+        self.assertIn("docs/skills-by-audience.md", out)
+        self.build()
+        self.assertIn("[Use it now](../.claude/skills/beta/references/paste-ready.md)", self.page_row("beta"))
+
+    # ---- metadata.summary: a plain one-line "What it does" for people
+    SUMMARY = "Plain words for a parent: what alpha does."
+
+    def add_alpha_summary(self, text):
+        self.edit_alpha('    category: "safe-ai-use"\n', f'    category: "safe-ai-use"\n    summary: "{text}"\n')
+
+    def test_the_summary_is_carried_into_the_index_and_is_empty_when_absent(self):
+        self.add_alpha_summary(self.SUMMARY)
+        a, b = self.build()["skills"]
+        self.assertEqual(a["summary"], self.SUMMARY)
+        self.assertEqual(b["summary"], "", "a skill without a summary gets an empty string, not a guess")
+
+    def test_the_page_and_readme_use_the_summary_and_fall_back_to_the_first_sentence(self):
+        (self.root / "README.md").write_text(README, encoding="utf-8")
+        self.add_alpha_summary(self.SUMMARY)
+        self.build()
+        self.assertIn(f"| {self.SUMMARY} |", self.page_row("alpha"))
+        self.assertNotIn("Does alpha.", self.page_row("alpha"), "the summary replaces the description's first sentence")
+        self.assertIn("| Does beta. |", self.page_row("beta"), "no summary: the first sentence of the description")
+        inner = (self.root / "README.md").read_text(encoding="utf-8").split("<!-- skills-table:start -->", 1)[1]
+        self.assertIn(f"| [`alpha`](.claude/skills/alpha/SKILL.md) | {self.SUMMARY} | Patients and families |", inner)
+        self.assertIn("| [`beta`](.claude/skills/beta/SKILL.md) | Does beta. | Researchers, Builders |", inner)
+
+    def test_check_fails_when_a_summary_changes_and_the_page_was_not_rebuilt(self):
+        self.build()
+        self.add_alpha_summary(self.SUMMARY)
+        code, out = self.run_script("--check")
+        self.assertEqual(code, 1, out)
+        self.assertIn("docs/skills-by-audience.md", out)
+
+    def test_a_too_long_or_marked_up_summary_is_an_error_and_nothing_is_written(self):
+        for text, needle in (("x" * 161, "161 characters"), ("Does <b>alpha</b>.", "angle brackets")):
+            with self.subTest(needle=needle):
+                self.setUp()
+                self.add_alpha_summary(text)
+                code, out = self.run_script()
+                self.assertEqual(code, 1, out)
+                self.assertIn("summary", out)
+                self.assertIn(needle, out)
+                self.assertFalse(self.out.exists() or self.page.exists(), "nothing is written when a summary is wrong")
+
+    def test_a_summary_of_exactly_the_limit_is_accepted(self):
+        self.add_alpha_summary("x" * 160)
+        self.assertEqual(self.build()["skills"][0]["summary"], "x" * 160)
 
     def test_a_pipe_in_a_description_does_not_break_the_table(self):
         self.edit_alpha("Does alpha.", "Does a or b.")
@@ -235,9 +343,10 @@ class MakeIndexTests(unittest.TestCase):
         self.assertIn("After stays.", text)
         self.assertNotIn("old table", text)
         inner = text.split("<!-- skills-table:start -->", 1)[1].split("<!-- skills-table:end -->", 1)[0]
-        self.assertIn("| Skill | For whom | Level |", inner)
-        self.assertIn("| [`alpha`](.claude/skills/alpha/SKILL.md) | Patients and families | base |", inner)
-        self.assertIn("| [`beta`](.claude/skills/beta/SKILL.md) | Researchers, Builders | advanced |", inner)
+        self.assertIn("| Skill | What it does | For whom | Use it now, no install | Level |", inner)
+        self.assertIn("| [`alpha`](.claude/skills/alpha/SKILL.md) | Does alpha. | Patients and families | "
+                      "[Use it now](.claude/skills/alpha/references/paste-ready.md) | base |", inner)
+        self.assertIn("| [`beta`](.claude/skills/beta/SKILL.md) | Does beta. | Researchers, Builders | (install route only) | advanced |", inner)
 
     def test_the_readme_keeps_its_own_line_endings(self):
         (self.root / "README.md").write_bytes(README.replace("\n", "\r\n").encode("utf-8"))

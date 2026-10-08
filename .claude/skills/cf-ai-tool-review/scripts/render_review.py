@@ -20,17 +20,26 @@ The worksheet is a JSON object:
     }
 
 stage is one of: design, development, deployment, monitoring, evaluation.
-Red flag ids: asks-for-identifiers, claims-to-diagnose-dose-or-decide, no-sources-shown,
-no-export-or-delete, no-plain-statement-on-chats, marketing-without-evidence. A flag left out is shown
+Red flag ids: asks-for-identifiers, claims-to-diagnose-dose-or-decide, reassures-instead-of-urgent-help,
+no-sources-shown, no-export-or-delete, no-plain-statement-on-chats, marketing-without-evidence. A flag left out is shown
 as "not reviewed".
 
 It refuses (exit 1) and prints every reason when:
     a row has neither a finding nor "unknown": true      (an unknown stays unknown; a blank is not allowed)
-    a finding hedges ("probably fine", "should be fine", "seems fine", "likely fine", "assume")
-    a finding (not marked unknown) has no "where" (document, demo, test...)
+    a row has no question, or is not an object
+    a finding hedges ("probably", "presumably", "should be fine", "should be safe", "seems fine",
+        "seems okay", "looks fine", "likely fine", "assume", "I think", "I believe", "I guess", "maybe",
+        "perhaps", "hopefully")
+    a finding (not marked unknown) has no "where" (document, demo, test...), or "where" is a
+        placeholder such as "n/a", "none", "-" or "tbd"
+    a row marked unknown has no "owner" (an unknown needs someone to follow it up)
     a stage, red-flag id or "seen" value is not one of the allowed words, or "unknown" is not true/false
-    a decision is given without "decided_by", or "use-only-for" is chosen without "use_for" and checks
+    the same red-flag id is given twice
+    a decision choice is not a string, a decision is given without "decided_by", "decided_by" names an
+        AI (the assistant, a chatbot, a model), or "use-only-for" is chosen without "use_for" and checks
 The script never chooses the decision. With no decision it prints "No decision yet".
+Every text from the worksheet is written as plain text: line breaks become spaces and Markdown
+characters (# * _ | < > [ ] ` and backslash) are escaped, so a name cannot add a heading or a decision.
 
 Exit codes:
     0  the review was written
@@ -51,6 +60,8 @@ STAGES = ["design", "development", "deployment", "monitoring", "evaluation"]
 RED_FLAGS = {
     "asks-for-identifiers": "Asks for names, dates of birth, record numbers or other identifiers it does not need",
     "claims-to-diagnose-dose-or-decide": "Claims to diagnose, give doses or decide eligibility",
+    "reassures-instead-of-urgent-help": ("Reassures instead of telling someone to get urgent help for an urgent symptom, "
+                                         "or suggests stopping a treatment"),
     "no-sources-shown": "No way to see the sources behind an answer",
     "no-export-or-delete": "No way to export or delete your data",
     "no-plain-statement-on-chats": "No plain statement of what happens to chats (stored, reused, shared, for how long)",
@@ -62,7 +73,14 @@ CHOICES = {
     "use-only-for": "Use only for {use_for}, with these checks:",
     "needs-more-information": "Needs more information before a decision.",
 }
-HEDGE_RE = re.compile(r"\b(?:probably|presumably|should be fine|seems fine|seems ok|likely fine|likely ok|assume|assumed)\b", re.I)
+HEDGE_RE = re.compile(r"\b(?:probably|presumably|should be fine|seems fine|seems ok|likely fine|likely ok|assume|assumed"
+                      r"|should be (?:safe|ok|okay|fine)|seems (?:okay|safe|alright|good)|looks (?:fine|ok|okay|safe|good)"
+                      r"|likely (?:safe|okay)|i think|i believe|i guess|i suppose|i assume|maybe|perhaps|hopefully"
+                      r"|assuming|we think|we believe|not sure)\b", re.I)
+PLACEHOLDER_RE = re.compile(r"^\W*(?:n\W?a|none|nil|tbd|tbc|unknown|not applicable|nothing|-+|\?+)\W*$", re.I)
+AI_DECIDER_RE = re.compile(r"\b(?:ai|a\.i\.|assistant|chatbot|chat bot|bot|model|llm|gpt|chatgpt|claude|copilot|gemini|"
+                           r"the tool|the script|automated|automatically)\b", re.I)
+_MD_SPECIAL = re.compile(r"([\\`*_#|<>\[\]])")
 
 
 def _s(v) -> str:
@@ -93,27 +111,43 @@ def problems(ws: dict) -> list:
             out.append(f"{label}: has neither a finding nor \"unknown\": true; an unknown stays unknown, never blank")
         if found and HEDGE_RE.search(found):
             out.append(f"{label}: the finding hedges ('{HEDGE_RE.search(found).group(0)}'); write what was seen, or mark it unknown")
-        if found and not unknown and not _s(row.get("where")):
+        where = _s(row.get("where"))
+        if found and not unknown and not where:
             out.append(f"{label}: a finding needs 'where' (document, demo, test...)")
+        elif found and where and PLACEHOLDER_RE.match(where):
+            out.append(f"{label}: 'where' is a placeholder ('{where}'); name the document, demo or test, or mark the row unknown")
+        if unknown and not _s(row.get("owner")):
+            out.append(f"{label}: an unknown needs an 'owner' (the role who follows it up)")
     flags = ws.get("red_flags", [])
     if not isinstance(flags, list):
         out.append("'red_flags' must be a list")
         flags = []
+    seen_ids = set()
     for j, fl in enumerate(flags, start=1):
         if not isinstance(fl, dict) or fl.get("flag") not in RED_FLAGS:
             out.append(f"red flag {j}: 'flag' must be one of {', '.join(RED_FLAGS)}")
-        elif fl.get("seen") not in SEEN:
+            continue
+        if fl.get("seen") not in SEEN:
             out.append(f"red flag {j}: 'seen' must be yes, no or unknown")
+        if fl["flag"] in seen_ids:
+            out.append(f"red flag {j}: '{fl['flag']}' is given more than once; keep one entry per flag")
+        seen_ids.add(fl["flag"])
     dec = ws.get("decision") or {}
     if not isinstance(dec, dict):
         out.append("'decision' must be an object")
         dec = {}
+    if "choice" in dec and dec["choice"] not in (None, "") and not isinstance(dec["choice"], str):
+        out.append("decision: choice must be a string, one of " + ", ".join(CHOICES))
     choice = _s(dec.get("choice"))
     if choice:
         if choice not in CHOICES:
             out.append(f"decision: choice must be one of {', '.join(CHOICES)}")
-        if not _s(dec.get("decided_by")):
+        decided_by = _s(dec.get("decided_by"))
+        if not decided_by:
             out.append("decision: 'decided_by' is needed; the people who decide are named by role, and the assistant never decides")
+        elif AI_DECIDER_RE.search(decided_by):
+            out.append(f"decision: 'decided_by' names an AI ('{AI_DECIDER_RE.search(decided_by).group(0)}'); "
+                       "people decide, by role, and the assistant never decides")
         if choice == "use-only-for":
             checks = dec.get("checks")
             if not _s(dec.get("use_for")):
@@ -124,23 +158,25 @@ def problems(ws: dict) -> list:
 
 
 def _cell(text: str) -> str:
-    return (text or "").replace("|", "\\|").replace("\n", " ").strip()
+    """Worksheet text as plain inline Markdown: one line, with Markdown characters escaped."""
+    text = (text or "").replace("\r", " ").replace("\n", " ")
+    return _MD_SPECIAL.sub(r"\\\1", text).strip()
 
 
 def render(ws: dict) -> str:
     rows = ws["rows"]
     dec = ws.get("decision") or {}
     choice = _s(dec.get("choice"))
-    lines = [f"# AI tool review: {_s(ws.get('tool')) or 'unnamed tool'}", ""]
-    lines.append(f"- Considered for: {_s(ws.get('purpose')) or 'not stated'}")
-    lines.append(f"- Reviewed by (roles): {_s(ws.get('reviewed_by')) or 'not stated'}")
-    lines.append(f"- Date: {_s(ws.get('date')) or 'not stated'}")
+    lines = [f"# AI tool review: {_cell(_s(ws.get('tool'))) or 'unnamed tool'}", ""]
+    lines.append(f"- Considered for: {_cell(_s(ws.get('purpose'))) or 'not stated'}")
+    lines.append(f"- Reviewed by (roles): {_cell(_s(ws.get('reviewed_by'))) or 'not stated'}")
+    lines.append(f"- Date: {_cell(_s(ws.get('date'))) or 'not stated'}")
     lines += ["", "## Decision", ""]
     if choice:
-        lines.append("**" + CHOICES[choice].format(use_for=_s(dec.get("use_for"))) + "**")
+        lines.append("**" + CHOICES[choice].format(use_for=_cell(_s(dec.get("use_for")))) + "**")
         if choice == "use-only-for":
-            lines += [""] + [f"- {_s(c)}" for c in dec.get("checks", []) if _s(c)]
-        lines += ["", f"Decided by: {_s(dec.get('decided_by'))}. The assistant did not choose this."]
+            lines += [""] + [f"- {_cell(_s(c))}" for c in dec.get("checks", []) if _s(c)]
+        lines += ["", f"Decided by: {_cell(_s(dec.get('decided_by')))}. The assistant did not choose this."]
     else:
         lines.append("**No decision yet.** The review group decides: not recommended, use only for a named purpose "
                      "with named checks, or needs more information.")
@@ -148,7 +184,8 @@ def render(ws: dict) -> str:
     unknowns = [r for r in rows if r.get("unknown")]
     lines += ["", "## Still unknown", ""]
     if unknowns:
-        lines += [f"- ({r['stage']}) {_s(r.get('question'))} Owner: {_s(r.get('owner')) or 'none named'}" for r in unknowns]
+        lines += [f"- ({r['stage']}) {_cell(_s(r.get('question')))} Owner: {_cell(_s(r.get('owner'))) or 'none named'}"
+                  for r in unknowns]
     else:
         lines.append("Nothing was marked unknown.")
 
