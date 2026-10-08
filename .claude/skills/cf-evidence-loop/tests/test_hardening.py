@@ -13,6 +13,7 @@ from evidence import cli, http
 from evidence.record import Status
 
 from test_conduct import FakeResponse, Script, make_client, no_sleep  # noqa: F401  (shared fakes and fixture)
+import urllib.parse
 
 
 class RedirectingAdapter(requests.adapters.BaseAdapter):
@@ -27,7 +28,7 @@ class RedirectingAdapter(requests.adapters.BaseAdapter):
         r = requests.Response()
         r.request = request
         r.url = request.url
-        if "api.crossref.org" in request.url:
+        if urllib.parse.urlparse(request.url).hostname == "api.crossref.org":
             r.status_code = 302
             r.headers["Location"] = "https://unpermitted.example.test/stolen"
         else:
@@ -74,7 +75,7 @@ def test_three_transport_failures_trip_the_cooldown(monkeypatch, no_sleep):
     c = make_client(monkeypatch, s)
     for i in range(3):
         c.get("crossref", f"works/{i}")
-    assert "api.crossref.org" in c.accounting.blocked_hosts
+    assert any(h == "api.crossref.org" for h in c.accounting.blocked_hosts)
 
 
 def test_cli_prints_the_accounting_line_and_exits_3_on_a_transport_failure(monkeypatch, capsys):
