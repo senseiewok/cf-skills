@@ -36,11 +36,13 @@ cf-evidence-loop/
       trials.py          ClinicalTrials.gov v2 search and record
       europepmc.py       Europe PMC search, citation count, open-access status
     cli.py               `evidence <command>`; prints records, optional --ledger append
+    briefs.py            `brief drug|variant|trial`: several providers for one question, with PASS / CHECK / NOT STATED cross-checks
   tests/
     conftest.py          puts scripts/ on the path
     fixtures/            saved API responses trimmed to the fields the parsers read; README.md records their provenance
     test_gate.py         the catalog gate refuses what it must
     test_providers.py    parse() on fixtures
+    test_briefs.py       brief recipes on scripted responses: failures, missing fields, cross-check controls
 ```
 
 ## The seven layers, mapped to providers

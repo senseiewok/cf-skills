@@ -55,9 +55,13 @@ def study(client: Client, nct_id: str) -> list[Evidence]:
     return parse_studies({"studies": [f.data]}, q, f.url)
 
 
-def search(client: Client, condition: str, term: str | None = None, status: str | None = None, limit: int = 20) -> list[Evidence]:
-    q = f"Which ClinicalTrials.gov studies list condition '{condition}'" + (f", term '{term}'" if term else "") + (f", status {status}" if status else "") + "?"
-    params = {"query.cond": condition, "pageSize": min(limit, MAX_PAGE), "countTotal": "true", "fields": FIELDS}
+def search(client: Client, condition: str | None, term: str | None = None, status: str | None = None, limit: int = 20) -> list[Evidence]:
+    """Studies by condition, optionally narrowed by a free-text term. With condition None (a brief's drug search) only the term is sent."""
+    head = f"list condition '{condition}'" + (f", term '{term}'" if term else "") if condition else f"match term '{term}'"
+    q = f"Which ClinicalTrials.gov studies {head}" + (f", status {status}" if status else "") + "?"
+    params = {"pageSize": min(limit, MAX_PAGE), "countTotal": "true", "fields": FIELDS}
+    if condition:
+        params = {"query.cond": condition, **params}
     if term:
         params["query.term"] = term
     if status:

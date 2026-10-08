@@ -14,8 +14,13 @@
     python -m evidence.cli trial NCT05033080
     python -m evidence.cli epmc 'TITLE:"cystic fibrosis" AND OPEN_ACCESS:y'
     python -m evidence.cli cited 10.1038/ng.2745
+    python -m evidence.cli brief drug TRIKAFTA
+    python -m evidence.cli brief variant "CFTR[gene] AND F508del"
+    python -m evidence.cli brief trial NCT05033080
 
-Every command accepts --json (one JSON object per line) and --ledger PATH (append records). --contact must be a plain email address.
+Every command accepts --json (one JSON object per line) and --ledger PATH (append records). With --json, a brief prints its
+records and then one more object, {"brief": ...}, holding its sources, copied fields, cross-checks and footer; the ledger gets the records only.
+--contact must be a plain email address.
 With EVIDENCE_DRY_RUN=1 nothing is sent; each planned request is printed to stderr as "planned: METHOD url".
 Exit code 0 when every record is found/not_found, 3 when any record is blocked, rate_limited or error, or when a
 conduct rule refused the request before it was sent. The last stderr line is always the request accounting summary.
@@ -26,7 +31,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from . import catalog
+from . import briefs, catalog
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import clinvar, crossref, europepmc, openfda, preprints, pubmed, reporter, trials
 from .record import Evidence, Status, append_ledger, clean_for_terminal
@@ -66,6 +71,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--limit", type=int, default=20)
     p = sub.add_parser("epmc", help="Europe PMC search (its own query syntax, e.g. TITLE:\"cystic fibrosis\" AND OPEN_ACCESS:y)"); p.add_argument("query"); p.add_argument("--limit", type=int, default=20)
     p = sub.add_parser("cited", help="Europe PMC record for a DOI: citation count and open-access status"); p.add_argument("doi")
+    p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
+    p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
 
     a = ap.parse_args(argv)
     if a.cmd == "sources":
@@ -80,15 +87,25 @@ def main(argv: list[str] | None = None) -> int:
         print(f"refused: {exc}", file=sys.stderr)
         return 2
     recs: list[Evidence]
+    brief = None
     try:
-        recs = _dispatch(a, ap, client)
+        if a.cmd == "brief":                      # each step catches its own refusal, so a brief always returns
+            brief = briefs.run(client, a.recipe, a.subject)
+            recs = brief.records
+        else:
+            recs = _dispatch(a, ap, client)
     except (BudgetExhausted, HostInCooldown, PaperworkMissing, RobotsDisallow, catalog.AccessDenied, catalog.UnknownSource) as exc:
         print(f"refused: {type(exc).__name__}: {exc}", file=sys.stderr)
         print(client.accounting.summary(), file=sys.stderr)
         return 3
 
-    for r in recs:
-        print(r.to_json() if a.json else r.one_line())
+    if brief is not None and not a.json:
+        print(brief.text())
+    else:
+        for r in recs:
+            print(r.to_json() if a.json else r.one_line())
+        if brief is not None:
+            print(brief.summary_json())
     if a.ledger:
         n = append_ledger(a.ledger, recs)
         print(f"ledger: appended {n} record(s) to {a.ledger}", file=sys.stderr)
