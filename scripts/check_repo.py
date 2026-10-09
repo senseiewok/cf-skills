@@ -397,6 +397,65 @@ def _check_hygiene(root: Path, errors: list):
 
 
 # ---------------------------------------------------------------------------
+# check 8: eval cases that point at pasted text they do not contain
+# ---------------------------------------------------------------------------
+
+# A tester sends a case's user_message, or its situation when there is none. A prompt such as "Translate this handout" with no handout
+# in it tests nothing the case's expected lines describe, so the case fails here unless a person has marked it suspect with a note.
+_DOC_WORDS = (r"(?:handout|leaflet|letter|flyer|guide|report|answer|text|note|post|sheet|document|record|message|page|paragraph"
+              r"|summary|email|article)s?")
+_REFERS_TO_PASTED = [
+    re.compile(r"\b(?:translate|rewrite|simplify|summari[sz]e|explain|check|shorten|reword|make)\s+(?:this|these|it)\b", re.I),
+    re.compile(r"\b(?:this|these|the following|the attached|the pasted)\s+(?:[\w'-]+\s+){0,3}?" + _DOC_WORDS + r"\b", re.I),
+    re.compile(r"\b(?:the text|the passage|the words)\s+below\b", re.I),
+    re.compile(r"\bhere(?:'s| is| are)\s+(?:my|the|a|our)\b", re.I),
+]
+# Pasted text counts as present when the prompt quotes at least 20 characters, has text after a colon, or has a block on a new line.
+_HAS_PASTED = re.compile(r"'[^']{20,}'|\"[^\"]{20,}\"|‘[^’]{20,}’|“[^”]{20,}”|:\s*\S.{19,}|\n\s*\S")
+
+
+def refers_to_missing_text(case: dict) -> bool:
+    """True when the case has no user_message and its situation points at pasted text that is not there."""
+    um = case.get("user_message")
+    if isinstance(um, str) and um.strip():
+        return False
+    sit = case.get("situation") or ""
+    return any(p.search(sit) for p in _REFERS_TO_PASTED) and not _HAS_PASTED.search(sit)
+
+
+def _check_eval_cases(root: Path, errors: list):
+    skills_dir = root / SKILLS_DIR
+    if not skills_dir.is_dir():
+        return
+    for f in sorted(skills_dir.glob("*/evals/cases.json")):
+        rel_f = _rel(root, f)
+        raw = _read_text(f)
+        try:
+            data = json.loads(raw) if raw is not None else None
+        except (json.JSONDecodeError, ValueError):
+            data = None
+        if not isinstance(data, dict) or not isinstance(data.get("cases"), list):
+            errors.append("ERROR {}: not a JSON object with a 'cases' list".format(rel_f))
+            continue
+        for case in data["cases"]:
+            if not isinstance(case, dict):
+                continue
+            cid = case.get("id", "?")
+            suspect = case.get("suspect", False)
+            if not isinstance(suspect, bool):
+                errors.append("ERROR {}: case '{}': 'suspect' must be true or false".format(rel_f, cid))
+                continue
+            note = case.get("suspect_note")
+            if suspect and not (isinstance(note, str) and note.strip()):
+                errors.append("ERROR {}: case '{}' is suspect but has no 'suspect_note' saying why".format(rel_f, cid))
+            if refers_to_missing_text(case) and not suspect:
+                errors.append(
+                    "ERROR {}: case '{}' refers to pasted text but has no user_message holding it; add the text as user_message "
+                    "(a person writes it), or mark the case \"suspect\": true with a \"suspect_note\"".format(rel_f, cid)
+                )
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -428,6 +487,8 @@ def main(argv):
     _check_marketplace(root, skill_folders, errors)
 
     _check_hygiene(root, errors)
+
+    _check_eval_cases(root, errors)
 
     if errors:
         for e in sorted(errors):

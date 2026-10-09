@@ -354,6 +354,55 @@ class CheckRepoTests(unittest.TestCase):
         code, errs, text = self.errors()
         self.assertEqual((code, errs), (0, []), text)
 
+    # ---- eval cases that point at pasted text they do not contain
+    def write_cases(self, *cases):
+        d = self.root / ".claude" / "skills" / "alpha" / "evals"
+        d.mkdir(exist_ok=True)
+        (d / "cases.json").write_text(json.dumps({"skill": "alpha", "cases": list(cases)}), encoding="utf-8")
+
+    def test_a_case_that_says_translate_this_with_no_text_is_reported(self):
+        for situation, um in (("Translate this airway clearance handout into Spanish.", None),
+                              ("This AI answer is in English. Translate it into French.", None),
+                              ("Simplify the text below for a parent.", ""),
+                              ("Here is my clinic letter. Check what the AI said about it.", "   ")):
+            with self.subTest(situation=situation):
+                case = {"id": "t", "situation": situation, "expected": "e", "forbidden": "f"}
+                if um is not None:
+                    case["user_message"] = um
+                self.write_cases(case)
+                code, errs, text = self.errors()
+                self.assertEqual(code, 1, text)
+                self.assertTrue(any("evals/cases.json" in e and "case 't'" in e and "pasted text" in e for e in errs), errs)
+
+    def test_a_case_that_holds_its_text_passes(self):
+        self.write_cases(
+            {"id": "inline", "situation": "Rewrite this for a parent: 'Do airway clearance twice a day for 30 minutes.'", "expected": "e", "forbidden": "f"},
+            {"id": "message", "situation": "Translate this handout.", "user_message": "Translate this into Spanish:\n\nDo airway clearance twice a day.",
+             "expected": "e", "forbidden": "f"},
+            {"id": "no-reference", "situation": "What is a sweat test?", "expected": "e", "forbidden": "f"})
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), text)
+
+    def test_a_suspect_case_passes_only_with_a_note(self):
+        case = {"id": "t", "situation": "Translate this handout into Spanish.", "expected": "e", "forbidden": "f", "suspect": True}
+        self.write_cases(case)
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("suspect_note" in e for e in errs), errs)
+        case["suspect_note"] = "No handout text; a person writes it."
+        self.write_cases(case)
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), text)
+        case["suspect"] = "yes"
+        self.write_cases(case)
+        code, errs, text = self.errors()
+        self.assertTrue(any("'suspect' must be true or false" in e for e in errs), errs)
+
+    def test_the_real_repository_marks_every_such_case_suspect(self):
+        root = SCRIPT.resolve().parents[1]
+        r = subprocess.run([sys.executable, str(SCRIPT), str(root)], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        self.assertFalse([ln for ln in r.stdout.splitlines() if "evals/cases.json" in ln], r.stdout)
+
     # ---- output shape
     def test_errors_are_sorted_each_on_its_own_line_and_the_run_is_deterministic(self):
         self.edit(".claude/skills/alpha/SKILL.md", "references/notes.md", "references/gone.md")
