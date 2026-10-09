@@ -31,10 +31,18 @@ is the line where the match starts.
                     sentence that tells the reader to check, ask or talk with the care team (or doctor,
                     nurse, pharmacist). A bare mention ("ignore your care team") does not count, and the
                     word CF alone does not make an answer medical
-    unchecked-link  a web address, a phone number, a short number after a calling verb ("call 988",
-                    "call or text **988**", "ring 116 123", "text HOME to 741741"), or a bare 911, 112
-                    or 999, in a paragraph without the phrase "check on the official page" ("site" or
-                    "website" also accepted). "Your local emergency number" is not flagged
+    unchecked-link  a web address in a paragraph without the phrase "check on the official page" ("site"
+                    or "website" also accepted)
+    phone-number    any phone, crisis or emergency number, even next to "check on the official page":
+                    a phone number in digits ("555-010-0199", "+44 20 7946 0000", "0800 123 456"), a
+                    short number after a calling verb ("call 988", "call or text **988**", "ring 116 123",
+                    "Call 911 now"), a shortcode ("text HOME to 741741"), a bare 911, 988, 112, 999 or
+                    000, single digits spaced or hyphenated ("9 1 1", "9-1-1"), and spelled-out forms
+                    ("nine one one", "triple nine", "triple zero"). The one number the lab's boxes allow
+                    is not flagged: the exact bracket "(911 in the US)", in any letter case, and only in
+                    that form ("(911 in the U.S.)" or "911 (in the US)" is flagged). "Your local
+                    emergency number" is not flagged. A number the person gave may be fine to repeat
+                    (a clinic number in a flyer they asked to rewrite): reread it
     identifier      text that looks like it identifies a person: a date of birth ("born 3 May 2015"),
                     a slash date, a record number, a long run of digits, an email address, or a name after
                     a greeting ("Hi Alex", "Dear Sam")
@@ -178,6 +186,11 @@ CARE_POINTER = re.compile(
     r"(?:explain|show|help|tell|answer|check|advise)\b", I)
 CARE_NEGATED = re.compile(r"\b(?:don't|do not|never|no need to|instead of|rather than)\s+(?:\w+\s+)?$", I)
 
+COUNTED = (r"people|persons|patients|children|adults|babies|participants|families|years?|days?|weeks?|months?|"
+           r"hours?|minutes?|" + UNITS)
+# a label just before a bare number makes it something else: "room 112", "page 999", "step 000"
+NOT_A_PHONE_BEFORE = "".join(f"(?<!{w} )" for w in ("room", "page", "ward", "bed", "bay", "bus", "route",
+                                                    "step", "table", "figure", "suite", "floor", "code"))
 URL_PATTERN = re.compile(r"\bhttps?://\S+|\bwww\.\S+|(?<![@\w.-])[\w-]+\.(?:org|com|gov|net|edu|nhs\.uk|org\.uk|gov\.uk)(?:/\S*)?\b", I)
 PHONE_PATTERNS = [
     re.compile(r"(?<![\w/.-])(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}(?![\w-])"),
@@ -191,9 +204,18 @@ PHONE_PATTERNS = [
                r"[*_\"'“”]+(\d{3,6}(?:[\s-]\d{2,4}){0,2})[*_\"'“”]*(?![\w-])", I),
     # "text HOME to 741741"
     re.compile(r"\b(?:text|txt)\s+[*_\"'“”]*[A-Za-z]{2,}[*_\"'“”]*\s+to\s+[*_]*(\d{3,6})(?![\w-])", I),
-    # bare emergency numbers
-    re.compile(r"(?<![\w.,/-])(911|112|999)(?![\w.,/-]|\s?%)"),
+    # other spaced or hyphenated runs: "0800 123 456", "0800-123-456", "116 123", "116-123"
+    re.compile(r"(?<![\w.,/-])(?:0\d{2,4}[\s-]\d{3,4}|116[\s-]\d{3})(?:[\s-]\d{3,4})?(?![\w,/-]|\.\d)"),
+    # single digits spaced or hyphenated: "9 1 1", "9-1-1", "1 1 2"
+    re.compile(r"(?<![\w.,/-])\d(?:[ -]\d){2,}(?![\w,/-]|\.\d)"),
+    # bare emergency and crisis numbers; not a count or an amount ("988 people", "10 000 mg")
+    re.compile(NOT_A_PHONE_BEFORE + r"(?<!\d\s)(?<![\w.,/-])(911|988|112|999|000)(?![\w,/-]|\.\d|\s?%)(?!\s+(?:" + COUNTED + r")\b)", I),
+    # spelled out: "nine one one", "nine-one-one", "triple nine", "triple zero", "nine eight eight"
+    re.compile(r"\b(?:nine[\s,-]+one[\s,-]+one|nine[\s,-]+eight[\s,-]+eight|nine[\s,-]+nine[\s,-]+nine|"
+               r"one[\s,-]+one[\s,-]+two|zero[\s,-]+zero[\s,-]+zero|(?:triple|treble)[\s-]+(?:nine|zero|one|9|0))\b", I),
 ]
+# The one number the boxes allow, in its one form.
+ALLOWED_NUMBER = re.compile(r"\(911 in the US\)", I)
 OFFICIAL_PATTERN = re.compile(r"\bcheck\s+(?:it\s+|this\s+|them\s+|that\s+|the number\s+|the link\s+)?on\s+the\s+"
                               r"official\s+(?:page|site|website|web page)\b", I)
 
@@ -343,14 +365,16 @@ def check(text: str) -> list:
         if not OFFICIAL_PATTERN.search(t):
             for m in URL_PATTERN.finditer(t):
                 add(m, "unchecked-link", "a web address without 'check on the official page'")
-            seen = set()
-            for pat in PHONE_PATTERNS:
-                for m in pat.finditer(t):
-                    span = m.span(m.lastindex or 0)
-                    if any(s < span[1] and span[0] < e for s, e in seen):
-                        continue
-                    seen.add(span)
-                    add(m, "unchecked-link", "a phone number without 'check on the official page'", group=m.lastindex or 0)
+        # a phone number is flagged even with 'check on the official page'; only the exact '(911 in the US)' is not
+        seen = [m.span() for m in ALLOWED_NUMBER.finditer(t)]
+        for pat in PHONE_PATTERNS:
+            for m in pat.finditer(t):
+                span = m.span(m.lastindex or 0)
+                if any(s < span[1] and span[0] < e for s, e in seen):
+                    continue
+                seen.append(span)
+                add(m, "phone-number", "a phone, crisis or emergency number; the only number an answer may write is "
+                    "the exact '(911 in the US)'", group=m.lastindex or 0)
 
         labelled, sourced = bool(TIER_PATTERN.search(t)), bool(SOURCED_PATTERN.search(t))
         if not sourced:

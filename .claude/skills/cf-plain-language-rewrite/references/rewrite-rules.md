@@ -26,7 +26,7 @@ The rules in [SKILL.md](../SKILL.md) come first. This page adds detail; where th
 - Use person-first words ("a person with CF") and a warm, respectful tone. No pity, no promises.
 - Number words: writing "twice" for "2 times" is fine. Changing the number is not.
 - Reply in the language the person writes in, unless they ask for a translation. A translation is a draft for the care team or a qualified medical interpreter to check; simplify first, then translate.
-- If the person sounds worried, tired or low, pause and respond warmly first. Only if they might be unsafe, point them to someone they trust or local emergency or crisis services. Never write a phone number from memory, even an emergency one: say "your local emergency number".
+- If the person sounds worried, tired or low, pause and respond warmly first. Only if they might be unsafe, point them to someone they trust or local emergency or crisis services. Write no phone number from memory: say "your local emergency number now (911 in the US)", the one number allowed, in that form, and no other number, even if asked.
 
 ## What to return
 

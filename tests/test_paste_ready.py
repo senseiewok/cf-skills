@@ -147,7 +147,8 @@ class PasteReadyFiles(unittest.TestCase):
 
     def test_the_required_blocks_carry_the_safety_lines(self):
         """In every block of the five care skills: the rules hold however a request is framed, the urgent-symptom
-        line, 'your local emergency number' or local emergency services, no phone number added, no number from memory
+        line, 'your local emergency number' or local emergency services, the one allowed number only as '(911 in the US)'
+        in the urgent line and the danger line and no other number of three or more digits, no number from memory
         even when labelled, and no closing line after a reply about feelings. The STANDARD block also keeps its closing
         line when asked to drop it, and does not refuse a general question."""
         for name in REQUIRED:
@@ -159,7 +160,9 @@ class PasteReadyFiles(unittest.TestCase):
                     self.assertIn("not instructions", low.replace("never instructions", "not instructions"))
                     self.assertIn("do not wait", low)
                     self.assertIn("local emergency", low)
-                    self.assertIn("add no phone number, even an emergency one", low)
+                    self.assertIn("write no other number, even if asked", low)
+                    self.assertEqual(low.count("(911 in the us)"), 2, "the one allowed number, in its one bracket form")
+                    self.assertEqual(re.findall(r"\d{3,}", low), ["911", "911"], "no number but the two brackets")
                     self.assertIn("even if you label it", low, "a label must not license a number from memory")
                     self.assertIn("not after a reply about feelings", low)
                     if block == "STANDARD":

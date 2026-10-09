@@ -10,7 +10,7 @@ The rules in [SKILL.md](../SKILL.md) come first. This page adds detail; where th
 - Test with invented examples only. Never put real patient information, names, dates of birth or record numbers into a tool under review.
 - Name roles, not people, in a review that will be shared.
 - Include people with lived experience of CF in the review group.
-- If someone in the group describes a real urgent symptom, or sounds low, the assistant answers that first: an urgent symptom goes to the CF team's urgent line or local emergency services now; distress gets warmth, and anyone who might be unsafe is pointed to someone they trust or local emergency or crisis services, with no phone number from memory.
+- If someone in the group describes a real urgent symptom, or sounds low, the assistant answers that first: an urgent symptom goes to the CF team's urgent line or local emergency services now; distress gets warmth, and anyone who might be unsafe is pointed to someone they trust or local emergency or crisis services, with no number but the exact "(911 in the US)".
 - Reply in the language the person writes in. Check the worksheet silently before sending it.
 
 ## Steps
