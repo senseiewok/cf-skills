@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-05
+updated: 2026-10-08
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1132,3 +1132,170 @@ sources:
       path. Read by tools/cftr-model/build_traces.py for the sequence, the four marked parts, the transmembrane and topology entries, the ATP-binding sites, the helix,
       strand and turn ranges, and the 209 natural-variant entries (position, residues and wording as UniProt gives them). Variant entries are annotation: they are not a
       clinical, frequency or severity statement, and CFTR2 (the CF-specific authority) was not read for this.
+
+  # ---------------------------------------------------------------- API candidates read 2026-10-07 (proposals/2026-10-07-api-candidates.md)
+  # None of these has a base_url or url, so neither cf-evidence-loop nor fetch_sources.py can reach them
+  # until a human admits them. The data APIs themselves were not called.
+
+  - id: gtex-portal-api
+    title: GTEx Portal API (gene expression by tissue)
+    publisher: GTEx Portal (publisher not read; robots.txt disallows our agent on the whole host)
+    kind: api
+    access: manual
+    robots: disallow
+    robots_checked: 2026-10-07
+    landing_page: https://gtexportal.org/
+    claim_label: unverified
+    notes: >-
+      robots.txt on gtexportal.org was fetched directly 2026-10-07 with the lab user agent: it allows only
+      Googlebot and Bingbot (Crawl-delay 30) and has "User-agent: *" with "Disallow: /". So no further page on
+      that host was fetched. Could not read: the API documentation, terms of use, data licence, rate limit and
+      any key or registration requirement (robots.txt forbids our agent on the whole host). No API root is
+      recorded because none was read. A human reads the GTEx terms and API documentation in a browser and
+      decides; until then expression values for CFTR are looked up by a human and linked, not retrieved.
+
+  - id: dailymed-web-services
+    title: DailyMed RESTful web services (drug labels, SPL)
+    publisher: U.S. National Library of Medicine
+    kind: api
+    access: manual
+    robots: unknown
+    robots_checked: 2026-10-07
+    landing_page: https://dailymed.nlm.nih.gov/dailymed/app-support-web-services.cfm
+    api_root: https://dailymed.nlm.nih.gov/dailymed/services/v2/
+    terms_url: https://www.nlm.nih.gov/databases/download.html
+    published_limit: >-
+      No rate limit, key or registration is stated on the web services page or the NLM download terms read
+      2026-10-07. No cap is chosen until a human admits the source.
+    claim_label: unverified
+    notes: >-
+      Pages fetched directly 2026-10-07 with the lab user agent (web services page, About DailyMed, NLM web
+      policies, NLM Copyright Information and Downloading NLM Data); the API was not called. robots.txt on
+      dailymed.nlm.nih.gov answers 302 to the home page, so there is no robots file to read (recorded as
+      unknown). Held at manual: a human decides whether to admit it. The web services page documents a versioned GET-only REST API (v2, XML or JSON) and ZIP/PDF
+      label download URLs. NLM's download terms say "a signed license agreement is not needed"; users must
+      acknowledge NLM as the source clearly and conspicuously, must not imply NLM endorsement, and anyone
+      redistributing must keep data current or say clearly that it may not be current. The same page says users
+      "agree to hold NLM and the U.S. Government harmless from any liability resulting from errors in the data" and that
+      works of the U.S. Government "may be protected by non-US copyright law" (re-read 2026-10-08). NLM web policies
+      (www.nlm.nih.gov/web_policies.html#copyright; the older copyright.html says it is no longer maintained,
+      re-read 2026-10-09) say that U.S. government works may be reused in the U.S. with acknowledgement, that
+      content contributed by or licensed from companies may be protected by copyright, that reproducing
+      copyrighted items beyond fair use "requires the written permission of the copyright holders", and that
+      "NLM cannot guarantee the copyright status for any item". Label text is submitted by companies, so its
+      copyright status is not established here.
+      The About page says DailyMed labeling is the latest submitted to FDA, may differ from FDA-approved
+      labeling, and is not reviewed by NLM before publication. For approval facts keep using openfda-label /
+      Drugs@FDA; DailyMed is a label-text source, not an approval record. In the five pages read, nothing bars automated
+      retrieval of label text for reading. Redistribution
+      of label text is not settled (see the copyright wording above), so it stays false. This is our reading of
+      the pages, not legal advice; a human decides.
+
+  - id: ensembl-rest
+    title: Ensembl REST API (including Variant Effect Predictor endpoints)
+    publisher: Ensembl (its privacy link is on www.ebi.ac.uk; publisher not otherwise stated on the pages read)
+    kind: api
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-07
+    landing_page: https://rest.ensembl.org/
+    api_root: https://rest.ensembl.org/
+    published_limit: >-
+      The Ensembl REST wiki page "Rate Limits" (github.com/Ensembl/ensembl-rest/wiki/Rate-Limits, last edited
+      Jun 16, 2014) gives a per-IP quota example: "we are allowed 55000 requests over an hour (3600 seconds)",
+      with 429 and Retry-After when exceeded. It is a 2014 example, not a dated current policy.
+    claim_label: unverified
+    notes: >-
+      Fetched directly 2026-10-07 with the lab user agent; the API was not called. robots.txt on
+      rest.ensembl.org returns 404 (no file; re-checked 2026-10-08: 404 again, though one reviewer saw a 500 the same day, so treat a 5xx as "unreadable, do not fetch"); www.ensembl.org disallows only /genome-browser/, /tools/ and
+      /genome-selector/search; github.com's AI-agent group does not disallow wiki pages. The REST landing page
+      lists the endpoints, including GET and POST vep/:species/hgvs, /id and /region, and links its User Guide
+      to the GitHub wiki; it states no key, licence or terms. Could not read: the Ensembl disclaimer and legal
+      terms (www.ensembl.org/info/about/legal/disclaimer.html answers 308 to a different host,
+      jun2026.archive.ensembl.org, which we did not follow). Licence, attribution rules, VEP plugin or
+      annotation licences, and whether a public open-source repo may redistribute outputs are therefore not
+      stated here. access stays manual until a human reads the current Ensembl terms; the API is documented
+      for programmatic use, so it may suit api once that is done (our inference, not checked).
+
+  - id: alphamissense-predictions
+    title: AlphaMissense predictions (Zenodo record)
+    publisher: Zenodo (host of the record; creators at Google DeepMind, copyright DeepMind Technologies Limited)
+    kind: dataset
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-07
+    landing_page: https://zenodo.org/records/10813168
+    terms_url: https://zenodo.org/records/10813168
+    reference_doi: 10.1126/science.adg7492
+    claim_label: unverified
+    notes: >-
+      Fetched directly 2026-10-07 with the lab user agent: zenodo.org robots.txt (does not disallow /records/ except /records/*/preview; allows
+      /api/records/*/files; Crawl-delay 10), the v1 record 8208688 page and its README.md, and the record
+      that /records/8208688/latest redirects to (10813168, version v3). The licence differs by version. v1
+      (DOI 10.5281/zenodo.8208688) is CC BY-NC-SA 4.0 and its README says "All predictions are provided for
+      non-commercial research use only". v3 (10813168) is CC BY 4.0, copyright DeepMind Technologies Limited,
+      provided as is. Both ask that users cite the Science paper (reference_doi). The v1 README disclaims
+      medical use: predictions are for theoretical modelling and not a substitute for professional medical
+      advice. Read as written, v3's CC BY 4.0 allows reuse with attribution (our reading, not legal advice; Zenodo's
+      terms and the v3 README were not read); check which version a file came from
+      before reusing it, because v1 files carry the NonCommercial-ShareAlike terms. The v1 files total 6.1 GB
+      (largest 2.5 GB), so a human decides whether any file is needed; nothing is fetched by a tool.
+      The v3 record page, re-read 2026-10-08, also carries the disclaimer that the resource "has not been validated for, and is not
+      approved for, any clinical use" and lists its Publisher as Zenodo.
+      Could not read: Zenodo's own terms of use (about.zenodo.org/terms, not fetched) and any hosting outside
+      Zenodo (for example a Google Cloud bucket); this entry records only the Zenodo record. AlphaMissense
+      scores are model predictions, not clinical classifications; never present one as a variant's
+      pathogenicity for a person.
+
+  - id: semantic-scholar-api
+    title: Semantic Scholar Academic Graph API
+    publisher: Allen Institute for AI (Ai2)
+    kind: api
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-07
+    landing_page: https://www.semanticscholar.org/product/api
+    terms_url: https://www.semanticscholar.org/product/api/license
+    auth: optional_api_key
+    published_limit: >-
+      The API overview read 2026-10-07 says most endpoints work without a key but are "rate-limited to 1000
+      requests per second shared among all unauthenticated users", may be throttled further, and that a key's
+      introductory limit is 1 RPS on all endpoints; some endpoints require a key. The overview also recommends
+      including a key with every request. No cap is chosen until a human admits the source.
+    claim_label: unverified
+    notes: >-
+      Overview and API License Agreement (last updated May 17, 2023) fetched directly 2026-10-07 with the
+      lab user agent; the API was not called and no key was requested. robots.txt on
+      api.semanticscholar.org returns 404 (no file); www.semanticscholar.org disallows /api, /search and some
+      paper and author paths but not /product/. A key is optional for most endpoints and is requested
+      through the "Request an API Key" link on the overview page; it arrives by email and must not be shared. The licence permits
+      API use and binds the user's organisation on first use, with indemnity and Washington State law, so a
+      human accepts it before admission. Held at manual for that reason. Re-read 2026-10-09: the grant is for use
+      "solely in operation with compatible third-party platforms and software" to "access and display" the data
+      as the API documentation allows, and other uses need a request. The licence also says users comply with
+      the Ai2 Business Partner Code of Conduct; that Ai2 uses the data a user sends to call the API to provide
+      and improve it (so query text goes to Ai2); that Ai2 may reference the user's name and organisation in
+      marketing materials; and that Ai2 may amend the agreement at any time. Attribution: name "Semantic Scholar" on any site or publication using
+      its data, and cite The Semantic Scholar Open Data Platform paper in scientific publications. S2 Data
+      carries its own licences (it names CC BY-NC and ODC-BY as examples) and third-party content may carry
+      others. Forbidden: redistributing or sublicensing the API itself, exceeding or circumventing rate limits,
+      and request volume beyond reasonable use. In the two pages read (the overview and the licence), nothing bars a public, non-commercial research
+      repo, but the data licences were not read; redistributing retrieved data depends on each dataset's
+      licence, so redistribute stays false. Our reading, not legal advice; a human decides.
+
+  - id: unpaywall-api
+    title: Unpaywall REST API
+    publisher: Unpaywall (publisher not read; pages need JavaScript)
+    kind: api
+    access: manual
+    robots: unknown
+    robots_checked: 2026-10-07
+    landing_page: https://unpaywall.org/products/api
+    claim_label: unverified
+    notes: >-
+      Fetched directly 2026-10-07 with the lab user agent. Both unpaywall.org/robots.txt and
+      unpaywall.org/products/api return the same JavaScript application shell (HTTP 200, no rules or text
+      without running scripts), so robots is unknown. Could not read: the API documentation, terms, rate
+      limit, licence and any email or registration requirement (the pages need JavaScript; we do not run a
+      browser to get around that). No API root is recorded because none was read. A human reads the
+      Unpaywall API and data-format pages in a browser before this is reconsidered.
