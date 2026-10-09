@@ -72,7 +72,7 @@ Until you have read them, use the **SHORT** box. It is the safe default.
 
 ## Which box fits where
 
-Block sizes in this repository, measured on 2026-10-08: SHORT 1,066 to 1,199 characters (a test keeps each at most 1,200); STANDARD 2,901 to 3,252 (a test keeps each at most 3,300). Sizes count the text inside a box, not the fence lines around it. Each skill's file shows its own sizes above each box.
+Block sizes in this repository, measured on 2026-10-08: SHORT 1,067 to 1,200 characters (a test keeps each at most 1,200); STANDARD 2,927 to 3,278 (a test keeps each at most 3,300). Sizes count the text inside a box, not the fence lines around it. Each skill's file shows its own sizes above each box.
 
 | Where | Limit we found | SHORT | STANDARD |
 | --- | --- | --- | --- |

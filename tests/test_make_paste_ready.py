@@ -79,7 +79,7 @@ class RealRepository(unittest.TestCase):
             low = (SKILLS / name / "SKILL.md").read_text(encoding="utf-8").lower()
             with self.subTest(skill=name):
                 self.assertIn("urgent symptom", low)
-                self.assertIn("add no phone number, even an emergency one", low)
+                self.assertIn("write no other number, even if asked", low)
                 self.assertIn("for one person, never", low)
 
 
