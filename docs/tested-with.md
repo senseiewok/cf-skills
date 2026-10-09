@@ -10,8 +10,8 @@ Each skill has a paste-ready box. This page says where the boxes have been tried
 | --- | --- | --- | --- | --- | --- |
 | `cf-ai-safe-use` | 22 of 33 pass; 3 partial, 8 fail | 24 of 33 pass; 4 partial, 5 fail | 26 of 33 pass; 5 partial, 2 fail | Pending | Pending |
 | `cf-plain-language-rewrite` | 7 of 14 pass; 5 partial, 2 fail | 6 of 14 pass; 7 partial, 1 fail | 5 of 14 pass; 8 partial, 1 fail | Pending | Pending |
-| `cf-visit-prep` | 3 of 13 pass; 8 partial, 2 fail | 7 of 13 pass; 6 partial, 0 fail | 8 of 13 pass; 5 partial, 0 fail | Pending | Pending |
-| `cf-answer-check` | 3 of 13 pass; 8 partial, 2 fail | 4 of 13 pass; 9 partial, 0 fail | 7 of 13 pass; 6 partial, 0 fail | Pending | Pending |
+| `cf-visit-prep` | 7 of 13 pass; 6 partial, 0 fail | 9 of 13 pass; 4 partial, 0 fail | 10 of 13 pass; 2 partial, 1 fail | Pending | Pending |
+| `cf-answer-check` | 4 of 13 pass; 9 partial, 0 fail | 8 of 13 pass; 5 partial, 0 fail | 9 of 13 pass; 4 partial, 0 fail | Pending | Pending |
 | `cf-ai-tool-review` | 8 of 13 pass; 5 partial, 0 fail | 8 of 13 pass; 5 partial, 0 fail | 5 of 13 pass; 7 partial, 1 fail | Pending | Pending |
 
 ## Local models
@@ -53,6 +53,7 @@ The same 12 messages to `cf-ai-safe-use`'s instructions: none, the SHORT box, th
 - **The one allowed number.** On 2026-10-08 a council decided the boxes may write exactly one number, as "(911 in the US)", and no other. What the Claude models did with it (observed): the exact bracket was written 58 times in the boxed replies, and none of the boxed replies wrote 988 (two had with the earlier wording). But 28 other mentions of 911 or 112 broke the rule, mostly in forms a reader would find right: "Please call 911 now" to someone who had said they were in the US, "911 (US)", "In the US, that's 911". In the Germany test all three models wrote 112, the right number there, which the rule forbids. Judged against the strict rule, the 12-message test had more failures than with the earlier no-number wording (SHORT 9 of 36 fail, STANDARD 8, against 5 and 5), but the earlier rule was judged more loosely (any number failed, so a correct "911" counted too), so the two are not directly comparable. Open for a person to decide: keep the strict form, or accept 911 whenever it sits next to "US" in the same phrase. 988, and whether emergency services should come before the CF team's line, are open for a clinician.
 - **Visit-prep and answer-check are mostly "partial".** In the judges' reasons it is usually one required suggestion left out (such as asking the team in writing, or naming a social worker), or a detail not reworded, not something unsafe.
 - **Local models.** An earlier small run used two local models: with the safe-use box 11 replies passed, 9 were partial and 2 failed, against 0, 7 and 15 without it (22 replies per setting, two models together, read by hand). It is kept as a pointer, not as a per-skill grid.
+- **Visit-prep and answer-check were reworded on 2026-10-09** (task parts of the STANDARD boxes only), then run again on the same cases through the same blind judges, with the earlier replies scored in the same batch so the two are compared on equal terms. Visit-prep: 19 pass, 18 partial, 2 fail before; 26, 12 and 1 after. Answer-check: 19, 18 and 2 before; 21, 18 and 0 after. One reply per case and the same cases moved by up to four passes between runs earlier, so treat the gain as a first look, not a rate. The two skills' cells above are the new boxes; the other three skills' cells are from 2026-10-08.
 
 ## What was run
 
