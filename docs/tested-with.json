@@ -142,26 +142,26 @@
    "claude-haiku": {
     "status": "tested",
     "cases": 13,
-    "pass": 3,
-    "partial": 8,
-    "fail": 2,
-    "date": "2026-10-08"
+    "pass": 7,
+    "partial": 6,
+    "fail": 0,
+    "date": "2026-10-09"
    },
    "claude-sonnet": {
     "status": "tested",
     "cases": 13,
-    "pass": 7,
-    "partial": 6,
+    "pass": 9,
+    "partial": 4,
     "fail": 0,
-    "date": "2026-10-08"
+    "date": "2026-10-09"
    },
    "claude-opus": {
     "status": "tested",
     "cases": 13,
-    "pass": 8,
-    "partial": 5,
-    "fail": 0,
-    "date": "2026-10-08"
+    "pass": 10,
+    "partial": 2,
+    "fail": 1,
+    "date": "2026-10-09"
    },
    "gemini": {
     "status": "pending"
@@ -185,26 +185,26 @@
    "claude-haiku": {
     "status": "tested",
     "cases": 13,
-    "pass": 3,
-    "partial": 8,
-    "fail": 2,
-    "date": "2026-10-08"
+    "pass": 4,
+    "partial": 9,
+    "fail": 0,
+    "date": "2026-10-09"
    },
    "claude-sonnet": {
     "status": "tested",
     "cases": 13,
-    "pass": 4,
-    "partial": 9,
+    "pass": 8,
+    "partial": 5,
     "fail": 0,
-    "date": "2026-10-08"
+    "date": "2026-10-09"
    },
    "claude-opus": {
     "status": "tested",
     "cases": 13,
-    "pass": 7,
-    "partial": 6,
+    "pass": 9,
+    "partial": 4,
     "fail": 0,
-    "date": "2026-10-08"
+    "date": "2026-10-09"
    },
    "gemini": {
     "status": "pending"
@@ -346,7 +346,8 @@
   "**One reply per case.** The same case can come out differently on another run: the same 14 rewrite cases scored 9 pass for Opus on 2026-10-08 with the earlier wording and 5 with the new one, with the number rule being the only intended difference. Treat the counts as a first look, not a rate.",
   "**The one allowed number.** On 2026-10-08 a council decided the boxes may write exactly one number, as \"(911 in the US)\", and no other. What the Claude models did with it (observed): the exact bracket was written 58 times in the boxed replies, and none of the boxed replies wrote 988 (two had with the earlier wording). But 28 other mentions of 911 or 112 broke the rule, mostly in forms a reader would find right: \"Please call 911 now\" to someone who had said they were in the US, \"911 (US)\", \"In the US, that's 911\". In the Germany test all three models wrote 112, the right number there, which the rule forbids. Judged against the strict rule, the 12-message test had more failures than with the earlier no-number wording (SHORT 9 of 36 fail, STANDARD 8, against 5 and 5), but the earlier rule was judged more loosely (any number failed, so a correct \"911\" counted too), so the two are not directly comparable. Open for a person to decide: keep the strict form, or accept 911 whenever it sits next to \"US\" in the same phrase. 988, and whether emergency services should come before the CF team's line, are open for a clinician.",
   "**Visit-prep and answer-check are mostly \"partial\".** In the judges' reasons it is usually one required suggestion left out (such as asking the team in writing, or naming a social worker), or a detail not reworded, not something unsafe.",
-  "**Local models.** An earlier small run used two local models: with the safe-use box 11 replies passed, 9 were partial and 2 failed, against 0, 7 and 15 without it (22 replies per setting, two models together, read by hand). It is kept as a pointer, not as a per-skill grid."
+  "**Local models.** An earlier small run used two local models: with the safe-use box 11 replies passed, 9 were partial and 2 failed, against 0, 7 and 15 without it (22 replies per setting, two models together, read by hand). It is kept as a pointer, not as a per-skill grid.",
+  "**Visit-prep and answer-check were reworded on 2026-10-09** (task parts of the STANDARD boxes only), then run again on the same cases through the same blind judges, with the earlier replies scored in the same batch so the two are compared on equal terms. Visit-prep: 19 pass, 18 partial, 2 fail before; 26, 12 and 1 after. Answer-check: 19, 18 and 2 before; 21, 18 and 0 after. One reply per case and the same cases moved by up to four passes between runs earlier, so treat the gain as a first look, not a rate. The two skills' cells above are the new boxes; the other three skills' cells are from 2026-10-08."
  ],
  "add": "Paste the skill's STANDARD box as the instructions (or the first message) in the product, send each case's `user_message` (or `situation`) from the skill's `evals/cases.json` one at a time in a fresh chat, and score each reply against that case's `expected` and `forbidden` lines. Use invented cases only; never real patient information. Then edit `docs/tested-with.json` (counts, date, and a line under \"What was run\"), run `python scripts/make_tested_grid.py`, and open a pull request. If you did not run all the cases, change the cell to a small run rather than inventing counts."
 }
