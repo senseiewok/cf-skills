@@ -1,0 +1,92 @@
+# Runs this repository's own checks on every pull request to main and every push to main.
+# Read-only token, actions pinned by full commit SHA, no secrets, no caches, no artifacts.
+# Nothing from a pull request (title, branch name, body) is used in a run step.
+#
+# Not run here: site-seo-review's layout-shift measurement and any live check, which need
+# Playwright with a Chromium or a network request to a real site; its offline tests do run.
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  checks:
+    name: repository checks (standard library only)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: check_repo.py (frontmatter, links, eval cases)
+        run: python scripts/check_repo.py
+      - name: make_index.py --check (index, audience page and README table up to date)
+        run: python scripts/make_index.py --check
+      - name: make_tested_grid.py --check (tested-with grid recounted)
+        run: python scripts/make_tested_grid.py --check
+      - name: helper script tests
+        run: python -m unittest discover tests
+      - name: site-seo-review checker tests
+        working-directory: .claude/skills/site-seo-review
+        run: python -m unittest discover -s tests
+
+  skill-tests:
+    name: skill tests (pytest)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      # Third-party packages, each at an exact version. The skill's requirements file
+      # (.claude/skills/cf-evidence-loop/scripts/requirements.txt) lists ranges without hashes,
+      # so --require-hashes is not possible; every package, including each dependency, is pinned
+      # here and installed with --no-deps so nothing unpinned comes in. pytest runs the tests;
+      # requests and PyYAML are imported by the evidence tool's scripts. The tests touch no network.
+      - name: install pinned test packages
+        run: |
+          python -m pip install --no-deps --only-binary=:all: \
+            pytest==8.3.4 pluggy==1.5.0 iniconfig==2.0.0 packaging==24.2 \
+            requests==2.32.3 urllib3==2.2.3 idna==3.10 certifi==2024.8.30 charset-normalizer==3.4.0 \
+            PyYAML==6.0.3
+          python -m pip check
+      # Each skill's tests run from its own folder, as its SKILL.md says (conftest.py puts its scripts on the path).
+      - name: cf-evidence-loop tests
+        working-directory: .claude/skills/cf-evidence-loop
+        run: python -m pytest -q tests
+      - name: cf-ai-safe-use tests
+        working-directory: .claude/skills/cf-ai-safe-use
+        run: python -m pytest -q tests
+      - name: cf-ai-tool-review tests
+        working-directory: .claude/skills/cf-ai-tool-review
+        run: python -m pytest -q tests
+      - name: cf-answer-check tests
+        working-directory: .claude/skills/cf-answer-check
+        run: python -m pytest -q tests
+      - name: cf-plain-language-rewrite tests
+        working-directory: .claude/skills/cf-plain-language-rewrite
+        run: python -m pytest -q tests
