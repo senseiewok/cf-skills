@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-09
+updated: 2026-10-10
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1356,5 +1356,109 @@ sources:
       programmes, contact); a link to a free online community that is hosted on a third-party community platform (circle.so),
       not on this host, and that asks visitors to register; a link to a privacy notice; no terms-of-use page. Not read: the
       privacy notice, any other page, and any terms. Access stays manual, not fetch, until a person has decided what the
-      lab may do here; no tool is set up to read this host. The pages are in Spanish: rows for them are confirmed by a person
-      who reads Spanish (the maintainer does), and the lab writes no Spanish text of its own.
+      lab may do here; no tool is set up to read this host. The pages are in Spanish: rows for them carry a short Mexican Spanish
+      summary the lab writes in its own words, and a person who reads Spanish confirms each row against the page.
+
+  - id: cftrust-resource-pages
+    title: Cystic Fibrosis Trust public help pages (www.cysticfibrosis.org.uk)
+    publisher: Cystic Fibrosis Trust
+    kind: resource_pages
+    access: fetch
+    robots: allow
+    robots_checked: 2026-10-10
+    landing_page: https://www.cysticfibrosis.org.uk/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Read on 2026-10-10 with the lab's project user agent, robots.txt first, a pause of three seconds between pages (set in the script):
+      robots.txt answered 200 (1663 bytes) and allows the paths used for all agents; no group names an AI agent, no content-signal line, no crawl delay. No redirect was followed across hosts: where a host answered 301, the Location header was read and the work began again on the
+      target host, reading its robots.txt first. Observed on the home page footer: links to an accessibility statement and a privacy and cookies policy. No terms-of-use page is linked there. The
+      footer's policy pages were read on 2026-10-10 (the privacy policy and the accessibility statement): they cover personal data, accessibility or complaints and say nothing about
+      automated access, copying or reuse of page content. That is an absence, not a permission: what the site permits beyond robots.txt is
+      not stated. Access is fetch on the evidence of robots.txt and of that absence (claim_label stays unverified). robots.txt is read again
+      before every later run, and a change or an unreadable file stops the run. The visit was made to check each row against a screenshot;
+      that is a reason for the visit, not a basis for access. What was done: each page was loaded twice in a headless browser that presented the
+      project user agent (not a browser's), once to take the screenshot and once more to read its main text (a browser also requests the
+      page's own files from the same host), with every request to another host blocked. The screenshots and page text were kept in a scratch
+      folder outside every repository, are not published, and are to be deleted once the rows are confirmed. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, image, logo, phone number, email address or person's name. In practice the scope is the pages
+      listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
+      This entry covers the help pages on the host only. The UK registry report on the same host carries its own copyright note (see ukcfr-adr-2024) and is unaffected. The home page header shows a forum behind a login: not listed.
+
+  - id: cfcanada-resource-pages
+    title: Cystic Fibrosis Canada public help pages (cysticfibrosis.ca)
+    publisher: Cystic Fibrosis Canada
+    kind: resource_pages
+    access: fetch
+    robots: allow
+    robots_checked: 2026-10-10
+    landing_page: https://cysticfibrosis.ca/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Read on 2026-10-10 with the lab's project user agent, robots.txt first, a pause of three seconds between pages (set in the script):
+      the www host answered 301 to cysticfibrosis.ca; robots.txt there answered 200 (about 127 kilobytes) and allows the paths used for all agents; no group names an AI agent, no content-signal line, no crawl delay. No redirect was followed across hosts: where a host answered 301, the Location header was read and the work began again on the
+      target host, reading its robots.txt first. Observed on the home page footer: links to accessibility, privacy, a Standards and Policies page and a site map. No terms-of-use page is linked there. The
+      footer's policy pages were read on 2026-10-10 (Standards and Policies, privacy and accessibility): they cover personal data, accessibility or complaints and say nothing about
+      automated access, copying or reuse of page content. That is an absence, not a permission: what the site permits beyond robots.txt is
+      not stated. Access is fetch on the evidence of robots.txt and of that absence (claim_label stays unverified). robots.txt is read again
+      before every later run, and a change or an unreadable file stops the run. The visit was made to check each row against a screenshot;
+      that is a reason for the visit, not a basis for access. What was done: each page was loaded twice in a headless browser that presented the
+      project user agent (not a browser's), once to take the screenshot and once more to read its main text (a browser also requests the
+      page's own files from the same host), with every request to another host blocked. The screenshots and page text were kept in a scratch
+      folder outside every repository, are not published, and are to be deleted once the rows are confirmed. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, image, logo, phone number, email address or person's name. In practice the scope is the pages
+      listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
+      The clinical trial finder and the registry sit on other hosts (the trial finder host's robots.txt could not be read, so it was not requested); they are not covered. The home page header offers English and French: rows use the English pages.
+
+  - id: cfaustralia-resource-pages
+    title: Cystic Fibrosis Australia public help pages (www.cysticfibrosis.org.au)
+    publisher: Cystic Fibrosis Australia
+    kind: resource_pages
+    access: fetch
+    robots: allow
+    robots_checked: 2026-10-10
+    landing_page: https://www.cysticfibrosis.org.au/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Read on 2026-10-10 with the lab's project user agent, robots.txt first, a pause of three seconds between pages (set in the script):
+      robots.txt answered 200 (126 bytes) and allows the paths used for all agents; no group names an AI agent, no content-signal line, no crawl delay. No redirect was followed across hosts: where a host answered 301, the Location header was read and the work began again on the
+      target host, reading its robots.txt first. Observed on the home page footer: a link to a privacy policy. No terms-of-use page is linked there. The
+      footer's policy pages were read on 2026-10-10 (the privacy policy): they cover personal data, accessibility or complaints and say nothing about
+      automated access, copying or reuse of page content. That is an absence, not a permission: what the site permits beyond robots.txt is
+      not stated. Access is fetch on the evidence of robots.txt and of that absence (claim_label stays unverified). robots.txt is read again
+      before every later run, and a change or an unreadable file stops the run. The visit was made to check each row against a screenshot;
+      that is a reason for the visit, not a basis for access. What was done: each page was loaded twice in a headless browser that presented the
+      project user agent (not a browser's), once to take the screenshot and once more to read its main text (a browser also requests the
+      page's own files from the same host), with every request to another host blocked. The screenshots and page text were kept in a scratch
+      folder outside every repository, are not published, and are to be deleted once the rows are confirmed. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, image, logo, phone number, email address or person's name. In practice the scope is the pages
+      listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
+      The Australian registry report on the same host has its own entry (acfdr-adr-2025). CF Together, a separate organisation with its own host, is not covered: its home page returned no readable content when loaded under these rules, so it needs a person to open it.
+
+  - id: cfireland-resource-pages
+    title: Cystic Fibrosis Ireland public help pages (www.cfireland.ie)
+    publisher: Cystic Fibrosis Ireland
+    kind: resource_pages
+    access: fetch
+    robots: allow
+    robots_checked: 2026-10-10
+    landing_page: https://www.cfireland.ie/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Read on 2026-10-10 with the lab's project user agent, robots.txt first, a pause of three seconds between pages (set in the script):
+      the bare host answered 301 to www.cfireland.ie; robots.txt there answered 200 (137 bytes) and allows the paths used for all agents; no group names an AI agent, no content-signal line, no crawl delay. No redirect was followed across hosts: where a host answered 301, the Location header was read and the work began again on the
+      target host, reading its robots.txt first. Observed on the home page footer: links to a privacy statement and policy, a GDPR page and a complaints policy. No terms-of-use page is linked there. The
+      footer's policy pages were read on 2026-10-10 (the privacy statement, the privacy policy and the complaints policy): they cover personal data, accessibility or complaints and say nothing about
+      automated access, copying or reuse of page content. That is an absence, not a permission: what the site permits beyond robots.txt is
+      not stated. Access is fetch on the evidence of robots.txt and of that absence (claim_label stays unverified). robots.txt is read again
+      before every later run, and a change or an unreadable file stops the run. The visit was made to check each row against a screenshot;
+      that is a reason for the visit, not a basis for access. What was done: each page was loaded twice in a headless browser that presented the
+      project user agent (not a browser's), once to take the screenshot and once more to read its main text (a browser also requests the
+      page's own files from the same host), with every request to another host blocked. The screenshots and page text were kept in a scratch
+      folder outside every repository, are not published, and are to be deleted once the rows are confirmed. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, image, logo, phone number, email address or person's name. In practice the scope is the pages
+      listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
+      The Irish registry (cfri.ie) is a different organisation and host and has its own entry (cfri-adr-2024).
