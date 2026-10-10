@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-08
+updated: 2026-10-09
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1299,3 +1299,62 @@ sources:
       limit, licence and any email or registration requirement (the pages need JavaScript; we do not run a
       browser to get around that). No API root is recorded because none was read. A human reads the
       Unpaywall API and data-format pages in a browser before this is reconsidered.
+
+  # ---------------------------------------------------------------- resource pages (proposals/2026-10-09-resources-tab.md)
+  # Entries of kind resource_pages record what we may do with an organisation's public help pages, which the Resources tab links to.
+  # They are not report files: no url, no filename, and no tool downloads from them. A row in resources/resources.yaml points here.
+
+  - id: cff-resource-pages
+    title: Cystic Fibrosis Foundation public help pages (www.cff.org)
+    publisher: Cystic Fibrosis Foundation
+    kind: resource_pages
+    access: manual
+    robots: unreadable
+    robots_checked: 2026-10-05
+    landing_page: https://www.cff.org/support
+    url: null
+    claim_label: unverified
+    notes: >-
+      Same host and same evidence as the twelve Foundation registry entries above: robots.txt was unreadable on
+      2026-10-05 and the notes there say the site refuses automated clients, so no tool or agent requests this host and no
+      headless browser is used on it. Rows for these pages are made by a person opening them in a browser (the maintainer did
+      this on 2026-10-09 for nine pages). Not read: the site's terms of use; whether it permits links, short factual
+      descriptions or an automated reader. Until a person reads them, the lab links and describes in its own words and
+      copies no text, logo or image. Letter to the Foundation: not sent.
+
+  - id: cff-apps-resource-pages
+    title: Cystic Fibrosis Foundation tools host (apps.cff.org)
+    publisher: Cystic Fibrosis Foundation
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://apps.cff.org/ccd
+    url: null
+    claim_label: unverified
+    notes: >-
+      A second host of the Foundation, for the care center locator and the clinical trial finder. Its robots.txt and terms were
+      not read; with no evidence the lab treats it like the main host, as manual. Rows are made by a person in a browser. No
+      tool requests it. A person reading the terms of this host and of www.cff.org settles both.
+
+  - id: amfq-resource-pages
+    title: Asociación Mexicana de Fibrosis Quística, A.C. (AMFQ) website (www.fq.org.mx)
+    publisher: Asociación Mexicana de Fibrosis Quística, A.C.
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-09
+    landing_page: https://www.fq.org.mx/
+    url: null
+    claim_label: unverified
+    notes: >-
+      The address came from the reference list of an AI-written report the maintainer pasted on 2026-10-09 and from a web
+      search limited to this host. Read on 2026-10-09 with the lab's project user agent: robots.txt (HTTP 200, 487 bytes: one
+      group for all agents that allows everything, no group naming an AI agent, no content-signal line; a crawl delay only for two
+      SEO crawlers) and the home page, one request each. The read used a short script that copies the lab downloader's conduct
+      (robots first, one request per page, no retry, same-host redirects only) because the downloader's requests library is
+      not installed on this machine. Observed on the home page: a menu of four pages (what CF is, about the association,
+      programmes, contact); a link to a free online community that is hosted on a third-party community platform (circle.so),
+      not on this host, and that asks visitors to register; a link to a privacy notice; no terms-of-use page. Not read: the
+      privacy notice, any other page, and any terms. Access stays manual, not fetch, until a person has decided what the
+      lab may do here; no tool is set up to read this host. The pages are in Spanish: rows for them are confirmed by a person
+      who reads Spanish (the maintainer does), and the lab writes no Spanish text of its own.
