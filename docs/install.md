@@ -52,4 +52,4 @@ GitHub's CLI documents `gh skill install <repository> [<skill>] [--agent <id>] [
 - `gh skill` with a skill at the top of a repository, and its minimum version.
 - The Claude API request details (the skills guide was not read).
 
-If you find a path or command here that is wrong for your version, please open an issue with the vendor page and version.
+If you find a path or command here that is wrong for your version, please tell the lab on the [Contact page](https://senseiewok.ai/contact/) of senseiewok.ai, with the vendor page and version. This repository does not take outside issues or pull requests.
