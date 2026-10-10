@@ -1462,3 +1462,30 @@ sources:
       one-sentence summary only: no page text, image, logo, phone number, email address or person's name. In practice the scope is the pages
       listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
       The Irish registry (cfri.ie) is a different organisation and host and has its own entry (cfri-adr-2024).
+
+  - id: natural-earth-110m-countries
+    title: Natural Earth 1:110m Admin 0 Countries (vector, GeoJSON)
+    publisher: Natural Earth (Tom Patterson, Nathaniel Vaughn Kelso and contributors; supported by NACIS)
+    kind: dataset
+    access: fetch
+    landing_page: https://github.com/nvkelso/natural-earth-vector
+    url: https://github.com/nvkelso/natural-earth-vector/blob/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_110m_admin_0_countries.geojson
+    terms_url: https://github.com/nvkelso/natural-earth-vector/blob/ca96624a56bd078437bca8184e78163e5039ad19/LICENSE.md
+    filename: ne_110m_admin_0_countries.geojson
+    redistribute: true
+    claim_label: verified
+    notes: >-
+      Read 2026-10-10 through the GitHub contents API with the gh command line tool (authenticated, an official route: no
+      page was crawled, so robots.txt does not apply and the robots field is left out): the repository's LICENSE.md and
+      README.md, the repository metadata, and this one file. The repository's LICENSE.md says "Everything here is public domain",
+      that all versions of the vector and raster data "are in the public domain", that the maps may be used "in any manner,
+      including modifying the content and design, electronic dissemination, and offset printing", and that "No permission is needed
+      to use Natural Earth. Crediting the authors is unnecessary" (the lab credits it anyway: "Made with Natural Earth"). GitHub's
+      own licence detector reports "other" (no SPDX identifier) for the repository, so the public-domain statement rests on that
+      file's text alone. Retrieved from branch master at commit ca96624a56bd078437bca8184e78163e5039ad19 (committed 2022-06-02): 177
+      features, 838,726 bytes, SHA-256 6866c877d39cba9c357620878839b336d569f8c662d3cfab4cb1dbe2d39c977f, git blob
+      1e6ab74c7042f97013be69ceec798be8e1aff27d. Not read: the terms-of-use page on naturalearthdata.com that LICENSE.md links to, and
+      Natural Earth's notes on disputed boundaries; the shapes follow Natural Earth's own choices, which the lab has not reviewed,
+      and the site uses them only as a decorative picture (never to state a border). Used to build a simplified map picture for
+      the site's Resources page; the raw file is not published, a trimmed copy and its hashes are kept in the site repository's
+      data folder.
