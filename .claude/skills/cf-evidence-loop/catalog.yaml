@@ -698,10 +698,25 @@ sources:
     base_url: https://clinicaltrials.gov/api/v2/
     auth: none
     claim_label: verified
-    terms_url: https://clinicaltrials.gov/data-api/about-api
+    terms_url: https://clinicaltrials.gov/about-site/terms-conditions
     max_rps: 1.0
     published_limit: robots.txt disallows /api/ for crawlers and sets Crawl-delay 1; the data API is published
-      for programmatic use and governs this access. No numeric limit stated on the page read 2026-10-04
+      for programmatic use, and its usage page governs the API mechanics (the Terms page named in terms_url governs
+      use of the data). No numeric limit stated on the page read 2026-10-04
+    notes: >-
+      terms_url was the API page until 2026-10-10; it now points at the registry's Terms and Conditions
+      (last updated 2023-01-31, read 2026-10-10), which state they apply to all ClinicalTrials.gov data,
+      independent of format. In any publication or distribution, the page says users should attribute the
+      data to ClinicalTrials.gov, keep them current, display the date ClinicalTrials.gov processed them, and
+      state any modifications with a complete description. It says users shall not assert proprietary rights,
+      represent the database or any part of it as other than a United States Government database, or use
+      extracted email addresses for marketing. It notes an international copyright outside the US and
+      possible third-party copyright in some data. The terms stay in effect while any of the data are
+      retained. Lab position, not the registry's: the API usage page
+      (https://clinicaltrials.gov/data-api/about-api) remains the reference for API mechanics; redistribute
+      stays false (the default) until the maintainer decides; derived counts or tags still carry attribution,
+      the processed date and a description of how they were derived. Not checked: which individual records
+      carry third-party copyright.
 
   - id: ncbi-eutils
     title: NCBI E-utilities
