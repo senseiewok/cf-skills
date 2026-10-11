@@ -712,7 +712,11 @@ sources:
       represent the database or any part of it as other than a United States Government database, or use
       extracted email addresses for marketing. It notes an international copyright outside the US and
       possible third-party copyright in some data. The terms stay in effect while any of the data are
-      retained. Lab position, not the registry's: the API usage page
+      retained. It also says the U.S. Government makes no warranties about the data and that the registry is
+      updated daily. The separate Disclaimer page (https://clinicaltrials.gov/about-site/disclaimer, last
+      updated 2023-08-03, read 2026-10-10) says the U.S. government does not review or approve the safety and
+      science of all studies, that the sponsor or investigator is responsible for their records, and that NLM
+      staff only review for apparent errors, deficiencies or inconsistencies. Lab position, not the registry's: the API usage page
       (https://clinicaltrials.gov/data-api/about-api) remains the reference for API mechanics; redistribute
       stays false (the default) until the maintainer decides; derived counts or tags still carry attribution,
       the processed date and a description of how they were derived. Not checked: which individual records
