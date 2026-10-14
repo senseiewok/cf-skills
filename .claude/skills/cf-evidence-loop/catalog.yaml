@@ -942,18 +942,19 @@ sources:
     kind: api
     access: api
     landing_page: https://docs.datacommons.org/api/
+    base_url: https://api.datacommons.org/v2/
     api_root: https://api.datacommons.org/v2/
     auth: api_key_required
-    claim_label: unverified
+    claim_label: verified
     terms_url: https://policies.google.com/terms
     max_rps: 1.0
     published_limit: No Data Commons quota or rate limit is stated on the API or MCP documentation pages
       read 2026-10-04; we cap at 1 request/second. Keys are required for api.datacommons.org (apikeys.datacommons.org).
-    notes: Under admission review (research/proposals/2026-10-04-datacommons-admission.md, cf-lab board T-0048).
-      base_url is deliberately absent, so cf-evidence-loop cannot reach this source until a human admits
-      it. Terms are Google's general terms (linked from the docs footer); attribution guidance is linked
+    notes: Admitted 2026-10-14 for general statistics and population denominators only (board task T-0048;
+      research/proposals/2026-10-04-datacommons-admission.md). Key configured in .env (DC_API_KEY).
+      Terms are Google's general terms (linked from the docs footer); attribution guidance is linked
       as /attribution.html on docs.datacommons.org; licences of the underlying statistics vary by dataset
-      and are listed at datacommons.org/datasets, which was not read.
+      and are listed at datacommons.org/datasets.
 
   # ----------------------------------------- read 2026-10-04 from the connector list
 

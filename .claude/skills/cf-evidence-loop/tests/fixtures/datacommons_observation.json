@@ -1,0 +1,33 @@
+{
+  "byVariable": {
+    "Count_Person": {
+      "byEntity": {
+        "country/USA": {
+          "orderedFacets": [
+            {
+              "facetId": "12345",
+              "observations": [
+                {
+                  "date": "2024",
+                  "value": 340000000
+                },
+                {
+                  "date": "2025",
+                  "value": 341784857
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "facets": {
+    "12345": {
+      "measurementMethod": "CensusPEPSurvey",
+      "observationPeriod": "P1Y",
+      "provenanceUrl": "https://www.census.gov/programs-surveys/popest.html",
+      "provenanceId": "dc/base/USCensusPEP_Annual_Population"
+    }
+  }
+}

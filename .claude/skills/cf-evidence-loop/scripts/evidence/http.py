@@ -209,13 +209,13 @@ class Client:
 
     # --------------------------------------------------------------- requests
 
-    def get(self, source_id: str, path: str, params: dict | None = None) -> Fetch:
-        return self._do("GET", source_id, path, params=params)
+    def get(self, source_id: str, path: str, params: dict | None = None, headers: dict | None = None) -> Fetch:
+        return self._do("GET", source_id, path, params=params, headers=headers)
 
-    def post(self, source_id: str, path: str, json: dict | None = None) -> Fetch:
-        return self._do("POST", source_id, path, json=json)
+    def post(self, source_id: str, path: str, json: dict | None = None, headers: dict | None = None) -> Fetch:
+        return self._do("POST", source_id, path, json=json, headers=headers)
 
-    def _do(self, method: str, source_id: str, path: str, *, params=None, json=None) -> Fetch:
+    def _do(self, method: str, source_id: str, path: str, *, params=None, json=None, headers=None) -> Fetch:
         url = self._url(source_id, path)
         host = urlparse(url).netloc.lower()
         self._paperwork(source_id)
@@ -223,12 +223,13 @@ class Client:
         self._robots_ok(source_id, url)
         if self.dry_run:                                      # R9
             self._count(host, path)
-            planned = requests.Request(method, url, params=params).prepare().url
+            kw = {"headers": headers} if headers else {}
+            planned = requests.Request(method, url, params=params, **kw).prepare().url
             self.planned.append((method, planned))
             return Fetch(Status.OUT_OF_SCOPE, None, planned, dry_run=True)
         self._pace(source_id)
         self._count(host, path)
-        resp = self._send(method, url, params, json)
+        resp = self._send(method, url, params, json, headers=headers)
         if resp.status_code in (429, 503):
             if host in self._rate_limited_once:
                 self._trip(host, f"rate limited twice ({resp.status_code})")
@@ -247,7 +248,7 @@ class Client:
             time.sleep(ra)
             self._pace(source_id)                             # a Retry-After of 0 must not mean "immediately"
             self._count(host, path)
-            resp = self._send(method, url, params, json)
+            resp = self._send(method, url, params, json, headers=headers)
             if resp.status_code in (429, 503):
                 self._trip(host, f"rate limited again after honouring Retry-After ({resp.status_code})")
                 return Fetch(Status.RATE_LIMITED, resp.status_code, resp.url, retry_after=ra, text=resp.text[:500])
@@ -263,10 +264,11 @@ class Client:
             self._consecutive_errors[host] = 0
         return f
 
-    def _send(self, method: str, url: str, params, json) -> requests.Response:
+    def _send(self, method: str, url: str, params, json, headers=None) -> requests.Response:
         # Redirects are never followed: a 30x from a permitted host could name any other host (R1).
+        extra = {"headers": headers} if headers else {}
         try:
-            resp = self.session.request(method, url, params=params, json=json, timeout=self.timeout, allow_redirects=False, stream=True)
+            resp = self.session.request(method, url, params=params, json=json, timeout=self.timeout, allow_redirects=False, stream=True, **extra)
             return _read_capped(resp, url)                      # R10
         except requests.RequestException as exc:
             # DNS, timeout, TLS: no HTTP response exists. Report it as an error record instead of a

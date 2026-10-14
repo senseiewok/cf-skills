@@ -14,6 +14,7 @@
     python -m evidence.cli trial NCT05033080
     python -m evidence.cli epmc 'TITLE:"cystic fibrosis" AND OPEN_ACCESS:y'
     python -m evidence.cli cited 10.1038/ng.2745
+    python -m evidence.cli population country/USA
     python -m evidence.cli brief drug TRIKAFTA
     python -m evidence.cli brief variant "CFTR[gene] AND F508del"
     python -m evidence.cli brief trial NCT05033080
@@ -38,7 +39,7 @@ import sys
 
 from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, europepmc, openfda, preprints, pubmed, reporter, trials
+from .providers import clinvar, crossref, datacommons, europepmc, openfda, preprints, pubmed, reporter, trials
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -76,6 +77,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--limit", type=int, default=20)
     p = sub.add_parser("epmc", help="Europe PMC search (its own query syntax, e.g. TITLE:\"cystic fibrosis\" AND OPEN_ACCESS:y)"); p.add_argument("query"); p.add_argument("--limit", type=int, default=20)
     p = sub.add_parser("cited", help="Europe PMC record for a DOI: citation count and open-access status"); p.add_argument("doi")
+    p = sub.add_parser("population", help="Data Commons population denominator for an entity (e.g. country/USA, geoId/53)")
+    p.add_argument("entity", help="Data Commons entity DCID (e.g. country/USA, geoId/53)")
+    p.add_argument("--variable", default=datacommons.DEFAULT_VARIABLE, help=f"Data Commons variable DCID (default: {datacommons.DEFAULT_VARIABLE})")
+    p.add_argument("--year", help="filter for a specific observation year (default: latest)")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
     p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
@@ -196,6 +201,8 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return europepmc.search(client, a.query, a.limit)
     elif a.cmd == "cited":
         return europepmc.lookup(client, a.doi)
+    elif a.cmd == "population":
+        return [datacommons.observation(client, a.entity, a.variable, getattr(a, "year", None))]
     ap.error(a.cmd)  # pragma: no cover
 
 

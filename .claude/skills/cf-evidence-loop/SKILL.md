@@ -37,6 +37,7 @@ Research, not medical advice. The records this tool returns describe public docu
 | Which CF preprints appeared in a window? | `preprints <server> <YYYY-MM-DD> <YYYY-MM-DD> [--pattern]` | bioRxiv / medRxiv |
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
+| What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 | Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30]` | Crossref, PubMed, ClinicalTrials.gov (see Cite-check) |
@@ -50,6 +51,7 @@ pip install -r scripts/requirements.txt
 python scripts/evidence_cli.py retractions 10.1038/ng.2745
 python scripts/evidence_cli.py approval TRIKAFTA
 python scripts/evidence_cli.py variants "CFTR[gene] AND F508del" --limit 5
+python scripts/evidence_cli.py population country/USA
 ```
 
 Flags on every command: `--json` for one JSON object per record, `--ledger PATH` to append records to a JSONL evidence ledger. Exit code 0 when every record is `found` or `not_found`; 3 when any is `blocked`, `rate_limited` or `error`.

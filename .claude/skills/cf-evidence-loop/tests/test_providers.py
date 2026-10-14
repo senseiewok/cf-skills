@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, europepmc, openfda, preprints, pubmed, reporter, trials
+from evidence.providers import clinvar, crossref, datacommons, europepmc, openfda, preprints, pubmed, reporter, trials
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -113,3 +113,36 @@ def test_reporter_handles_null_dates():
     assert len(recs) == 2
     assert all(r.publisher_date == "2025" for r in recs)
     assert all("NIH-funded projects only" in r.limitations for r in recs)
+
+
+def test_datacommons_parse_observation_latest():
+    r = datacommons.parse_observation(load("datacommons_observation.json"), "country/USA", "Count_Person", "q", "u")
+    assert r.status is Status.FOUND
+    assert r.publisher_date == "2025"
+    assert r.fields["value"] == 341784857
+    assert r.fields["measurement_method"] == "CensusPEPSurvey"
+    assert r.fields["provenance_url"] == "https://www.census.gov/programs-surveys/popest.html"
+    assert "Google Data Commons aggregate statistical observation" in r.limitations
+
+
+def test_datacommons_parse_observation_by_year():
+    r = datacommons.parse_observation(load("datacommons_observation.json"), "country/USA", "Count_Person", "q", "u", year="2024")
+    assert r.status is Status.FOUND
+    assert r.publisher_date == "2024"
+    assert r.fields["value"] == 340000000
+
+
+def test_datacommons_parse_observation_not_found():
+    r = datacommons.parse_observation({}, "country/USA", "Count_Person", "q", "u")
+    assert r.status is Status.NOT_FOUND
+    assert r.fields["entity"] == "country/USA"
+
+
+def test_datacommons_observation_blocks_without_key(monkeypatch):
+    from evidence import http
+    monkeypatch.delenv("DC_API_KEY", raising=False)
+    c = http.Client()
+    r = datacommons.observation(c, "country/USA")
+    assert r.status is Status.BLOCKED
+    assert "DC_API_KEY" in r.fields["error"]
+
