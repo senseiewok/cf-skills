@@ -38,6 +38,8 @@ Research, not medical advice. The records this tool returns describe public docu
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
+| What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |
+| Search OpenAlex works | `openalex-search "<query>" [--limit 10]` | OpenAlex via OurResearch (key required) |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 | Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30]` | Crossref, PubMed, ClinicalTrials.gov (see Cite-check) |
