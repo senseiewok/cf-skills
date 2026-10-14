@@ -215,6 +215,7 @@ def variant(client: Client, term: str) -> Brief:
     b = Brief("variant", term)
     b.steps.append(_run("variants", clinvar.SOURCE, f"ClinVar records matching '{term}'", lambda: clinvar.variants(client, term)))
     b.steps.append(_run("pubmed", pubmed.SOURCE, f"PubMed records matching '{term}'", lambda: pubmed.search(client, term, PUBMED_LIMIT)))
+    b.steps.append(_run("openalex", openalex.SOURCE, f"OpenAlex works matching '{term}'", lambda: openalex.search(client, term, limit=OPENALEX_LIMIT)))
 
     found = b.steps[0].found()
     for r in found:   # every matching record is listed; none is chosen
@@ -222,9 +223,17 @@ def variant(client: Client, term: str) -> Brief:
         for key in ("title", "classification", "review_status"):
             b.facts.append((f"variants {acc}", key, _value(r, key)))
         b.facts.append((f"variants {acc}", "last_evaluated", r.publisher_date or NOT_STATED))
-    first_pm = next(iter(b.steps[1].found()), None)
-    b.facts.append(("pubmed", "search_total", _value(first_pm, "search_total")))
-    b.facts.append(("pubmed", "records returned (counted)", len(b.steps[1].found())))
+    for name, step in (("pubmed", b.steps[1]), ("openalex", b.steps[2])):
+        first = next(iter(step.found()), None)
+        b.facts.append((name, "search_total", _value(first, "search_total")))
+        b.facts.append((name, "records returned (counted)", len(step.found())))
+
+    alex_found = b.steps[2].found()
+    if alex_found:
+        top_citations = max((_value(r, "cited_by") for r in alex_found if isinstance(_value(r, "cited_by"), (int, float))), default=0)
+        b.facts.append(("openalex", "max_cited_by", top_citations))
+        oa_count = sum(1 for r in alex_found if _value(r, "is_oa") is True)
+        b.facts.append(("openalex", "open_access (counted)", oa_count))
 
     _source_checks(b)
     if len(found) == 1:
@@ -243,6 +252,17 @@ def variant(client: Client, term: str) -> Brief:
         if _value(r, "classification") == NOT_STATED or _value(r, "review_status") == NOT_STATED:
             b.checks.append(Check(NOTE, f"classification of {acc}",
                                   f"classification {_show(_value(r, 'classification'))}, review_status {_show(_value(r, 'review_status'))}"))
+
+    if b.steps[2].status == Status.BLOCKED.value:
+        b.checks.append(Check(NOTE, "OpenAlex literature & retraction scan", "OPENALEX_API_KEY not configured or blocked"))
+    elif alex_found:
+        retracted = [r for r in alex_found if _value(r, "is_retracted") is True]
+        if retracted:
+            b.checks.append(Check(CHECK, "OpenAlex retraction scan", f"{len(retracted)} work(s) flagged retracted in top matches"))
+        else:
+            b.checks.append(Check(PASS, "OpenAlex retraction scan", "0 works flagged retracted in top matches"))
+    else:
+        b.checks.append(Check(NOTE, "OpenAlex retraction scan", "no OpenAlex records returned to evaluate"))
     return b
 
 

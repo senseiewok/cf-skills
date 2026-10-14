@@ -109,12 +109,15 @@ def test_drug_trials_step_searches_by_term_without_a_condition(monkeypatch, no_s
 
 def test_variant_brief_lists_every_match_and_chooses_none(monkeypatch, no_sleep):
     s = Script([ok(esearch("4072070", "4689723")), ok(load("clinvar_esummary.json")),
-                ok(esearch("23974870")), ok(load("pubmed_esummary.json"))])
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page())])
     b = briefs.variant(make_client(monkeypatch, s), "CFTR[gene] AND F508del")
     text = b.text()
     assert "variants VCV004072070 classification: Pathogenic" in text
     assert "variants VCV004689723 classification: Uncertain significance" in text
     assert "variants VCV004072070 review_status: criteria provided, single submitter" in text
+    assert "openalex search_total: 1" in text
+    assert "PASS       OpenAlex retraction scan: 0 works flagged retracted in top matches" in text
     m = [c for c in b.checks if c.what == "ClinVar matches"]
     assert len(m) == 1 and m[0].verdict == briefs.CHECK
     assert "2 records matched" in m[0].detail and "none was chosen" in m[0].detail
@@ -124,7 +127,8 @@ def test_variant_brief_lists_every_match_and_chooses_none(monkeypatch, no_sleep)
 def test_variant_brief_with_one_match_passes(monkeypatch, no_sleep):
     one = load("clinvar_esummary.json")
     one["result"]["uids"] = ["4072070"]
-    s = Script([ok(esearch("4072070")), ok(one), ok(esearch("23974870")), ok(load("pubmed_esummary.json"))])
+    s = Script([ok(esearch("4072070")), ok(one), ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page())])
     b = briefs.variant(make_client(monkeypatch, s), "VCV004072070")
     assert [c.verdict for c in b.checks if c.what == "ClinVar matches"] == [briefs.PASS]
 
@@ -224,9 +228,9 @@ def test_a_provider_exception_becomes_an_error_record(monkeypatch, no_sleep):
     def broken(*a, **k):
         raise KeyError("surprise")
     monkeypatch.setattr(briefs.clinvar, "variants", broken)
-    s = Script([ok(esearch("23974870")), ok(load("pubmed_esummary.json"))])
+    s = Script([ok(esearch("23974870")), ok(load("pubmed_esummary.json")), ok(openalex_search_page())])
     b = briefs.variant(make_client(monkeypatch, s), "CFTR[gene]")
-    assert b.steps[0].status == "error" and b.steps[1].status == "found"
+    assert b.steps[0].status == "error" and b.steps[1].status == "found" and b.steps[2].status == "found"
     assert [c.verdict for c in b.checks if c.what == "ClinVar matches"] == [briefs.NOTE]
 
 
@@ -241,7 +245,7 @@ def test_footer_is_always_present(monkeypatch, no_sleep):
     ]
     bodies = [
         [ok({"results": []}), ok({"results": []}), ok({"studies": [], "totalCount": 0}), ok(empty), ok({"results": []})],
-        [ok(empty), ok(empty)],
+        [ok(empty), ok(empty), ok({"results": []})],
         [FakeResponse(404), ok(empty)],
     ]
     for run, body in zip(cases, bodies):
@@ -309,6 +313,30 @@ def test_openalex_unconfigured_key_emits_note_check(monkeypatch, no_sleep):
     ])
     b = briefs.drug(make_client(monkeypatch, s), "TRIKAFTA")
     assert b.steps[4].status == "blocked"
+    c = [chk for chk in b.checks if chk.what == "OpenAlex literature & retraction scan"][0]
+    assert c.verdict == briefs.NOTE
+    assert "OPENALEX_API_KEY not configured or blocked" in c.detail
+
+
+def test_variant_brief_openalex_retraction_flagged(monkeypatch, no_sleep):
+    retracted_work = load("openalex_work.json")
+    retracted_work["is_retracted"] = True
+    s = Script([ok(esearch("4072070")), ok(load("clinvar_esummary.json")),
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page(count=1, works=[retracted_work]))])
+    b = briefs.variant(make_client(monkeypatch, s), "VCV004072070")
+    c = [chk for chk in b.checks if chk.what == "OpenAlex retraction scan"][0]
+    assert c.verdict == briefs.CHECK
+    assert "1 work(s) flagged retracted in top matches" in c.detail
+    assert "CHECK      OpenAlex retraction scan: 1 work(s) flagged retracted in top matches" in b.text()
+
+
+def test_variant_brief_openalex_unconfigured_key(monkeypatch, no_sleep):
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)
+    s = Script([ok(esearch("4072070")), ok(load("clinvar_esummary.json")),
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json"))])
+    b = briefs.variant(make_client(monkeypatch, s), "VCV004072070")
+    assert b.steps[2].status == "blocked"
     c = [chk for chk in b.checks if chk.what == "OpenAlex literature & retraction scan"][0]
     assert c.verdict == briefs.NOTE
     assert "OPENALEX_API_KEY not configured or blocked" in c.detail
