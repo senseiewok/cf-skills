@@ -103,7 +103,7 @@ def test_drug_trials_step_searches_by_term_without_a_condition(monkeypatch, no_s
     assert trials_params["pageSize"] == briefs.TRIALS_LIMIT
     pubmed_params = [p for u, p in seen if "esearch" in u][0]
     assert pubmed_params["term"] == "TRIKAFTA" and pubmed_params["retmax"] == briefs.PUBMED_LIMIT
-    openalex_params = [p for u, p in seen if "openalex.org" in u][0]
+    openalex_params = [p for u, p in seen if urllib.parse.urlparse(u).hostname == "api.openalex.org"][0]
     assert openalex_params["search"] == "TRIKAFTA" and openalex_params["per_page"] == briefs.OPENALEX_LIMIT
 
 
