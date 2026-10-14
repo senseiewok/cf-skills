@@ -9,12 +9,19 @@ import json
 import urllib.parse
 from pathlib import Path
 
+import pytest
+
 from evidence import briefs, cli
 from evidence.record import Status
 
 from test_conduct import FakeResponse, Script, make_client, no_sleep  # noqa: F401  (shared fakes and fixture)
 
 FX = Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture(autouse=True)
+def default_openalex_key(monkeypatch):
+    monkeypatch.setenv("OPENALEX_API_KEY", "mock-openalex-key")
 
 
 def load(name):
@@ -41,9 +48,16 @@ def trials_page():
     return load("trials_study.json")
 
 
-def drug_script(label=None, approval=None):
+def openalex_search_page(count=1, works=None):
+    if works is None:
+        works = [load("openalex_work.json")]
+    return {"meta": {"count": count}, "results": works}
+
+
+def drug_script(label=None, approval=None, openalex_res=None):
     return Script([ok(approval or load("openfda_drugsfda.json")), ok(label or label_body()), ok(trials_page()),
-                   ok(esearch("23974870", "42781846")), ok(load("pubmed_esummary.json"))])
+                   ok(esearch("23974870", "42781846")), ok(load("pubmed_esummary.json")),
+                   ok(openalex_res or openalex_search_page())])
 
 
 def checks(b, verdict=None):
@@ -52,18 +66,23 @@ def checks(b, verdict=None):
 
 # ------------------------------------------------------------------ recipes
 
-def test_drug_brief_runs_four_sources_in_one_set(monkeypatch, no_sleep):
+def test_drug_brief_runs_five_sources_in_one_set(monkeypatch, no_sleep):
     s = drug_script()
     b = briefs.drug(make_client(monkeypatch, s), "TRIKAFTA")
-    assert len(s.calls) == 5 and not s.responses
-    assert [st.name for st in b.steps] == ["approval", "label", "trials", "pubmed"]
-    assert [st.status for st in b.steps] == ["found"] * 4
-    assert {r.source_id for r in b.records} == {"openfda-drugsfda", "openfda-label", "clinicaltrials-gov", "ncbi-eutils"}
+    assert len(s.calls) == 6 and not s.responses
+    assert [st.name for st in b.steps] == ["approval", "label", "trials", "pubmed", "openalex"]
+    assert [st.status for st in b.steps] == ["found"] * 5
+    assert {r.source_id for r in b.records} == {"openfda-drugsfda", "openfda-label", "clinicaltrials-gov", "ncbi-eutils", "openalex"}
     assert all(r.url and r.accessed and r.limitations for r in b.records)
     text = b.text()
     assert "approval original_approval: 2019-10-21" in text
     assert "approval application_number: NDA212273" in text
     assert "PASS       source trials (clinicaltrials-gov): found" in text
+    assert "PASS       source openalex (openalex): found" in text
+    assert "openalex search_total: 1" in text
+    assert "openalex max_cited_by: 2179" in text
+    assert "openalex open_access (counted): 1" in text
+    assert "PASS       OpenAlex retraction scan: 0 works flagged retracted in top matches" in text
     assert b.text().rstrip().endswith(briefs.FOOTER)
 
 
@@ -84,6 +103,8 @@ def test_drug_trials_step_searches_by_term_without_a_condition(monkeypatch, no_s
     assert trials_params["pageSize"] == briefs.TRIALS_LIMIT
     pubmed_params = [p for u, p in seen if "esearch" in u][0]
     assert pubmed_params["term"] == "TRIKAFTA" and pubmed_params["retmax"] == briefs.PUBMED_LIMIT
+    openalex_params = [p for u, p in seen if "openalex.org" in u][0]
+    assert openalex_params["search"] == "TRIKAFTA" and openalex_params["per_page"] == briefs.OPENALEX_LIMIT
 
 
 def test_variant_brief_lists_every_match_and_chooses_none(monkeypatch, no_sleep):
@@ -183,16 +204,18 @@ def test_a_missing_field_prints_not_stated(monkeypatch, no_sleep):
 def test_a_blocked_source_does_not_stop_the_brief_and_exit_is_3(monkeypatch, no_sleep, capsys):
     # Drugs@FDA refuses with 403: api.fda.gov goes into cooldown, so the label step is refused before any request.
     s = Script([FakeResponse(403, body={"error": "forbidden"}), ok(trials_page()),
-                ok(esearch("23974870")), ok(load("pubmed_esummary.json"))])
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page())])
     c = make_client(monkeypatch, s)
     monkeypatch.setattr(cli, "Client", lambda contact=None: c)
     rc = cli.main(["brief", "drug", "TRIKAFTA"])
     out = capsys.readouterr().out
     assert rc == 3
-    assert len(s.calls) == 4 and not s.responses, s.calls          # trials and pubmed still ran
+    assert len(s.calls) == 5 and not s.responses, s.calls          # trials, pubmed, and openalex still ran
     assert "approval (openfda-drugsfda): blocked" in out
     assert "label (openfda-label): blocked" in out and "HostInCooldown" in out
     assert "trials (clinicaltrials-gov): found" in out and "pubmed (ncbi-eutils): found" in out
+    assert "openalex (openalex): found" in out
     assert "CHECK      source approval (openfda-drugsfda): blocked" in out
     assert out.rstrip().endswith(briefs.FOOTER)
 
@@ -217,7 +240,7 @@ def test_footer_is_always_present(monkeypatch, no_sleep):
         lambda c: briefs.trial(c, "NCT00000000"),
     ]
     bodies = [
-        [ok({"results": []}), ok({"results": []}), ok({"studies": [], "totalCount": 0}), ok(empty)],
+        [ok({"results": []}), ok({"results": []}), ok({"studies": [], "totalCount": 0}), ok(empty), ok({"results": []})],
         [ok(empty), ok(empty)],
         [FakeResponse(404), ok(empty)],
     ]
@@ -250,9 +273,9 @@ def test_dry_run_brief_plans_only_catalog_hosts(monkeypatch, capsys):
     err = capsys.readouterr().err
     planned = [ln for ln in err.splitlines() if ln.startswith("planned: ")]
     assert rc == 0
-    assert len(planned) == 4, planned
+    assert len(planned) == 5, planned
     hosts = {ln.split("/")[2] for ln in planned}
-    assert hosts == {"api.fda.gov", "clinicaltrials.gov", "eutils.ncbi.nlm.nih.gov"}, hosts
+    assert hosts == {"api.fda.gov", "clinicaltrials.gov", "eutils.ncbi.nlm.nih.gov", "api.openalex.org"}, hosts
 
 
 def test_every_printed_field_value_comes_from_a_record(monkeypatch, no_sleep):
@@ -262,3 +285,30 @@ def test_every_printed_field_value_comes_from_a_record(monkeypatch, no_sleep):
         if value == briefs.NOT_STATED or key.endswith("(counted)"):
             continue
         assert json.dumps(value, sort_keys=True) in values, (step, key, value)
+
+
+def test_openalex_retraction_flagged_in_cross_check(monkeypatch, no_sleep):
+    retracted_work = load("openalex_work.json")
+    retracted_work["is_retracted"] = True
+    s = drug_script(openalex_res=openalex_search_page(count=1, works=[retracted_work]))
+    b = briefs.drug(make_client(monkeypatch, s), "TRIKAFTA")
+    c = [chk for chk in b.checks if chk.what == "OpenAlex retraction scan"][0]
+    assert c.verdict == briefs.CHECK
+    assert "1 work(s) flagged retracted" in c.detail
+    assert "CHECK      OpenAlex retraction scan: 1 work(s) flagged retracted in top matches" in b.text()
+
+
+def test_openalex_unconfigured_key_emits_note_check(monkeypatch, no_sleep):
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)
+    s = Script([
+        ok(load("openfda_drugsfda.json")),
+        ok(label_body()),
+        ok(trials_page()),
+        ok(esearch("23974870", "42781846")),
+        ok(load("pubmed_esummary.json")),
+    ])
+    b = briefs.drug(make_client(monkeypatch, s), "TRIKAFTA")
+    assert b.steps[4].status == "blocked"
+    c = [chk for chk in b.checks if chk.what == "OpenAlex literature & retraction scan"][0]
+    assert c.verdict == briefs.NOTE
+    assert "OPENALEX_API_KEY not configured or blocked" in c.detail

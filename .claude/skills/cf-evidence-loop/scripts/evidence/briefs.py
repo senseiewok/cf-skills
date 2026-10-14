@@ -22,7 +22,7 @@ from typing import Any, Callable
 
 from . import catalog
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, openfda, pubmed, trials
+from .providers import clinvar, openalex, openfda, pubmed, trials
 from .record import Evidence, Status, clean_for_terminal
 
 RECIPES = ("drug", "variant", "trial")
@@ -31,6 +31,7 @@ NOT_STATED = "not stated"
 PASS, CHECK, NOTE = "PASS", "CHECK", "NOT STATED"
 PUBMED_LIMIT = 5
 TRIALS_LIMIT = 5
+OPENALEX_LIMIT = 3
 
 REFUSALS = (BudgetExhausted, HostInCooldown, PaperworkMissing, RobotsDisallow, catalog.AccessDenied, catalog.UnknownSource)
 BRIEF_PROVIDER = "brief/0.1"
@@ -174,6 +175,7 @@ def drug(client: Client, brand: str) -> Brief:
     b.steps.append(_run("trials", trials.SOURCE, f"ClinicalTrials.gov studies matching '{brand}'",
                         lambda: trials.search(client, None, term=brand, limit=TRIALS_LIMIT)))
     b.steps.append(_run("pubmed", pubmed.SOURCE, f"PubMed records matching '{brand}'", lambda: pubmed.search(client, brand, PUBMED_LIMIT)))
+    b.steps.append(_run("openalex", openalex.SOURCE, f"OpenAlex works matching '{brand}'", lambda: openalex.search(client, brand, limit=OPENALEX_LIMIT)))
 
     appr = next(iter(b.steps[0].found()), None)
     lab = next(iter(b.steps[1].found()), None)
@@ -181,13 +183,31 @@ def drug(client: Client, brand: str) -> Brief:
         b.facts.append(("approval", key, _value(appr, key)))
     for key in ("set_id", "version", "effective_time"):
         b.facts.append(("label", key, _value(lab, key)))
-    for name, step in (("trials", b.steps[2]), ("pubmed", b.steps[3])):
+    for name, step in (("trials", b.steps[2]), ("pubmed", b.steps[3]), ("openalex", b.steps[4])):
         first = next(iter(step.found()), None)
         b.facts.append((name, "search_total", _value(first, "search_total")))
         b.facts.append((name, "records returned (counted)", len(step.found())))
 
+    alex_found = b.steps[4].found()
+    if alex_found:
+        top_citations = max((_value(r, "cited_by") for r in alex_found if isinstance(_value(r, "cited_by"), (int, float))), default=0)
+        b.facts.append(("openalex", "max_cited_by", top_citations))
+        oa_count = sum(1 for r in alex_found if _value(r, "is_oa") is True)
+        b.facts.append(("openalex", "open_access (counted)", oa_count))
+
     _source_checks(b)
     b.checks.append(approval_year_check(_value(appr, "original_approval"), _value(lab, "effective_time")))
+
+    if b.steps[4].status == Status.BLOCKED.value:
+        b.checks.append(Check(NOTE, "OpenAlex literature & retraction scan", "OPENALEX_API_KEY not configured or blocked"))
+    elif alex_found:
+        retracted = [r for r in alex_found if _value(r, "is_retracted") is True]
+        if retracted:
+            b.checks.append(Check(CHECK, "OpenAlex retraction scan", f"{len(retracted)} work(s) flagged retracted in top matches"))
+        else:
+            b.checks.append(Check(PASS, "OpenAlex retraction scan", "0 works flagged retracted in top matches"))
+    else:
+        b.checks.append(Check(NOTE, "OpenAlex retraction scan", "no OpenAlex records returned to evaluate"))
     return b
 
 
