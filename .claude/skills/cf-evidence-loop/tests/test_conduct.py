@@ -34,9 +34,12 @@ class Script:
         self.responses = list(responses)
         self.calls = []
 
-    def request(self, method, url, params=None, json=None, timeout=None, allow_redirects=True, stream=False):
+    def request(self, method, url, params=None, json=None, timeout=None, allow_redirects=True, stream=False, headers=None, **kw):
         self.calls.append(("request", url))
         self.kwargs = {"allow_redirects": allow_redirects}
+        if headers is not None:
+            self.kwargs["headers"] = headers
+        self.kwargs.update(kw)
         self.stream = stream
         item = self.responses.pop(0)
         if isinstance(item, Exception):   # a scripted transport failure (DNS, timeout, TLS)

@@ -46,6 +46,13 @@ BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
 
 
 def main(argv: list[str] | None = None) -> int:
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(errors="backslashreplace")
+            except Exception:
+                pass
+
     def common(inherit: bool) -> argparse.ArgumentParser:
         # The subcommands accept the same options as the main parser. Their defaults must not overwrite a value given before
         # the subcommand, so for them the default is "leave the attribute alone" (SUPPRESS).
