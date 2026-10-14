@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, datacommons, europepmc, openfda, preprints, pubmed, reporter, trials
+from evidence.providers import clinvar, crossref, datacommons, europepmc, openalex, openfda, preprints, pubmed, reporter, trials
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -145,4 +145,58 @@ def test_datacommons_observation_blocks_without_key(monkeypatch):
     r = datacommons.observation(c, "country/USA")
     assert r.status is Status.BLOCKED
     assert "DC_API_KEY" in r.fields["error"]
+
+
+def test_openalex_parse_work_found():
+    data = load("openalex_work.json")
+    r = openalex.parse_work(data, "q", "u")
+    assert r.status is Status.FOUND
+    assert r.publisher_date == "2019-11-07"
+    assert r.fields["year"] == 2019
+    assert "Elexacaftor" in r.fields["title"]
+    assert r.fields["cited_by"] == 2179
+    assert r.fields["is_retracted"] is False
+    assert r.fields["is_oa"] is True
+    assert r.fields["venue"] == "New England Journal of Medicine"
+    assert r.fields["first_author"] == "Peter G. Middleton"
+    assert r.fields["last_author"] == "Michael W. Konstan"
+    assert r.fields["author_count"] == 2
+    assert "Westmead Hospital" in r.fields["institutions"]
+    assert "Case Western Reserve University" in r.fields["institutions"]
+    assert "Cystic Fibrosis" in r.fields["mesh_terms"]
+    assert "Vertex Pharmaceuticals" in r.fields["grants"]
+    assert "OpenAlex index record" in r.limitations
+
+
+def test_openalex_parse_work_retracted():
+    data = load("openalex_work.json")
+    data["is_retracted"] = True
+    r = openalex.parse_work(data, "q", "u")
+    assert r.status is Status.FOUND
+    assert r.fields["is_retracted"] is True
+
+
+def test_openalex_parse_work_not_found():
+    r = openalex.parse_work({}, "q", "u")
+    assert r.status is Status.NOT_FOUND
+
+
+def test_openalex_work_blocks_without_key(monkeypatch):
+    from evidence import http
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)
+    c = http.Client()
+    r = openalex.work(c, "10.1056/nejmoa1908639")
+    assert r.status is Status.BLOCKED
+    assert "OPENALEX_API_KEY" in r.fields["error"]
+
+
+def test_openalex_search_blocks_without_key(monkeypatch):
+    from evidence import http
+    monkeypatch.delenv("OPENALEX_API_KEY", raising=False)
+    c = http.Client()
+    recs = openalex.search(c, "cystic fibrosis")
+    assert len(recs) == 1
+    assert recs[0].status is Status.BLOCKED
+    assert "OPENALEX_API_KEY" in recs[0].fields["error"]
+
 

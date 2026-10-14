@@ -39,7 +39,7 @@ import sys
 
 from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, datacommons, europepmc, openfda, preprints, pubmed, reporter, trials
+from .providers import clinvar, crossref, datacommons, europepmc, openalex, openfda, preprints, pubmed, reporter, trials
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -81,6 +81,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("entity", help="Data Commons entity DCID (e.g. country/USA, geoId/53)")
     p.add_argument("--variable", default=datacommons.DEFAULT_VARIABLE, help=f"Data Commons variable DCID (default: {datacommons.DEFAULT_VARIABLE})")
     p.add_argument("--year", help="filter for a specific observation year (default: latest)")
+    p = sub.add_parser("openalex", help="OpenAlex work metadata, citations, and retraction tracking by DOI or ID")
+    p.add_argument("target", help="DOI (e.g. 10.1056/NEJMoa1908639) or OpenAlex ID (e.g. W2981977727)")
+    p = sub.add_parser("openalex-search", help="OpenAlex literature search across works")
+    p.add_argument("query", help="search terms (e.g. cystic fibrosis)")
+    p.add_argument("--limit", type=int, default=10, help="maximum results (default: 10)")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
     p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
@@ -203,6 +208,10 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return europepmc.lookup(client, a.doi)
     elif a.cmd == "population":
         return [datacommons.observation(client, a.entity, a.variable, getattr(a, "year", None))]
+    elif a.cmd == "openalex":
+        return [openalex.work(client, a.target)]
+    elif a.cmd == "openalex-search":
+        return openalex.search(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover
 
 
