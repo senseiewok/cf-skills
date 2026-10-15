@@ -115,11 +115,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if a.cmd == "read-page":
-        from .page_reader import NonHttpsError, PageReader
+        from .page_reader import NonHttpsError, PageReader, PrivateHostError
+        from .record import _ESCAPES
         try:
-            reader = PageReader()
+            reader = PageReader(contact=getattr(a, "contact", None))
             result = reader.read_page(a.url, max_chars=a.max_chars)
-        except NonHttpsError as exc:
+        except (NonHttpsError, PrivateHostError) as exc:
             print(f"refused: {exc}", file=sys.stderr)
             return 2
         except Exception as exc:
@@ -146,7 +147,8 @@ def main(argv: list[str] | None = None) -> int:
             if result.error:
                 print(f"note: {result.error}", file=sys.stderr)
             if result.text:
-                print("\n" + result.text)
+                clean_text = _ESCAPES.sub("", result.text)
+                print("\n" + clean_text)
 
         if not result.robots_allowed:
             return 3
