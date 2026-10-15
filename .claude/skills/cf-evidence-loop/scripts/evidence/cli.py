@@ -39,7 +39,7 @@ import sys
 
 from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, datacommons, europepmc, openalex, openfda, preprints, pubmed, reporter, trials
+from .providers import clinvar, crossref, datacommons, europepmc, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -75,6 +75,8 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("preprints"); p.add_argument("server", choices=preprints.SERVERS); p.add_argument("start"); p.add_argument("end")
     p.add_argument("--pattern", default=preprints.CF_PATTERN)
     p = sub.add_parser("variants"); p.add_argument("term"); p.add_argument("--limit", type=int, default=20)
+    p = sub.add_parser("myvariant", help="MyVariant.info search; variant annotation and CADD/SnpEff/ClinVar scores")
+    p.add_argument("term"); p.add_argument("--limit", type=int, default=5)
     p = sub.add_parser("grants"); p.add_argument("text"); p.add_argument("--fy", type=int, nargs="*"); p.add_argument("--limit", type=int, default=25)
     p = sub.add_parser("pubmed", help="PubMed search; use field tags like [tiab] or [MeSH] for precision"); p.add_argument("term"); p.add_argument("--limit", type=int, default=20)
     p.add_argument("--sort", default="relevance", choices=["relevance", "pub_date"])
@@ -199,6 +201,8 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return preprints.window(client, a.server, a.start, a.end, a.pattern)
     elif a.cmd == "variants":
         return clinvar.variants(client, a.term, a.limit)
+    elif a.cmd == "myvariant":
+        return myvariant.variants(client, a.term, a.limit)
     elif a.cmd == "grants":
         return reporter.projects(client, a.text, a.fy or None, a.limit)
     elif a.cmd == "pubmed":
