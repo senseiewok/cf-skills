@@ -11,6 +11,7 @@ Five CF skills in this repository have a `paste-ready.md` file: [`cf-ai-safe-use
 > **Before you paste**
 >
 > - If you are on a care team, use the AI tool your organisation approves. If the question is about your own or your family's health, think about who can see your chats. A work account belongs to your workplace, so check its policy, or use a personal account.
+> - **For clinical staff & multidisciplinary care teams:** Looking for a hospital-ready baseline that knows CFTR genetics, modulators, and strict HIPAA zero-PHI rules? See the dedicated [CF Care Team AI Baseline & Prompt Guide](care-team-prompt.md).
 > - Do not put patient information in: no names, dates of birth, record numbers, places or rare details.
 > - Settings and plans differ, and these pages change. Check the official page for your product and plan.
 
