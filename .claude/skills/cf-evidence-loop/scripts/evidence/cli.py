@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
@@ -101,11 +102,56 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--max-ids", type=int, default=cite_check.DEFAULT_MAX_IDS,
                    help=f"refuse a file with more distinct identifiers than this (default {cite_check.DEFAULT_MAX_IDS}, at most {cite_check.HARD_MAX_IDS})")
 
+    p = sub.add_parser("read-page", help="read one HTTPS web page or PDF under lab conduct rules (for terms and human review, not data)")
+    p.add_argument("url", help="HTTPS URL of the page or PDF to read")
+    p.add_argument("--out", help="save extracted output to this file (JSON or text depending on --json)")
+    p.add_argument("--max-chars", type=int, default=20000, help="maximum characters to display (default: 20000)")
+
     a = ap.parse_args(argv)
     if a.cmd == "sources":
         for sid, e in sorted(catalog.load().items()):
             if e.get("access") in catalog.AUTOMATABLE and e.get("base_url"):
                 print(f"{sid:24} {e['base_url']}")
+        return 0
+
+    if a.cmd == "read-page":
+        from .page_reader import NonHttpsError, PageReader
+        try:
+            reader = PageReader()
+            result = reader.read_page(a.url, max_chars=a.max_chars)
+        except NonHttpsError as exc:
+            print(f"refused: {exc}", file=sys.stderr)
+            return 2
+        except Exception as exc:
+            print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
+            return 4
+
+        if a.out:
+            out_path = Path(a.out)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            if a.json:
+                out_path.write_text(json.dumps(result.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
+            else:
+                out_path.write_text(result.text, encoding="utf-8")
+
+        if a.json:
+            print(json.dumps(result.to_dict(), indent=2 if not a.ledger else None, ensure_ascii=False))
+        else:
+            summary = (
+                f"status: {result.status_code} | final_url: {result.final_url} | "
+                f"robots: {result.robots_status} allowed={result.robots_allowed} | "
+                f"{result.text_chars} chars"
+            )
+            print(summary)
+            if result.error:
+                print(f"note: {result.error}", file=sys.stderr)
+            if result.text:
+                print("\n" + result.text)
+
+        if not result.robots_allowed:
+            return 3
+        if result.status_code != 200 or result.error:
+            return 4
         return 0
 
     try:
