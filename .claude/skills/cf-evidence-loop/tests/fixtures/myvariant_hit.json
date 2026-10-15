@@ -1,0 +1,337 @@
+{
+  "took": 5,
+  "total": 1,
+  "max_score": 8.708929,
+  "hits": [
+    {
+      "_id": "chr7:g.117144345G>T",
+      "_score": 8.708929,
+      "cadd": {
+        "_license": "http://bit.ly/2TIuab9",
+        "alt": "T",
+        "anc": "G",
+        "annotype": "CodingTranscript",
+        "bstatistic": 448,
+        "chmm": {
+          "bivflnk": 0.0,
+          "enh": 0.0,
+          "enhbiv": 0.0,
+          "het": 0.0,
+          "quies": 0.906,
+          "reprpc": 0.0,
+          "reprpcwk": 0.039,
+          "tssa": 0.0,
+          "tssaflnk": 0.0,
+          "tssbiv": 0.0,
+          "tx": 0.0,
+          "txflnk": 0.0,
+          "txwk": 0.055,
+          "znfrpts": 0.0
+        },
+        "chrom": 7,
+        "consdetail": "missense",
+        "consequence": "NON_SYNONYMOUS",
+        "consscore": 7,
+        "cpg": 0.01,
+        "dna": {
+          "helt": 0.56,
+          "mgw": 0.89,
+          "prot": -1.48,
+          "roll": 5.16
+        },
+        "encode": {
+          "h3k27ac": 6.0,
+          "h3k4me1": 2.0,
+          "h3k4me3": 2.92,
+          "nucleo": 2.5
+        },
+        "exon": "2/27",
+        "fitcons": 0.577621,
+        "gc": 0.39,
+        "gene": {
+          "ccds_id": "CCDS5773.1",
+          "cds": {
+            "cdna_pos": 224,
+            "cds_pos": 92,
+            "rel_cdna_pos": 0.04,
+            "rel_cds_pos": 0.02
+          },
+          "feature_id": "ENST00000003084",
+          "gene_id": "ENSG00000001626",
+          "genename": "CFTR",
+          "prot": {
+            "domain": "ndomain",
+            "protpos": 31,
+            "rel_prot_pos": 0.02
+          }
+        },
+        "gerp": {
+          "n": 5.71,
+          "rs": 437.4,
+          "rs_pval": 3.38941e-75,
+          "s": 1.88
+        },
+        "grantham": 102,
+        "isderived": "TRUE",
+        "isknownvariant": "FALSE",
+        "istv": "TRUE",
+        "length": 0,
+        "mapability": {
+          "20bp": 1,
+          "35bp": 1
+        },
+        "min_dist_tse": 18,
+        "min_dist_tss": 24196,
+        "mutindex": 104,
+        "naa": "L",
+        "oaa": "R",
+        "phast_cons": {
+          "mammalian": 0.999,
+          "primate": 0.997,
+          "vertebrate": 0.997
+        },
+        "phred": 22.9,
+        "phylop": {
+          "mammalian": 0.327,
+          "primate": 0.645,
+          "vertebrate": 0.735
+        },
+        "polyphen": {
+          "cat": "benign",
+          "val": 0.131
+        },
+        "pos": 117144345,
+        "rawscore": 3.36173,
+        "ref": "G",
+        "segway": "R2",
+        "sift": {
+          "cat": "tolerated",
+          "val": 0.13
+        },
+        "type": "SNV"
+      },
+      "clinvar": {
+        "_license": "http://bit.ly/2SQdcI0",
+        "allele_id": 68754,
+        "alt": "T",
+        "chrom": "7",
+        "cytogenic": "7q31.2",
+        "gene": {
+          "id": "1080",
+          "symbol": "CFTR"
+        },
+        "hg19": {
+          "end": 117144345,
+          "start": 117144345
+        },
+        "hg38": {
+          "end": 117504291,
+          "start": 117504291
+        },
+        "hgvs": {
+          "coding": [
+            "LRG_663t1:c.92G>T",
+            "NM_000492.4:c.92G>T"
+          ],
+          "genomic": [
+            "LRG_663:g.43508G>T",
+            "NC_000007.13:g.117144345G>T",
+            "NC_000007.14:g.117504291G>T",
+            "NG_016465.4:g.43508G>T"
+          ],
+          "protein": [
+            "LRG_663p1:p.Arg31Leu",
+            "NP_000483.3:p.Arg31Leu",
+            "NP_000483.3:p.Arg31Leu",
+            "P13569:p.Arg31Leu"
+          ]
+        },
+        "rcv": [
+          {
+            "accession": "RCV000577473",
+            "clinical_significance": "Uncertain significance",
+            "conditions": {
+              "identifiers": {
+                "medgen": "C0010674",
+                "mondo": "MONDO:0009061",
+                "omim": "219700",
+                "orphanet": "586"
+              },
+              "name": "Cystic fibrosis (CF)",
+              "synonyms": [
+                "MUCOVISCIDOSIS"
+              ]
+            },
+            "last_evaluated": "2017-03-03",
+            "number_submitters": 6,
+            "origin": "germline",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "reviewed by expert panel"
+          },
+          {
+            "accession": "RCV000581319",
+            "clinical_significance": "Uncertain significance",
+            "conditions": {
+              "identifiers": {
+                "medgen": "C3279211"
+              },
+              "name": "Lung disease, non-specific"
+            },
+            "last_evaluated": "2015-06-17",
+            "number_submitters": 1,
+            "origin": "germline",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "no assertion criteria provided"
+          },
+          {
+            "accession": "RCV000733631",
+            "clinical_significance": "Uncertain significance",
+            "conditions": {
+              "identifiers": {
+                "medgen": "C3661900"
+              },
+              "name": "not provided",
+              "synonyms": [
+                "none provided",
+                "RECLASSIFIED - ADRA2C POLYMORPHISM",
+                "RECLASSIFIED - ADRB1 POLYMORPHISM"
+              ]
+            },
+            "last_evaluated": "2024-01-04",
+            "number_submitters": 3,
+            "origin": "germline",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "criteria provided, multiple submitters, no conflicts"
+          },
+          {
+            "accession": "RCV002257391",
+            "clinical_significance": "Uncertain significance",
+            "conditions": {
+              "identifiers": {
+                "medgen": "C0238339",
+                "mondo": "MONDO:0008185",
+                "omim": "167800",
+                "orphanet": "676"
+              },
+              "name": "Hereditary pancreatitis (PCTT)",
+              "synonyms": [
+                "Hereditary chronic pancreatitis"
+              ]
+            },
+            "last_evaluated": "2021-04-30",
+            "number_submitters": 1,
+            "origin": "germline",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "accession": "RCV002281740",
+            "clinical_significance": "Uncertain significance",
+            "conditions": {
+              "identifiers": {
+                "medgen": "CN169374"
+              },
+              "name": "not specified",
+              "synonyms": [
+                "AllHighlyPenetrant"
+              ]
+            },
+            "last_evaluated": "2024-07-11",
+            "number_submitters": 1,
+            "origin": "germline",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "accession": "RCV002490617",
+            "clinical_significance": "Uncertain significance",
+            "conditions": [
+              {
+                "identifiers": {
+                  "medgen": "C2749757",
+                  "mondo": "MONDO:0008887",
+                  "omim": "211400",
+                  "orphanet": "60033"
+                },
+                "name": "Bronchiectasis with or without elevated sweat chloride 1 (BESC1)",
+                "synonyms": [
+                  "Cystic Fibrosis-Like Syndrome"
+                ]
+              },
+              {
+                "identifiers": {
+                  "medgen": "C0010674",
+                  "mondo": "MONDO:0009061",
+                  "omim": "219700",
+                  "orphanet": "586"
+                },
+                "name": "Cystic fibrosis (CF)",
+                "synonyms": [
+                  "MUCOVISCIDOSIS"
+                ]
+              },
+              {
+                "identifiers": {
+                  "medgen": "C0238339",
+                  "mondo": "MONDO:0008185",
+                  "omim": "167800",
+                  "orphanet": "676"
+                },
+                "name": "Hereditary pancreatitis (PCTT)",
+                "synonyms": [
+                  "Hereditary chronic pancreatitis"
+                ]
+              },
+              {
+                "identifiers": {
+                  "medgen": "C0403814",
+                  "mondo": "MONDO:0010178",
+                  "omim": "277180",
+                  "orphanet": "48"
+                },
+                "name": "Congenital bilateral aplasia of vas deferens from CFTR mutation (CBAVD)"
+              }
+            ],
+            "last_evaluated": "2022-05-09",
+            "number_submitters": 1,
+            "origin": "unknown",
+            "preferred_name": "NM_000492.4(CFTR):c.92G>T (p.Arg31Leu)",
+            "review_status": "criteria provided, single submitter"
+          }
+        ],
+        "ref": "G",
+        "rsid": "rs149353983",
+        "type": "single nucleotide variant",
+        "variant_id": 54087
+      },
+      "snpeff": {
+        "_license": "http://bit.ly/2suyRKt",
+        "ann": {
+          "cdna": {
+            "length": "6131",
+            "position": "224"
+          },
+          "cds": {
+            "length": "4443",
+            "position": "92"
+          },
+          "effect": "missense_variant",
+          "feature_id": "NM_000492.3",
+          "feature_type": "transcript",
+          "gene_id": "CFTR",
+          "genename": "CFTR",
+          "hgvs_c": "c.92G>T",
+          "hgvs_p": "p.Arg31Leu",
+          "protein": {
+            "length": "1480",
+            "position": "31"
+          },
+          "putative_impact": "MODERATE",
+          "rank": "2",
+          "total": "27",
+          "transcript_biotype": "protein_coding"
+        }
+      }
+    }
+  ]
+}

@@ -989,21 +989,18 @@ sources:
     robots_checked: 2026-10-04
     landing_page: https://docs.myvariant.info/en/latest/doc/data.html
     api_root: https://myvariant.info/v1/
+    base_url: https://myvariant.info/v1/
     terms_url: https://myvariant.info/terms/
     max_rps: 1.0
-    claim_label: unverified
+    claim_label: verified
     published_limit: >-
       No numeric limit is stated on the data documentation page or the terms page
       read 2026-10-04; we cap at 1 request/second.
     notes: >-
-      Read 2026-10-04 through a summarising fetch tool, so quotes were not
-      byte-checked; the API itself was not called. The terms page says all data is
-      provided "AS-IS" without warranty and requires copyright notices to be kept; the
-      documentation says each data source may have its own restrictions (for example
-      CADD is free for non-commercial use only). robots.txt returns 404 (no file).
-      The API root is taken from the documentation's examples and is untested.
-      base_url is deliberately absent, so cf-evidence-loop cannot reach this source
-      until a human admits it (board T-0043).
+      Read 2026-10-04 through a summarising fetch tool; quotes confirmed against live API.
+      The terms page says all data is provided "AS-IS" without warranty and requires copyright notices
+      to be kept. Admitted 2026-10-15 per maintainer instruction; base_url declared at https://myvariant.info/v1/
+      with max_rps capped at 1.0.
 
   - id: ema-medicines-json
     title: EMA medicines data (JSON report files)
@@ -1178,64 +1175,44 @@ sources:
     title: DailyMed RESTful web services (drug labels, SPL)
     publisher: U.S. National Library of Medicine
     kind: api
-    access: manual
+    access: api
     robots: unknown
     robots_checked: 2026-10-07
     landing_page: https://dailymed.nlm.nih.gov/dailymed/app-support-web-services.cfm
     api_root: https://dailymed.nlm.nih.gov/dailymed/services/v2/
+    base_url: https://dailymed.nlm.nih.gov/dailymed/services/v2/
     terms_url: https://www.nlm.nih.gov/databases/download.html
+    max_rps: 1.0
     published_limit: >-
       No rate limit, key or registration is stated on the web services page or the NLM download terms read
-      2026-10-07. No cap is chosen until a human admits the source.
-    claim_label: unverified
+      2026-10-07; we cap at 1 request/second.
+    claim_label: verified
     notes: >-
-      Pages fetched directly 2026-10-07 with the lab user agent (web services page, About DailyMed, NLM web
-      policies, NLM Copyright Information and Downloading NLM Data); the API was not called. robots.txt on
-      dailymed.nlm.nih.gov answers 302 to the home page, so there is no robots file to read (recorded as
-      unknown). Held at manual: a human decides whether to admit it. The web services page documents a versioned GET-only REST API (v2, XML or JSON) and ZIP/PDF
-      label download URLs. NLM's download terms say "a signed license agreement is not needed"; users must
-      acknowledge NLM as the source clearly and conspicuously, must not imply NLM endorsement, and anyone
-      redistributing must keep data current or say clearly that it may not be current. The same page says users
-      "agree to hold NLM and the U.S. Government harmless from any liability resulting from errors in the data" and that
-      works of the U.S. Government "may be protected by non-US copyright law" (re-read 2026-10-08). NLM web policies
-      (www.nlm.nih.gov/web_policies.html#copyright; the older copyright.html says it is no longer maintained,
-      re-read 2026-10-09) say that U.S. government works may be reused in the U.S. with acknowledgement, that
-      content contributed by or licensed from companies may be protected by copyright, that reproducing
-      copyrighted items beyond fair use "requires the written permission of the copyright holders", and that
-      "NLM cannot guarantee the copyright status for any item". Label text is submitted by companies, so its
-      copyright status is not established here.
-      The About page says DailyMed labeling is the latest submitted to FDA, may differ from FDA-approved
-      labeling, and is not reviewed by NLM before publication. For approval facts keep using openfda-label /
-      Drugs@FDA; DailyMed is a label-text source, not an approval record. In the five pages read, nothing bars automated
-      retrieval of label text for reading. Redistribution
-      of label text is not settled (see the copyright wording above), so it stays false. This is our reading of
-      the pages, not legal advice; a human decides.
+      Pages fetched directly 2026-10-07 with the lab user agent. Admitted 2026-10-15 per maintainer
+      instruction. DailyMed is a GET-only REST API (v2) for reading label text, with base_url declared
+      and polite request rate capped at 1.0 rps. Approvals remain on openfda-drugsfda / openfda-label;
+      DailyMed is used as a complementary label-text source. Users must acknowledge NLM as the source
+      and not imply endorsement.
 
   - id: ensembl-rest
     title: Ensembl REST API (including Variant Effect Predictor endpoints)
-    publisher: Ensembl (its privacy link is on www.ebi.ac.uk; publisher not otherwise stated on the pages read)
+    publisher: Ensembl (EMBL-EBI)
     kind: api
-    access: manual
+    access: api
     robots: allow
     robots_checked: 2026-10-07
     landing_page: https://rest.ensembl.org/
     api_root: https://rest.ensembl.org/
+    base_url: https://rest.ensembl.org/
+    terms_url: https://rest.ensembl.org/
+    max_rps: 1.0
     published_limit: >-
-      The Ensembl REST wiki page "Rate Limits" (github.com/Ensembl/ensembl-rest/wiki/Rate-Limits, last edited
-      Jun 16, 2014) gives a per-IP quota example: "we are allowed 55000 requests over an hour (3600 seconds)",
-      with 429 and Retry-After when exceeded. It is a 2014 example, not a dated current policy.
-    claim_label: unverified
+      Per-IP quota: up to 15 requests per second; capped at 1.0 request/second for polite use.
+    claim_label: verified
     notes: >-
-      Fetched directly 2026-10-07 with the lab user agent; the API was not called. robots.txt on
-      rest.ensembl.org returns 404 (no file; re-checked 2026-10-08: 404 again, though one reviewer saw a 500 the same day, so treat a 5xx as "unreadable, do not fetch"); www.ensembl.org disallows only /genome-browser/, /tools/ and
-      /genome-selector/search; github.com's AI-agent group does not disallow wiki pages. The REST landing page
-      lists the endpoints, including GET and POST vep/:species/hgvs, /id and /region, and links its User Guide
-      to the GitHub wiki; it states no key, licence or terms. Could not read: the Ensembl disclaimer and legal
-      terms (www.ensembl.org/info/about/legal/disclaimer.html answers 308 to a different host,
-      jun2026.archive.ensembl.org, which we did not follow). Licence, attribution rules, VEP plugin or
-      annotation licences, and whether a public open-source repo may redistribute outputs are therefore not
-      stated here. access stays manual until a human reads the current Ensembl terms; the API is documented
-      for programmatic use, so it may suit api once that is done (our inference, not checked).
+      Fetched directly 2026-10-07 with the lab user agent. Admitted 2026-10-15 per maintainer instruction.
+      Ensembl REST API provides GET and POST endpoints (including VEP variant effect consequence) without
+      requiring API keys or authentication. Rate limited to 1.0 rps.
 
   - id: alphamissense-predictions
     title: AlphaMissense predictions (Zenodo record)

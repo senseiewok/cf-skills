@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, datacommons, europepmc, openalex, openfda, preprints, pubmed, reporter, trials
+from evidence.providers import clinvar, crossref, datacommons, europepmc, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -198,5 +198,19 @@ def test_openalex_search_blocks_without_key(monkeypatch):
     assert len(recs) == 1
     assert recs[0].status is Status.BLOCKED
     assert "OPENALEX_API_KEY" in recs[0].fields["error"]
+
+
+def test_myvariant_parse_record():
+    data = load("myvariant_hit.json")
+    hit = data["hits"][0]
+    r = myvariant.parse_myvariant_record(hit, "What is CFTR R31L in MyVariant?", "https://myvariant.info/v1/query?q=CFTR%20R31L")
+    assert r.status is Status.FOUND
+    assert r.source_id == "myvariant"
+    assert r.fields["variant_id_genomic"] == "chr7:g.117144345G>T"
+    assert r.fields["cadd_phred"] == 22.9
+    assert r.fields["cadd_consequence"] == "NON_SYNONYMOUS"
+    assert r.fields["snpeff_effect"] == "missense_variant"
+    assert "not a clinical diagnosis" in r.limitations
+
 
 
