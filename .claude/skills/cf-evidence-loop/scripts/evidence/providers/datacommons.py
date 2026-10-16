@@ -90,6 +90,14 @@ def parse_observation(
     obs_date = str(matched_obs.get("date")) if matched_obs.get("date") is not None else None
     val = matched_obs.get("value")
 
+    method = f_meta.get("measurementMethod")
+    lim_parts = [LIMITATION]
+    if method:
+        lim_parts.append(f"Underlying measurement method: {method}.")
+    if obs_date:
+        lim_parts.append(f"Observation date: {obs_date}.")
+    limitations_text = " ".join(lim_parts)
+
     return Evidence(
         status=Status.FOUND,
         question=question,
@@ -102,12 +110,12 @@ def parse_observation(
             "variable": variable,
             "value": val,
             "date": obs_date,
-            "measurement_method": f_meta.get("measurementMethod"),
+            "measurement_method": method,
             "observation_period": f_meta.get("observationPeriod"),
             "provenance_url": f_meta.get("provenanceUrl"),
             "provenance_id": f_meta.get("provenanceId"),
         },
-        limitations=LIMITATION,
+        limitations=limitations_text,
     )
 
 

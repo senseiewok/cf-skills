@@ -123,6 +123,8 @@ def test_datacommons_parse_observation_latest():
     assert r.fields["measurement_method"] == "CensusPEPSurvey"
     assert r.fields["provenance_url"] == "https://www.census.gov/programs-surveys/popest.html"
     assert "Google Data Commons aggregate statistical observation" in r.limitations
+    assert "CensusPEPSurvey" in r.limitations
+    assert "2025" in r.limitations
 
 
 def test_datacommons_parse_observation_by_year():
@@ -130,12 +132,60 @@ def test_datacommons_parse_observation_by_year():
     assert r.status is Status.FOUND
     assert r.publisher_date == "2024"
     assert r.fields["value"] == 340000000
+    assert "CensusPEPSurvey" in r.limitations
+    assert "2024" in r.limitations
 
 
 def test_datacommons_parse_observation_not_found():
     r = datacommons.parse_observation({}, "country/USA", "Count_Person", "q", "u")
     assert r.status is Status.NOT_FOUND
     assert r.fields["entity"] == "country/USA"
+
+
+def test_datacommons_parse_observation_positive_control_empty_observations():
+    fixture = {
+        "byVariable": {
+            "Count_Person": {
+                "byEntity": {
+                    "geoId/99": {
+                        "orderedFacets": [
+                            {"facetId": "f1", "observations": []}
+                        ]
+                    }
+                }
+            }
+        },
+        "facets": {"f1": {"measurementMethod": "CensusPEPSurvey"}}
+    }
+    r = datacommons.parse_observation(fixture, "geoId/99", "Count_Person", "q", "u")
+    assert r.status is Status.NOT_FOUND
+    assert r.fields["entity"] == "geoId/99"
+    assert "No observation points returned" in r.limitations
+
+
+def test_datacommons_parse_observation_positive_control_empty_facets():
+    fixture = {
+        "byVariable": {
+            "Count_Person": {
+                "byEntity": {
+                    "geoId/99": {
+                        "orderedFacets": []
+                    }
+                }
+            }
+        }
+    }
+    r = datacommons.parse_observation(fixture, "geoId/99", "Count_Person", "q", "u")
+    assert r.status is Status.NOT_FOUND
+    assert r.fields["entity"] == "geoId/99"
+    assert "No observations found" in r.limitations
+
+
+def test_datacommons_parse_observation_year_not_found():
+    r = datacommons.parse_observation(load("datacommons_observation.json"), "country/USA", "Count_Person", "q", "u", year="1990")
+    assert r.status is Status.NOT_FOUND
+    assert r.fields["year"] == "1990"
+    assert "No observation found for year 1990" in r.limitations
 
 
 def test_datacommons_observation_blocks_without_key(monkeypatch):
