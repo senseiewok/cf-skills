@@ -40,11 +40,12 @@ Research, not medical advice. The records this tool returns describe public docu
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
 | What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |
 | Search OpenAlex works | `openalex-search "<query>" [--limit 10]` | OpenAlex via OurResearch (key required) |
+| Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 | Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30]` | Crossref, PubMed, ClinicalTrials.gov (see Cite-check) |
 
-What the client code refuses to do: reach any host not permitted in `catalog.yaml` (a redirect is never followed); present itself as a browser; skip certificate checks; retry past a refusal. The package also never calls a language model and queries no source that holds individual-level data; those two are properties of what it contains, not checks in the client.
+What the client code refuses to do: reach any host not permitted in `catalog.yaml` (a redirect is never followed in API data queries); present itself as a browser; skip certificate checks; retry past a refusal. For pre-catalog terms reading, `read-page` enforces the lab's strict network conduct: HTTPS only, robots.txt first via `robots_allows`, Crawl-delay honoured, refused/unreadable robots aborts fetch, same-site HTTPS redirects re-checked against robots, certificate verification on, 5 MB body cap, single request. It needs no catalog entry because it exists specifically for a human-started reading of terms pages before a catalog entry exists, not for data extraction. The package also never calls a language model and queries no source that holds individual-level data.
 
 ## 2. Run it
 
