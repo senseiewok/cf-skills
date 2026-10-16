@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, datacommons, europepmc, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
+from evidence.providers import clinvar, crossref, datacommons, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -210,7 +210,33 @@ def test_myvariant_parse_record():
     assert r.fields["cadd_phred"] == 22.9
     assert r.fields["cadd_consequence"] == "NON_SYNONYMOUS"
     assert r.fields["snpeff_effect"] == "missense_variant"
+    assert r.fields["clinvar_clinical_significance"] == "Uncertain significance"
+    assert r.fields["gnomad_allele_freq"] == 0.0001
     assert "not a clinical diagnosis" in r.limitations
+
+
+def test_gnomad_parse_record():
+    data = load("gnomad_variant.json")
+    r = gnomad.parse_gnomad_record(data, "What is F508del in gnomAD?", "https://gnomad.broadinstitute.org/variant/7-117559590-ATCT-A")
+    assert r.status is Status.FOUND
+    assert r.source_id == "gnomad"
+    assert r.fields["variant_id"] == "7-117559590-ATCT-A"
+    assert r.fields["chrom"] == "7"
+    assert r.fields["pos"] == 117559590
+    assert r.fields["exome_allele_freq"] == 0.007094
+    assert r.fields["genome_allele_freq"] == 0.008036
+    assert r.fields["joint_allele_freq"] == 0.007313
+    assert "not constitute clinical diagnoses" in r.limitations
+
+
+def test_gnomad_variant_blocks_under_catalog_rules():
+    from evidence import http
+    c = http.Client()
+    r = gnomad.variant(c, "7-117559590-ATCT-A")
+    assert r.status is Status.BLOCKED
+    assert r.source_id == "gnomad"
+    assert "AccessDenied" in r.fields["error"]
+
 
 
 

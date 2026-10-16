@@ -331,6 +331,23 @@
           "total": "27",
           "transcript_biotype": "protein_coding"
         }
+      },
+      "dbsnp": {
+        "alt": "T",
+        "alleles": [
+          {
+            "allele": "G",
+            "freq": {
+              "gnomad": 0.9999
+            }
+          },
+          {
+            "allele": "T",
+            "freq": {
+              "gnomad": 0.0001
+            }
+          }
+        ]
       }
     }
   ]
