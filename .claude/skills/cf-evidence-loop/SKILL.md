@@ -38,6 +38,8 @@ Research, not medical advice. The records this tool returns describe public docu
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
+| Annotate variant with CADD, ClinVar, SnpEff, gnomAD frequency | `myvariant "<variant query>" [--limit 5]` | MyVariant.info |
+| Query gnomAD aggregate allele frequencies | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access, blocked by catalog policy) |
 | What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |
 | Search OpenAlex works | `openalex-search "<query>" [--limit 10]` | OpenAlex via OurResearch (key required) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |

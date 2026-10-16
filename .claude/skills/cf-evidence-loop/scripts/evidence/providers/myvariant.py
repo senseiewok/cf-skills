@@ -36,6 +36,61 @@ def parse_myvariant_record(hit: dict[str, Any], question: str, url: str) -> Evid
     sift = cadd.get("sift", {}) if isinstance(cadd.get("sift"), dict) else {}
     hg38 = clinvar_data.get("hg38", {}) if isinstance(clinvar_data.get("hg38"), dict) else {}
 
+    # Extract ClinVar clinical significance / classification
+    clinvar_sig = NOT_STATED
+    if isinstance(clinvar_data, dict):
+        if "clinical_significance" in clinvar_data:
+            clinvar_sig = clinvar_data["clinical_significance"]
+        elif "rcv" in clinvar_data:
+            rcv = clinvar_data["rcv"]
+            if isinstance(rcv, list) and rcv:
+                sigs = [r.get("clinical_significance") for r in rcv if isinstance(r, dict) and r.get("clinical_significance")]
+                if sigs:
+                    clinvar_sig = "; ".join(dict.fromkeys(sigs))
+            elif isinstance(rcv, dict):
+                clinvar_sig = rcv.get("clinical_significance", NOT_STATED)
+
+    # Extract gnomAD population aggregate allele frequencies (from dbsnp or direct gnomad fields)
+    dbsnp_data = hit.get("dbsnp", {}) if isinstance(hit.get("dbsnp"), dict) else {}
+    gnomad_exome_data = hit.get("gnomad_exome", {}) if isinstance(hit.get("gnomad_exome"), dict) else {}
+    gnomad_genome_data = hit.get("gnomad_genome", {}) if isinstance(hit.get("gnomad_genome"), dict) else {}
+
+    gnomad_freq = NOT_STATED
+    dbsnp_alleles = dbsnp_data.get("alleles")
+    if isinstance(dbsnp_alleles, list):
+        alt_allele = dbsnp_data.get("alt")
+        freqs: list[tuple[str, Any]] = []
+        for a in dbsnp_alleles:
+            if isinstance(a, dict) and "freq" in a and isinstance(a["freq"], dict):
+                al_name = a.get("allele", "")
+                f = a["freq"].get("gnomad") or a["freq"].get("gnomad_exomes")
+                if f is not None:
+                    freqs.append((al_name, f))
+        if freqs:
+            alt_match = [f for al, f in freqs if al == alt_allele]
+            if alt_match:
+                gnomad_freq = alt_match[0]
+            else:
+                gnomad_freq = freqs[-1][1] if len(freqs) > 1 else freqs[0][1]
+
+    gnomad_exome_af = NOT_STATED
+    if isinstance(gnomad_exome_data.get("af"), dict):
+        gnomad_exome_af = gnomad_exome_data["af"].get("af", NOT_STATED)
+    elif gnomad_exome_data.get("af") is not None:
+        gnomad_exome_af = gnomad_exome_data.get("af")
+
+    gnomad_genome_af = NOT_STATED
+    if isinstance(gnomad_genome_data.get("af"), dict):
+        gnomad_genome_af = gnomad_genome_data["af"].get("af", NOT_STATED)
+    elif gnomad_genome_data.get("af") is not None:
+        gnomad_genome_af = gnomad_genome_data.get("af")
+
+    if gnomad_freq == NOT_STATED:
+        if gnomad_genome_af != NOT_STATED:
+            gnomad_freq = gnomad_genome_af
+        elif gnomad_exome_af != NOT_STATED:
+            gnomad_freq = gnomad_exome_af
+
     fields = {
         "variant_id_genomic": record_id,
         "cadd_rawscore": cadd.get("rawscore", NOT_STATED),
@@ -47,6 +102,10 @@ def parse_myvariant_record(hit: dict[str, Any], question: str, url: str) -> Evid
         "sift_score": sift.get("val", NOT_STATED),
         "clinvar_variant_id": clinvar_data.get("variant_id", NOT_STATED),
         "clinvar_rsid": clinvar_data.get("rsid", NOT_STATED),
+        "clinvar_clinical_significance": clinvar_sig,
+        "gnomad_allele_freq": gnomad_freq,
+        "gnomad_exome_af": gnomad_exome_af,
+        "gnomad_genome_af": gnomad_genome_af,
         "hg38_start": hg38.get("start", NOT_STATED),
         "hg38_end": hg38.get("end", NOT_STATED),
         "snpeff_effect": snpeff_ann.get("effect", NOT_STATED),
@@ -69,7 +128,15 @@ def parse_myvariant_record(hit: dict[str, Any], question: str, url: str) -> Evid
 def variants(client: Client, query: str, limit: int = MAX_HITS) -> list[Evidence]:
     """Query MyVariant.info for variant annotations."""
     q = f"Which MyVariant annotations match '{query}'?"
-    f = client.get(SOURCE, "query", params={"q": query, "fields": "cadd,clinvar,snpeff", "size": min(limit, MAX_HITS)})
+    f = client.get(
+        SOURCE,
+        "query",
+        params={
+            "q": query,
+            "fields": "cadd,clinvar,snpeff,dbsnp,gnomad_exome,gnomad_genome",
+            "size": min(limit, MAX_HITS),
+        },
+    )
     if f.status is not Status.FOUND:
         return [
             Evidence(
