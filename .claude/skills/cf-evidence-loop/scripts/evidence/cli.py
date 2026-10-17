@@ -40,7 +40,7 @@ from pathlib import Path
 
 from . import briefs, catalog, cite_check
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, datacommons, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
+from .providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -98,7 +98,14 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("openalex-search", help="OpenAlex literature search across works")
     p.add_argument("query", help="search terms (e.g. cystic fibrosis)")
     p.add_argument("--limit", type=int, default=10, help="maximum results (default: 10)")
+    p = sub.add_parser("ema", help="EMA medicines JSON report: EU marketing authorisation date, status, indication")
+    p.add_argument("drug", help="medicine name or active substance (e.g. Kaftrio)")
+    p.add_argument("--file", help="path to EMA_medicines_json_report_en.json (defaults to sources/downloads)")
+    p = sub.add_parser("ukri", aliases=["gtr"], help="UKRI Gateway to Research search for UK publicly funded research")
+    p.add_argument("query", help="search terms (e.g. 'cystic fibrosis') or project ID")
+    p.add_argument("--limit", type=int, default=25, help="maximum results (default: 25)")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
+
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
     p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
     p.add_argument("--max-ids", type=int, default=cite_check.DEFAULT_MAX_IDS,
@@ -275,7 +282,12 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return [openalex.work(client, a.target)]
     elif a.cmd == "openalex-search":
         return openalex.search(client, a.query, a.limit)
+    elif a.cmd == "ema":
+        return [ema.lookup(a.drug, file_path=getattr(a, "file", None))]
+    elif a.cmd in ("ukri", "gtr"):
+        return ukri_gtr.search_or_get(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover
+
 
 
 if __name__ == "__main__":

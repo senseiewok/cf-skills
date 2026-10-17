@@ -1,0 +1,257 @@
+{
+  "links": null,
+  "ext": null,
+  "page": 1,
+  "size": 3,
+  "totalPages": 29,
+  "totalSize": 724,
+  "project": [
+    {
+      "links": {
+        "link": [
+          {
+            "href": "http://gtr.ukri.org/gtr/api/persons/DCB9D538-ECEB-4D4A-B67C-F85F1039477E",
+            "rel": "PI_PER",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/persons/DCB9D538-ECEB-4D4A-B67C-F85F1039477E",
+            "rel": "FELLOW_PER",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/organisations/42C112BF-D51F-46DC-8159-462AF572B9F4",
+            "rel": "LEAD_ORG",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/funds/8A349D1A-DAF2-48EF-ABE0-2F9B09444F9F",
+            "rel": "FUND",
+            "start": 1251759600000,
+            "end": 1419897600000,
+            "otherAttributes": {}
+          }
+        ]
+      },
+      "ext": null,
+      "id": "94470A9D-6805-479F-BAF8-EAB3496D32BC",
+      "outcomeid": null,
+      "href": "http://gtr.ukri.org/gtr/api/projects/94470A9D-6805-479F-BAF8-EAB3496D32BC",
+      "created": 1788431759000,
+      "updated": null,
+      "identifiers": {
+        "identifier": [
+          {
+            "value": "G0802448/1",
+            "type": "RCUK"
+          }
+        ]
+      },
+      "title": "The effect of socioeconomic status on outcomes for people with cystic fibrosis: A longitudinal study",
+      "status": "Closed",
+      "grantCategory": "Fellowship",
+      "leadFunder": "MRC",
+      "leadOrganisationDepartment": null,
+      "abstractText": "People from disadvantaged backgrounds experience worse health than those more well off in society. In the UK and internationally policies are being implemented to try to reduce these differences in health. This is proving difficult, however, and it is important to develop a better understanding of how these health differences are generated and maintained. \nIn this project cystic fibrosis will be used as an example, to investigate these processes. Cystic fibrosis is an important chronic disease of childhood and young adulthood. It is a genetic disease requiring intensive medical and social support. I will analyse the national cystic fibrosis registers from the UK and Denmark from a health inequalities point of view. I will investigate the health and social outcomes experienced by people with cystic fibrosis from different socio-economic backgrounds. For example, are there differences in lung function, access to healthcare, survival, educational attainment and employment, for people living in different socio-economic circumstances? \nIn addition to improving our understanding of health inequalities, this project will generate an in-depth description of the outcomes experienced by people with cystic fibrosis. These insights will inform the development of policies to improve public health and patient care.",
+      "techAbstractText": "Aim\nTo investigate the effect of socioeconomic status on clinical outcomes, healthcare use and employment opportunities in people with cystic fibrosis.\n\nObjectives\nIn people with cystic fibrosis: \n1. To investigate the relationships between socioeconomic status and clinical outcomes. \n2. To investigate the impact of socioeconomic status on educational attainment and employment. \n3. To assess the policy implications of the above.\n\nDesign\nLongitudinal analysis of the UK and Danish cystic fibrosis registers.\n\nMethodology\nExtensive data are available from cystic fibrosis registers in the UK and Denmark. In the first analysis, data from the UK CF register will be analysed. The UK Cystic Fibrosis Patient Register (CFPTR) captures data on all people with CF in the UK at patient registration (11,359 records to end of 2007), annual review (42,267 records) and ad hoc clinic visits (86,182 records). The database contains clinical (e.g.% predicted FEV1; Body mass index centile; survival; frequency of respiratory exacerbations); social (e.g. employment status; educational achievement) and healthcare use data (e.g. time in hospital, intravenous therapy days, CF related therapy use). Full postcode data allows estimation of an area-based measure of socioeconomic status. To analyse these data, we will use recently developed methodology and associated open-source software that allow examination of association between important CF outcomes and socio-economic status whilst allowing for correlation between repeated measurements within patients, trends over time and potentially informative missing values. For the Danish CF register, the analysis will exploit the richer, individual-level socioeconomic data that they contain, including employment, income, healthcare expenditure and receipt of welfare benefits.\n\nScientific and medical opportunities\nThis project will inform policy and practice around inequalities in health. This is a priority at national and international levels. A better understanding of the mechanisms that generate and maintain health differentials is required in order to design effective policy interventions. In addition this project will generate an in-depth longitudinal description of the health, healthcare and social outcomes of people with cystic fibrosis in the UK. This will be an important contribution to our understanding of the clinical and social epidemiology of cystic fibrosis.",
+      "potentialImpact": null,
+      "healthCategories": {
+        "healthCategory": [
+          {
+            "id": "6CFA1E1F-F25C-4C23-8FE1-C47AE53E333E",
+            "text": "Unclassified",
+            "percentage": null
+          }
+        ]
+      },
+      "researchActivities": {
+        "researchActivity": []
+      },
+      "researchSubjects": {
+        "researchSubject": []
+      },
+      "researchTopics": {
+        "researchTopic": []
+      },
+      "rcukProgrammes": {
+        "rcukProgramme": []
+      },
+      "start": null,
+      "end": null,
+      "participantValues": null
+    },
+    {
+      "links": {
+        "link": [
+          {
+            "href": "http://gtr.ukri.org/gtr/api/persons/872017FB-6584-4BE7-8A9B-3572666E1826",
+            "rel": "PI_PER",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/persons/872017FB-6584-4BE7-8A9B-3572666E1826",
+            "rel": "FELLOW_PER",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/organisations/F10C1DB7-8352-4B5E-9B34-CCB71D5C6AC5",
+            "rel": "LEAD_ORG",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/organisations/6B3B49BB-4EA0-43BC-A3AC-4D754FC777C4",
+            "rel": "PP_ORG",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/organisations/B5652EE5-5D3E-49B0-8DE5-EFC0446742B8",
+            "rel": "PP_ORG",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/funds/F1A87694-2A37-4AAB-BA68-3B486DD4E538",
+            "rel": "FUND",
+            "start": 1730073600000,
+            "end": 1856214000000,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api//outcomes/furtherfundings/936A869C-C916-4285-A352-94055DDCF2DF",
+            "rel": "FURTHER_FUNDING",
+            "start": 1743462000000,
+            "end": 1835568000000,
+            "otherAttributes": {}
+          }
+        ]
+      },
+      "ext": null,
+      "id": "AD2A54CC-5FAC-4A9B-A6DE-E89AC6DE8B2C",
+      "outcomeid": null,
+      "href": "http://gtr.ukri.org/gtr/api/projects/AD2A54CC-5FAC-4A9B-A6DE-E89AC6DE8B2C",
+      "created": 1788431759000,
+      "updated": null,
+      "identifiers": {
+        "identifier": [
+          {
+            "value": "MR/Y016343/1",
+            "type": "RCUK"
+          }
+        ]
+      },
+      "title": "The disruption of microbial associations to treat microbiome-related disease",
+      "status": "Active",
+      "grantCategory": "Fellowship",
+      "leadFunder": "UKRI FLF",
+      "leadOrganisationDepartment": "School of Biological Sciences",
+      "abstractText": "Cystic fibrosis is a genetic disease that leads to the accumulation of mucus in the lungs. Various microbes - including bacteria, fungi, and viruses; called the microbiome - inhabit this mucus, causing polymicrobial infections. Periodically, individuals with cystic fibrosis undergo pulmonary exacerbations: severe respiratory events which can include the feeling of breathlessness, the increase in sputum/mucus production, increased fever, cough etc. It is these events that individuals with cystic fibrosis frequently indicate that they wish to better understand, and that cause the majority of the morbidity and mortality in this patient population. We understand that most of these events are caused by a small number of pathogens which live within the lung microbiome. However, often individuals can be colonised with these same pathogens for years and not be affected by a single respiratory event. In this research programme, I aim to understand how this can be the case. I hypothesise that this is possible due to the interactions - or lack there of - of the pathogen with the microbes that it lives with as part of the lung microbiome.\n\nThe overall aim of this work is to identify new small molecules which could be used as potential new therapeutics to better treat individuals with cystic fibrosis to prevent and/or lessen the effects of pulmonary exacerbations.\n\nTo test this hypothesis, my work is split into 3 work packages (WPs):\n\nWP1: Use a large collection of cystic fibrosis lung microbiome samples to search for pairs of microbes and pathogens which are uniquely present in severe cystic fibrosis disease.\nI hypothesise that particular microbes found in some individuals with cystic fibrosis drive pathogens to be more able to drive disease and thus to cause more pulmonary distress. To test this hypothesis, I will look for microbes that are present in individuals who have worse disease (and more pulmonary events) when compared to those who have a milder disease phenotype.\n\nWP2: Test the effect of these microbes on cystic fibrosis pathogens in a high-throughput model of infection.\nI will use a fly infection model because they are small, easy to work with and more amendable to working with in high-throughput. Flies will be infected with the pathogen alone, and the time it takes to kill the fly will be logged and compared to a co-infection with the microbe and pathogen pair. If the fly dies more quickly when the microbe is added, it will signify that the presence of the microbe somehow makes the pathogen more harmful (we will confirm this by infection with the microbe alone which we predict will not cause infection and death in the fly).\n\nWP3: Next, I will find new small molecules (i.e., potential new drugs) that can inhibit these interactions.\nWith these important interactions identified, I will next try to block them from occurring so that the pathogen is not able to trigger pulmonary events. Using the same fly model, I will test a set of structurally diverse molecules to see their effect on the time of fly death when flies are infected with microbe-pathogen pairs. These data will then be fed into a machine learning algorithm which will predict new molecules which should inhibit the microbe pathogen interaction the best. I will then make and test these molecules to ensure this is the case.\n\nBy the end of this programme, I will have a better understanding of how microbes interact with each other in the cystic fibrosis lung, how these interactions drive lung disease and what types of small molecules are able to inhibit these microbe-pathogen interactions.",
+      "techAbstractText": null,
+      "potentialImpact": null,
+      "healthCategories": {
+        "healthCategory": []
+      },
+      "researchActivities": {
+        "researchActivity": []
+      },
+      "researchSubjects": {
+        "researchSubject": []
+      },
+      "researchTopics": {
+        "researchTopic": [
+          {
+            "id": "6CFA1E1F-F25C-4C23-8FE1-C47AE53E333E",
+            "text": "Unclassified",
+            "percentage": null
+          }
+        ]
+      },
+      "rcukProgrammes": {
+        "rcukProgramme": []
+      },
+      "start": null,
+      "end": null,
+      "participantValues": null
+    },
+    {
+      "links": {
+        "link": [
+          {
+            "href": "http://gtr.ukri.org/gtr/api/organisations/F10C1DB7-8352-4B5E-9B34-CCB71D5C6AC5",
+            "rel": "LEAD_ORG",
+            "start": null,
+            "end": null,
+            "otherAttributes": {}
+          },
+          {
+            "href": "http://gtr.ukri.org/gtr/api/funds/4A77971F-859F-4DD6-88FF-AA236EF29D35",
+            "rel": "FUND",
+            "start": 1601506800000,
+            "end": 1696028400000,
+            "otherAttributes": {}
+          }
+        ]
+      },
+      "ext": null,
+      "id": "AE85FB4F-7BB2-4588-99CC-D24034D61918",
+      "outcomeid": null,
+      "href": "http://gtr.ukri.org/gtr/api/projects/AE85FB4F-7BB2-4588-99CC-D24034D61918",
+      "created": 1788431759000,
+      "updated": null,
+      "identifiers": {
+        "identifier": [
+          {
+            "value": "2504886",
+            "type": "RCUK"
+          }
+        ]
+      },
+      "title": "Development of an in vitro model to dissect the mechanism of fungal persistence in the cystic fibrosis lung",
+      "status": "Closed",
+      "grantCategory": "Studentship",
+      "leadFunder": "NC3Rs",
+      "leadOrganisationDepartment": "School of Biological Sciences",
+      "abstractText": "Cystic fibrosis (CF) is the most common fatal genetically inherited disease in Caucasian populations. This disease is caused by mutations in the cystic fibrosis transmembrane regulator gene (CFTR) which produces defective ion fluxes and calcium homeostasis in the epithelia. Patients with cystic fibrosis are susceptible to lung infections caused by the fungal pathogen Aspergillus fumigatus.\n\nAnimal models play a central role in the study of cystic fibrosis. Researchers have used mice, ferrets, pigs and sheep to model the inflammatory response seen in human patients with this disease. Although such models generate useful knowledge on the pathophysiology of this disease, animal models are limited for a number of ethical reasons.\n\nHere we propose to establish a new in vitro model of isogenic CF and healthy controls bronchial epithelial cell lines carrying different mutations in the CFTR gene using CRISPR/Cas9 mutagenesis. Using an established methodological approach in our laboratory including in vitro infection, confocal microscopy, expression analysis, cytokine measurements and competitive fitness analysis the student will be able to define critical stages of the interaction between the cystic fibrosis epithelia and A. fumigatus compared to healthy cells and the fungal factors governing this process.\n\nThe successful completion of this project will achieve a number of scientific objectives. Firstly, the development of an isogenic cell culture system of epithelial cell lines will be of great value for researchers focused on the study of epithelia-pathogen interactions in CF. Secondly, screening of A. fumigatus null libraries on CF epithelia will increase our knowledge on the pathogen factors leading persistence in the context of disease. Additionally, the student will be enrolled in a programme that will give the student the opportunity to enroll with industrial partners in Manchester and our fungal community to promote the implementation on this resource in other laboratories at an international level.",
+      "techAbstractText": null,
+      "potentialImpact": null,
+      "healthCategories": {
+        "healthCategory": []
+      },
+      "researchActivities": {
+        "researchActivity": []
+      },
+      "researchSubjects": {
+        "researchSubject": []
+      },
+      "researchTopics": {
+        "researchTopic": [
+          {
+            "id": "6CFA1E1F-F25C-4C23-8FE1-C47AE53E333E",
+            "text": "Unclassified",
+            "percentage": null
+          }
+        ]
+      },
+      "rcukProgrammes": {
+        "rcukProgramme": []
+      },
+      "start": null,
+      "end": null,
+      "participantValues": null
+    }
+  ]
+}

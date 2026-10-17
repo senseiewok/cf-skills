@@ -13,5 +13,8 @@ Saved API responses used by `tests/test_providers.py`, so the parsers run offlin
 | `europepmc_search.json` | `europe-pmc` | `search?format=json&resultType=lite` | Bibliographic metadata |
 | `trials_study.json` | `clinicaltrials-gov` | `studies/{nctId}` | US government data |
 | `reporter_projects.json` | `nih-reporter` | `projects/search` | Investigator names and organisation identifiers are replaced with placeholders; no test reads them |
+| `ema_medicines_slice.json` | `ema-medicines-json` | `EMA_medicines_json_report_en.json` slice | European Medicines Agency regulatory data (Kaftrio, Orkambi, Kalydeco, Symkevi) |
+| `ukri_gtr_projects.json` | `ukri-gtr` | `gtr/api/projects?q=cystic+fibrosis&s=25` | UKRI Gateway to Research data under Open Government Licence v3.0 |
 
 Each source's usage terms are linked from `catalog.yaml`. Licences of the underlying records were not individually verified for this repository; treat the fixtures as test data, not as redistributed content, and replace any file you are unsure about with a synthetic one.
+
