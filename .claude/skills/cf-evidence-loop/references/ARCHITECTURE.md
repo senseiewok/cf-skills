@@ -17,6 +17,7 @@ The researcher's loop, as code. One package, one gate, one record format. Every 
 cf-evidence-loop/
   SKILL.md               the skill: what it does, how to run it, how to read a record
   catalog.yaml           the permission list this skill ships with (EVIDENCE_CATALOG overrides)
+  catalog.lock.json      pinned research commit and sha256 hashes for catalog.yaml (scripts/pin_catalog.py)
   references/ARCHITECTURE.md   this file
   scripts/requirements.txt
   scripts/evidence_cli.py      launcher, runs from any directory

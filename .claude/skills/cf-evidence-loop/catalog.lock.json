@@ -1,0 +1,11 @@
+{
+  "commit_date": "2026-10-15",
+  "copy_sha256": "b62bddedb5ef13f8220d6689baa0df1bc52a30f85338e35ac6cb46fbe78c04ee",
+  "inputs": {
+    "sources/catalog.yaml": "8ba6991ba0364d13a554cf0089266e6fe26f467993b747dc14701395ff6356fd"
+  },
+  "pinned_on": "2026-10-16",
+  "research_commit": "79f23dd718c659ad0c0e73ea6d798401f29eafa0",
+  "schema_version": 1,
+  "sources": 67
+}
