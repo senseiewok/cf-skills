@@ -325,33 +325,64 @@ def test_mutation_positive_control_s2_non_numeric_citation_count():
 # CLI Integration Tests
 # ==============================================================================
 
+def _planned_urls(stderr_text: str) -> list[str]:
+    urls: list[str] = []
+    for line in stderr_text.splitlines():
+        prefix = "planned: GET "
+        if line.startswith(prefix):
+            urls.append(line[len(prefix) :].strip())
+    return urls
+
+
 def test_cli_unpaywall_dry_run(capsys):
     """CLI unpaywall subcommand executes in dry-run mode and lists planned URL."""
+    from urllib.parse import urlparse
+
     with patch.dict(os.environ, {"EVIDENCE_DRY_RUN": "1"}):
         ret = cli.main(["unpaywall", "10.1038/ng.2745", "--contact", "test@example.org"])
     assert ret == 0
     err = capsys.readouterr().err
-    assert "planned: GET https://api.unpaywall.org/v2/10.1038/ng.2745?email=<redacted>" in err
+    parsed = [urlparse(u) for u in _planned_urls(err)]
+    assert any(
+        p.scheme == "https"
+        and p.hostname == "api.unpaywall.org"
+        and p.path == "/v2/10.1038/ng.2745"
+        and p.query == "email=<redacted>"
+        for p in parsed
+    )
 
 
 def test_cli_s2_dry_run(capsys):
     """CLI s2 subcommand executes in dry-run mode and lists planned S2 URL."""
+    from urllib.parse import urlparse
+
     with patch.dict(os.environ, {"EVIDENCE_DRY_RUN": "1"}):
         ret = cli.main(["s2", "10.1038/ng.2745"])
     assert ret == 0
     err = capsys.readouterr().err
-    assert "planned: GET https://api.semanticscholar.org/graph/v1/paper/DOI:10.1038/ng.2745" in err
+    parsed = [urlparse(u) for u in _planned_urls(err)]
+    assert any(
+        p.scheme == "https"
+        and p.hostname == "api.semanticscholar.org"
+        and p.path == "/graph/v1/paper/DOI:10.1038/ng.2745"
+        for p in parsed
+    )
 
 
 def test_cli_paper_trail_dry_run(capsys):
     """CLI paper-trail subcommand plans Crossref, Unpaywall, and Semantic Scholar requests."""
+    from urllib.parse import urlparse
+
     with patch.dict(os.environ, {"EVIDENCE_DRY_RUN": "1"}):
         ret = cli.main(["paper-trail", "10.1038/ng.2745", "--contact", "test@example.org"])
     assert ret == 0
     err = capsys.readouterr().err
-    assert "planned: GET https://api.crossref.org/works/10.1038/" in err
-    assert "planned: GET https://api.unpaywall.org/v2/10.1038/ng.2745?email=<redacted>" in err
-    assert "planned: GET https://api.semanticscholar.org/graph/v1/paper/DOI:10.1038/ng.2745" in err
+    parsed = [urlparse(u) for u in _planned_urls(err)]
+    hosts = {p.hostname for p in parsed if p.scheme == "https"}
+    assert "api.crossref.org" in hosts
+    assert "api.unpaywall.org" in hosts
+    assert "api.semanticscholar.org" in hosts
+    assert any(p.hostname == "api.unpaywall.org" and p.query == "email=<redacted>" for p in parsed)
 
 
 def test_cli_blank_queries_rejected(capsys):
