@@ -122,7 +122,7 @@ A skill is a folder. This repository keeps its skills in `.claude/skills/`, the 
    That copies the one skill into the project's `.claude/skills/`. `--agent` picks the folder for another agent (see the table), `--scope user` installs for all your projects, `--link` links instead of copying so `git pull` updates it, and `--dry-run` shows what would happen. The script runs nothing from the skill.
 3. **Ask your agent to do it.** Paste the prompt for your agent from [docs/prompts.md](docs/prompts.md). It tells the agent to read the skill's page first, to treat what it reads as data and not as orders, to fetch the files only after asking you and copy them byte for byte into the right place for that agent, and to wait for your yes before running any script.
 
-Not sure which way suits your machine? `python cf-skills/scripts/install_skill.py --how cf-evidence-loop --agent claude` says in plain words what the skill can do (it makes network requests, it ships scripts an agent may run, it needs Python, and so on) and lists only the ways that work here, including `gh skill install` when the GitHub CLI is installed. The same facts are in [`skills-index.json`](skills-index.json) for tools and agents. Claude Code can also add this repository as a plugin marketplace; that is optional (see the table and [docs/install.md](docs/install.md)). Read a skill's `SKILL.md` and scripts before an agent runs them.
+Not sure which way suits your machine? `python cf-skills/scripts/install_skill.py --how cf-evidence-loop --agent claude` says in plain words what the skill can do (it makes network requests, it ships scripts an agent may run, it needs Python, and so on) and lists only the ways that work here, including `gh skill install` when the GitHub CLI is installed. The same facts are in [`skills-index.json`](skills-index.json) for tools and agents. Claude Code can also add this repository as a plugin marketplace (where `/plugin marketplace add` of the local folder lists `cf-evidence-loop`); that is optional (see the table and [docs/install.md](docs/install.md)). GitHub Copilot still reads `.claude/skills` directly. Read a skill's `SKILL.md` and scripts before an agent runs them.
 
 | Agent | Where its skills live (project) | Docs status |
 | --- | --- | --- |
@@ -166,7 +166,7 @@ scripts/check_repo.py      checks every skill's frontmatter and links (run it be
 tests/                     tests for check_repo.py, make_index.py and install_skill.py (python -m unittest discover tests)
 ```
 
-Each skill is its own plugin in the marketplace, which is meant to let you install one without the others. That is a difference from the Anthropic repository, whose plugins bundle many skills. A plugin brings the skill's scripts too; read them first. Once releases are tagged, pin an install with `/plugin marketplace add senseiewok/cf-skills#<tag>`.
+Each skill is its own plugin in the marketplace, which is meant to let you install one without the others (for example, `/plugin marketplace add` of the local folder lists `cf-evidence-loop`). That is a difference from the Anthropic repository, whose plugins bundle many skills. GitHub Copilot still reads `.claude/skills` directly without needing marketplace installation. A plugin brings the skill's scripts too; read them first. Once releases are tagged, pin an install with `/plugin marketplace add senseiewok/cf-skills#<tag>`.
 
 ## Before a skill is published here
 
