@@ -5,7 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
+from evidence.providers import (clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda,
+                                preprints, pubmed, reporter, semantic_scholar, trials, ukri_gtr, unpaywall)
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -306,6 +307,31 @@ def test_ukri_gtr_parse():
     assert recs[0].fields["lead_funder"] == "MRC"
     assert recs[0].fields["license"] == "Open Government Licence v3.0 (OGL)"
     assert "Open Government Licence v3.0" in recs[0].limitations
+
+
+def test_unpaywall_parse():
+    data = load("unpaywall_ng2745.json")
+    r = unpaywall.parse_unpaywall(data, "10.1038/ng.2745", "question", "https://api.unpaywall.org/v2/10.1038/ng.2745")
+    assert r.status is Status.FOUND
+    assert r.source_id == "unpaywall"
+    assert r.publisher_date == "2013"
+    assert r.fields["doi"] == "10.1038/ng.2745"
+    assert r.fields["is_oa"] is True
+    assert r.fields["oa_status"] == "green"
+    assert r.fields["best_oa_location"]["url"] == "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936"
+    assert "Unpaywall" in r.limitations
+
+
+def test_semantic_scholar_parse():
+    data = load("s2_ng2745.json")
+    r = semantic_scholar.parse_paper(data, "10.1038/ng.2745", "question", "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1038/ng.2745")
+    assert r.status is Status.FOUND
+    assert r.source_id == "semantic-scholar"
+    assert r.publisher_date == "2013"
+    assert r.fields["paper_id"] == "789d766eb8218cf6e6337c7740aee90f9c932eaf"
+    assert r.fields["citation_graph_summary"]["citation_count"] >= 600
+    assert r.fields["citation_graph_summary"]["reference_count"] >= 90
+    assert "Semantic Scholar" in r.limitations
 
 
 

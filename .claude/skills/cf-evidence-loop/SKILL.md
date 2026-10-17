@@ -44,6 +44,9 @@ Research, not medical advice. The records this tool returns describe public docu
 | Query gnomAD aggregate allele frequencies | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access, blocked by catalog policy) |
 | What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |
 | Search OpenAlex works | `openalex-search "<query>" [--limit 10]` | OpenAlex via OurResearch (key required) |
+| What open-access locations and license metadata does Unpaywall index? | `unpaywall <DOI>` | Unpaywall via OurResearch |
+| What citation graph and paper metadata does Semantic Scholar hold? | `s2 <DOI>` | Semantic Scholar via Ai2 (alias: `semantic-scholar`) |
+| Resolve full paper-trail (Crossref, Unpaywall OA, Semantic Scholar citations) | `paper-trail <DOI>` | Crossref, Unpaywall, Semantic Scholar (alias: `paper`) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
