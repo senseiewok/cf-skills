@@ -38,7 +38,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import briefs, catalog, cite_check
+from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
 from .record import Evidence, Status, append_ledger, clean_for_terminal
@@ -122,6 +122,11 @@ def main(argv: list[str] | None = None) -> int:
             if e.get("access") in catalog.AUTOMATABLE and e.get("base_url"):
                 print(f"{sid:24} {e['base_url']}")
         return 0
+
+    blank_err = _check_blank_query(a)
+    if blank_err:
+        print(f"refused: {blank_err}", file=sys.stderr)
+        return 2
 
     if a.cmd == "read-page":
         from .page_reader import NonHttpsError, PageReader, PrivateHostError
@@ -214,6 +219,45 @@ def main(argv: list[str] | None = None) -> int:
     if report is not None:
         return report.exit_code(dry_run=client.dry_run)
     return 3 if any(r.status in BAD for r in recs) else 0
+
+
+def _check_blank_query(a: argparse.Namespace) -> str | None:
+    """Return an error message if any required query argument is blank/whitespace-only, else None."""
+    if a.cmd == "sources":
+        return None
+    if a.cmd == "retractions":
+        if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
+            return "DOI argument for retractions cannot be blank or whitespace-only"
+        return None
+    if a.cmd == "read-page":
+        if guardrails.is_blank_query(getattr(a, "url", None)):
+            return "URL cannot be blank or whitespace-only"
+        return None
+    if a.cmd == "cite-check":
+        if guardrails.is_blank_query(getattr(a, "file", None)):
+            return "file path cannot be blank or whitespace-only"
+        return None
+    if a.cmd == "brief":
+        if guardrails.is_blank_query(getattr(a, "subject", None)):
+            return f"subject for brief {a.recipe} cannot be blank or whitespace-only"
+        return None
+    if a.cmd == "trials":
+        if guardrails.is_blank_query(getattr(a, "condition", None)):
+            return "condition for trials cannot be blank or whitespace-only"
+        if getattr(a, "term", None) is not None and guardrails.is_blank_query(a.term):
+            return "term for trials cannot be whitespace-only when provided"
+        return None
+    if a.cmd == "preprints":
+        if guardrails.is_blank_query(getattr(a, "start", None)) or guardrails.is_blank_query(getattr(a, "end", None)):
+            return "date window start/end for preprints cannot be blank or whitespace-only"
+        return None
+
+    for attr in ("doi", "brand", "term", "variant_id", "text", "nct_id", "query", "entity", "target", "drug"):
+        if hasattr(a, attr):
+            val = getattr(a, attr)
+            if guardrails.is_blank_query(val):
+                return f"query argument '{attr}' for '{a.cmd}' cannot be blank or whitespace-only"
+    return None
 
 
 def _cite_check_preflight(a, client: Client):
