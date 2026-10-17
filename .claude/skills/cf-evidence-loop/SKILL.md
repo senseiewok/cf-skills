@@ -40,7 +40,6 @@ Research, not medical advice. The records this tool returns describe public docu
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
 | Who does UKRI fund on this topic? | `ukri "<query>" [--limit 25]` | UKRI Gateway to Research (alias: `gtr`) |
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
-
 | Annotate variant with CADD, ClinVar, SnpEff, gnomAD frequency | `myvariant "<variant query>" [--limit 5]` | MyVariant.info |
 | Query gnomAD aggregate allele frequencies | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access, blocked by catalog policy) |
 | What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |

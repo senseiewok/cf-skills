@@ -55,7 +55,6 @@ def test_known_authorised_products_dates_and_status():
     # Kaftrio: authorised 2020-08-21 (21/08/2020 in EMA report)
     rec_k = ema.parse(data, "Kaftrio", "question", file_timestamp="2026-10-04T18:02:25Z")
     assert rec_k.status is Status.FOUND
-    assert rec_k.status == Status.OK  # Status.OK alias compatibility
     assert rec_k.publisher_date == "2020-08-21"
     assert rec_k.fields["marketing_authorisation_date"] == "2020-08-21"
     assert rec_k.fields["marketing_authorisation_date_raw"] == "21/08/2020"
@@ -160,7 +159,11 @@ def test_missing_file_returns_error(tmp_path):
     rec = ema.lookup("Kaftrio", file_path=non_existent)
     assert rec.status is Status.ERROR
     assert "not found" in rec.fields.get("error", "").lower()
+    assert rec.fields.get("file_name") == "does_not_exist.json"
     assert "European Medicines Agency" in rec.limitations
+    assert "does_not_exist.json" in rec.limitations
+    assert str(non_existent) not in rec.limitations
+    assert "path" not in rec.fields
 
 
 def test_corrupt_json_file_returns_error(tmp_path):
@@ -169,7 +172,12 @@ def test_corrupt_json_file_returns_error(tmp_path):
     corrupt.write_text("not json at all {[]", encoding="utf-8")
     rec = ema.lookup("Kaftrio", file_path=corrupt)
     assert rec.status is Status.ERROR
+    assert rec.fields.get("file_name") == "corrupt.json"
+    assert rec.fields.get("error") == "JSONDecodeError"
     assert "European Medicines Agency" in rec.limitations
+    assert "corrupt.json" in rec.limitations
+    assert str(corrupt) not in rec.limitations
+    assert "path" not in rec.fields
 
 
 def test_invalid_shape_returns_error():
@@ -254,4 +262,25 @@ def test_token_and_substring_match_ranking():
     assert rec.status is Status.FOUND
     assert rec.fields["name_of_medicine"] == "Kaftrio"
     assert rec.publisher_date == "2020-08-21"
+
+
+def test_ivacaftor_substance_match_priority_over_combinations():
+    """Finding 1: Querying 'ivacaftor' against ema_medicines_slice.json matches Kalydeco
+
+    (exact substance match) in a higher priority bucket than combination products
+    (Kaftrio, Orkambi, Symkevi), and lists the combination products in other_matching_medicines.
+    """
+    data = load_fixture()
+    rec = ema.parse(data, "ivacaftor", "What is the EU status of ivacaftor?")
+    assert rec.status is Status.FOUND
+    assert rec.fields["name_of_medicine"] == "Kalydeco"
+    assert rec.fields["match_type"] == "exact_substance"
+    assert rec.fields["active_substance"] == "ivacaftor"
+
+    other = rec.fields["other_matching_medicines"]
+    assert "Kaftrio" in other
+    assert "Orkambi" in other
+    assert "Symkevi" in other
+    assert "Kalydeco" not in other
+
 

@@ -35,7 +35,6 @@ def test_parse_projects_from_fixture():
     r0 = recs[0]
 
     assert r0.status is Status.FOUND
-    assert r0.status == Status.OK
     assert r0.source_id == "ukri-gtr"
     assert r0.fields["project_id"] == "94470A9D-6805-479F-BAF8-EAB3496D32BC"
     assert "cystic fibrosis" in r0.fields["title"].lower()
@@ -43,9 +42,10 @@ def test_parse_projects_from_fixture():
     assert r0.fields["grant_category"] == "Fellowship"
     assert r0.fields["grant_reference"] == "G0802448/1"
     assert r0.fields["status"] == "Closed"
-    assert r0.fields["start"] == "2009-08-31"
+    assert r0.fields["start"] == "2009-09-01"
+    assert r0.fields["start_epoch_ms"] == 1251759600000
     assert r0.fields["search_total"] == 724
-    assert r0.publisher_date == "2009-08-31"
+    assert r0.publisher_date == "2009-09-01"
     assert r0.excerpt is not None and len(r0.excerpt) > 0
 
 

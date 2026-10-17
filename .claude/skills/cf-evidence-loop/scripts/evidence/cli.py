@@ -221,6 +221,34 @@ def main(argv: list[str] | None = None) -> int:
     return 3 if any(r.status in BAD for r in recs) else 0
 
 
+REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
+    "doi": ("doi",),
+    "approval": ("brand",),
+    "label": ("brand",),
+    "preprint": ("doi",),
+    "preprints": ("start", "end"),
+    "variants": ("term",),
+    "myvariant": ("term",),
+    "gnomad": ("variant_id",),
+    "grants": ("text",),
+    "pubmed": ("term",),
+    "reviews": ("term",),
+    "trial": ("nct_id",),
+    "trials": ("condition",),
+    "epmc": ("query",),
+    "cited": ("doi",),
+    "population": ("entity",),
+    "openalex": ("target",),
+    "openalex-search": ("query",),
+    "ema": ("drug",),
+    "ukri": ("query",),
+    "gtr": ("query",),
+    "brief": ("subject",),
+    "read-page": ("url",),
+    "cite-check": ("file",),
+}
+
+
 def _check_blank_query(a: argparse.Namespace) -> str | None:
     """Return an error message if any required query argument is blank/whitespace-only, else None."""
     if a.cmd == "sources":
@@ -229,33 +257,18 @@ def _check_blank_query(a: argparse.Namespace) -> str | None:
         if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
             return "DOI argument for retractions cannot be blank or whitespace-only"
         return None
-    if a.cmd == "read-page":
-        if guardrails.is_blank_query(getattr(a, "url", None)):
-            return "URL cannot be blank or whitespace-only"
-        return None
-    if a.cmd == "cite-check":
-        if guardrails.is_blank_query(getattr(a, "file", None)):
-            return "file path cannot be blank or whitespace-only"
-        return None
-    if a.cmd == "brief":
-        if guardrails.is_blank_query(getattr(a, "subject", None)):
-            return f"subject for brief {a.recipe} cannot be blank or whitespace-only"
-        return None
-    if a.cmd == "trials":
-        if guardrails.is_blank_query(getattr(a, "condition", None)):
-            return "condition for trials cannot be blank or whitespace-only"
-        if getattr(a, "term", None) is not None and guardrails.is_blank_query(a.term):
-            return "term for trials cannot be whitespace-only when provided"
-        return None
-    if a.cmd == "preprints":
-        if guardrails.is_blank_query(getattr(a, "start", None)) or guardrails.is_blank_query(getattr(a, "end", None)):
-            return "date window start/end for preprints cannot be blank or whitespace-only"
-        return None
 
-    for attr in ("doi", "brand", "term", "variant_id", "text", "nct_id", "query", "entity", "target", "drug"):
+    # Check required positional arguments for the subcommand
+    for req_attr in REQUIRED_QUERY_ATTRS.get(a.cmd, ()):
+        val = getattr(a, req_attr, None)
+        if guardrails.is_blank_query(val):
+            return f"required query argument '{req_attr}' for '{a.cmd}' cannot be blank or whitespace-only"
+
+    # For any other arguments (including optional flags), reject only if present and whitespace-only
+    for attr in ("doi", "brand", "term", "variant_id", "text", "nct_id", "query", "entity", "target", "drug", "year"):
         if hasattr(a, attr):
             val = getattr(a, attr)
-            if guardrails.is_blank_query(val):
+            if val is not None and guardrails.is_blank_query(val):
                 return f"query argument '{attr}' for '{a.cmd}' cannot be blank or whitespace-only"
     return None
 

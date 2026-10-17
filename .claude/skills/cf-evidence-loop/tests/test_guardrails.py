@@ -361,3 +361,30 @@ def test_cli_rejects_blank_queries_without_network_or_io(subcommand_args, capsys
         captured = capsys.readouterr()
         assert "refused:" in captured.err
         assert "blank or whitespace" in captured.err or "empty or blank" in captured.err
+
+
+def test_cli_allows_subcommands_with_optional_none_attributes(capsys):
+    """Subcommands with optional flags defaulting to None (e.g. trials condition without --term,
+
+    population entity without --year) must NOT be rejected by _check_blank_query.
+    """
+    with patch("evidence.cli.Client") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.accounting.summary.return_value = "accounting: 0 requests"
+        mock_instance.dry_run = True
+
+        # 1. trials with valid condition and term=None
+        with patch("evidence.providers.trials.search", return_value=[]) as mock_search:
+            rc = cli.main(["trials", "cystic fibrosis"])
+            assert rc == 0
+            mock_search.assert_called_once()
+
+        # 2. population with valid entity and year=None
+        with patch("evidence.providers.datacommons.observation", return_value=Evidence(
+            status=Status.FOUND, question="q", source_id="s", url="u", provider="p",
+            fields={"val": 1}, limitations="At least fifteen characters limitations"
+        )) as mock_obs:
+            rc = cli.main(["population", "country/USA"])
+            assert rc == 0
+            mock_obs.assert_called_once()
+

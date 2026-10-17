@@ -8,7 +8,7 @@ Uses polite Client with source="ukri-gtr" under Open Government Licence v3.0 (OG
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from .. import catalog
@@ -54,9 +54,37 @@ def _extract_grant_ref(project: dict) -> str | None:
     return None
 
 
-def _extract_fund_info(project: dict) -> tuple[str | None, str | None, int | None]:
+def _epoch_ms_to_uk_date(epoch_ms: int | float) -> str:
+    """Format epoch-ms timestamp as YYYY-MM-DD in Europe/London timezone.
+
+    GtR timestamps reflect UK local time (midnight GMT or BST), so in summer
+    midnight BST (UTC+1) is 23:00 UTC the previous day. Converting in Europe/London
+    ensures the calendar date matches the official grant start/end date.
+    """
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.fromtimestamp(epoch_ms / 1000, ZoneInfo("Europe/London")).strftime("%Y-%m-%d")
+    except Exception:
+        pass
+    dt_utc = datetime.fromtimestamp(epoch_ms / 1000, timezone.utc)
+    y = dt_utc.year
+    # In the UK, BST starts at 01:00 UTC on the last Sunday of March
+    march_last_sun = 31 - (datetime(y, 3, 31).weekday() + 1) % 7
+    bst_start = datetime(y, 3, march_last_sun, 1, 0, tzinfo=timezone.utc)
+    # BST ends at 01:00 UTC on the last Sunday of October
+    oct_last_sun = 31 - (datetime(y, 10, 31).weekday() + 1) % 7
+    bst_end = datetime(y, 10, oct_last_sun, 1, 0, tzinfo=timezone.utc)
+    if bst_start <= dt_utc < bst_end:
+        dt_uk = dt_utc + timedelta(hours=1)
+    else:
+        dt_uk = dt_utc
+    return dt_uk.strftime("%Y-%m-%d")
+
+
+def _extract_fund_info(project: dict) -> tuple[str | None, str | None, int | None, int | None, int | None]:
     links = project.get("links")
     start_dt, end_dt, amount = None, None, None
+    start_epoch, end_epoch = None, None
     if isinstance(links, dict):
         link_list = links.get("link")
         if isinstance(link_list, list):
@@ -64,11 +92,13 @@ def _extract_fund_info(project: dict) -> tuple[str | None, str | None, int | Non
                 if isinstance(lnk, dict) and lnk.get("rel") == "FUND":
                     s = lnk.get("start")
                     if isinstance(s, (int, float)) and s > 0:
-                        start_dt = datetime.fromtimestamp(s / 1000, timezone.utc).strftime("%Y-%m-%d")
+                        start_epoch = int(s)
+                        start_dt = _epoch_ms_to_uk_date(start_epoch)
                     e = lnk.get("end")
                     if isinstance(e, (int, float)) and e > 0:
-                        end_dt = datetime.fromtimestamp(e / 1000, timezone.utc).strftime("%Y-%m-%d")
-    return start_dt, end_dt, amount
+                        end_epoch = int(e)
+                        end_dt = _epoch_ms_to_uk_date(end_epoch)
+    return start_dt, end_dt, amount, start_epoch, end_epoch
 
 
 def _extract_link_href(project: dict, rel: str) -> str | None:
@@ -89,11 +119,11 @@ def _parse_single_project(p: dict, question: str, url: str, total: int | None = 
     funder = p.get("leadFunder")
     grant_cat = p.get("grantCategory")
     grant_ref = _extract_grant_ref(p)
-    fund_start, fund_end, fund_amount = _extract_fund_info(p)
+    fund_start, fund_end, fund_amount, start_epoch, end_epoch = _extract_fund_info(p)
 
     created_epoch = p.get("created")
     created_str = (
-        datetime.fromtimestamp(created_epoch / 1000, timezone.utc).strftime("%Y-%m-%d")
+        _epoch_ms_to_uk_date(created_epoch)
         if isinstance(created_epoch, (int, float)) and created_epoch > 0
         else None
     )
@@ -113,6 +143,8 @@ def _parse_single_project(p: dict, question: str, url: str, total: int | None = 
         "grant_reference": grant_ref,
         "start": fund_start,
         "end": fund_end,
+        "start_epoch_ms": start_epoch,
+        "end_epoch_ms": end_epoch,
         "award_amount": fund_amount,
         "license": OGL_LICENSE,
         "license_attribution": OGL_ATTRIBUTION,

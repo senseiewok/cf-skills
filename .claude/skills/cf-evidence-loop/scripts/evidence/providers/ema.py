@@ -65,13 +65,16 @@ def resolve_report_path(file_path: str | Path | None = None) -> Path:
     if p_cat.is_file():
         return p_cat
 
-    # Check all ancestor directories for sibling cf-research
-    for ancestor in Path(__file__).resolve().parents:
+    # Check ancestor directories up to 4 levels (workspace root), skipping .worktrees
+    current = Path(__file__).resolve()
+    for ancestor in list(current.parents)[:4]:
+        if ".worktrees" in ancestor.parts:
+            continue
         cand = ancestor / "cf-research" / "sources" / "downloads" / "EMA_medicines_json_report_en.json"
-        if cand.is_file():
+        if ".worktrees" not in cand.parts and cand.is_file():
             return cand
         cand_parent = ancestor.parent / "cf-research" / "sources" / "downloads" / "EMA_medicines_json_report_en.json"
-        if cand_parent.is_file():
+        if ".worktrees" not in cand_parent.parts and cand_parent.is_file():
             return cand_parent
 
     # Fallback to catalog downloads path
@@ -98,6 +101,7 @@ def parse(
     question: str,
     url: str = DEFAULT_CATALOG_URL,
     file_timestamp: str | None = None,
+    source_file: str | None = None,
 ) -> Evidence:
     """Pure in-memory parsing of an EMA JSON report dict."""
     if not isinstance(data, dict):
@@ -142,46 +146,56 @@ def parse(
 
     target = drug.strip().lower()
 
-    # Finding 1.4: Strict match ranking tiers (exact > token > substring > INN/substance)
-    exact_matches: list[tuple[bool, dict]] = []
-    token_matches: list[tuple[bool, dict]] = []
-    substr_matches: list[tuple[bool, dict]] = []
-    inn_matches: list[tuple[bool, dict]] = []
+    def _match_type(item: dict) -> tuple[int, str] | None:
+        """Categorise and rank match between query target and medicine record.
 
+        Buckets in priority order:
+        0: exact_name (medicine name equals target)
+        1: exact_substance (active substance or INN equals target or exact single component)
+        2: prefix_name (medicine name starts with target)
+        3: token_name (target is a distinct word in medicine name)
+        4: combination_substance (target is an exact component in multi-substance combination)
+        5: substring_name (target is a substring of medicine name)
+        6: substring_substance (target is a substring of INN or active substance)
+        """
+        name_lower = _str_field(item, "name_of_medicine").lower()
+        inn_lower = _str_field(item, "international_non_proprietary_name_common_name").lower()
+        substance_lower = _str_field(item, "active_substance").lower()
+
+        if name_lower == target:
+            return (0, "exact_name")
+        if inn_lower == target or substance_lower == target:
+            return (1, "exact_substance")
+        if name_lower.startswith(target):
+            return (2, "prefix_name")
+        if target in name_lower.split():
+            return (3, "token_name")
+
+        components = {
+            c.strip()
+            for part in (inn_lower, substance_lower)
+            for c in part.replace(";", ",").split(",")
+            if c.strip()
+        }
+        if target in components:
+            return (4, "combination_substance")
+        if target in name_lower:
+            return (5, "substring_name")
+        if target in inn_lower or target in substance_lower:
+            return (6, "substring_substance")
+        return None
+
+    classified_matches: list[tuple[int, str, bool, dict]] = []
     for item in items:
         if not isinstance(item, dict):
             continue
-        # Finding 1.2: Safely extract string fields
-        name = _str_field(item, "name_of_medicine")
-        inn = _str_field(item, "international_non_proprietary_name_common_name")
-        substance = _str_field(item, "active_substance")
-        category = _str_field(item, "category")
+        res = _match_type(item)
+        if res is not None:
+            rank, m_type = res
+            is_human = _str_field(item, "category").lower() == "human"
+            classified_matches.append((rank, m_type, is_human, item))
 
-        # Prioritise Human medicine category
-        is_human = category.lower() == "human"
-
-        name_lower = name.lower()
-        inn_lower = inn.lower()
-        substance_lower = substance.lower()
-
-        if name_lower == target:
-            exact_matches.append((is_human, item))
-        elif target in name_lower.split():
-            token_matches.append((is_human, item))
-        elif target in name_lower:
-            substr_matches.append((is_human, item))
-        elif target in inn_lower or target in substance_lower:
-            inn_matches.append((is_human, item))
-
-    picked = None
-    for bucket in (exact_matches, token_matches, substr_matches, inn_matches):
-        if bucket:
-            # Sort so human medicine comes first (not is_human places True before False)
-            bucket.sort(key=lambda x: not x[0])
-            picked = bucket[0][1]
-            break
-
-    if not picked:
+    if not classified_matches:
         return Evidence(
             status=Status.NOT_FOUND,
             question=question,
@@ -194,6 +208,20 @@ def parse(
                 f"No medicine matching '{drug}' found in the report."
             ),
         )
+
+    # Sort so smallest rank first, then human medicine first (not is_human)
+    classified_matches.sort(key=lambda x: (x[0], not x[2]))
+    winning_rank, picked_match_type, _, picked = classified_matches[0]
+    picked_name = _str_field(picked, "name_of_medicine")
+
+    # List other matching medicines (deduplicated by name, preserving match priority)
+    other_medicines: list[str] = []
+    seen = {picked_name.lower()}
+    for _, _, _, item in classified_matches:
+        m_name = _str_field(item, "name_of_medicine")
+        if m_name and m_name.lower() not in seen:
+            seen.add(m_name.lower())
+            other_medicines.append(m_name)
 
     item_url = _str_field(picked, "medicine_url") or url
     auth_date_raw = _str_field(picked, "marketing_authorisation_date")
@@ -219,6 +247,9 @@ def parse(
         "therapeutic_area": picked.get("therapeutic_area_mesh"),
         "last_updated_date": _fmt_ema_date(picked.get("last_updated_date")),
         "report_timestamp": ts,
+        "source_file": source_file or "EMA_medicines_json_report_en.json",
+        "match_type": picked_match_type,
+        "other_matching_medicines": other_medicines,
     }
 
     limitations = (
@@ -265,9 +296,9 @@ def lookup(drug: str, file_path: str | Path | None = None) -> Evidence:
             source_id=SOURCE,
             url=DEFAULT_CATALOG_URL,
             provider=PROVIDER,
-            fields={"drug": drug, "path": str(path), "error": "file not found"},
+            fields={"drug": drug, "file_name": path.name, "error": "file not found"},
             limitations=(
-                f"Source: European Medicines Agency (EMA). Report file not found at {path}; "
+                f"Source: European Medicines Agency (EMA). Report file '{path.name}' not found; "
                 "the fetcher must place the report under sources/downloads before this offline provider can read it."
             ),
         )
@@ -282,9 +313,9 @@ def lookup(drug: str, file_path: str | Path | None = None) -> Evidence:
             source_id=SOURCE,
             url=DEFAULT_CATALOG_URL,
             provider=PROVIDER,
-            fields={"drug": drug, "path": str(path), "error": str(exc)},
-            limitations=f"Source: European Medicines Agency (EMA). Failed to read or parse {path}: {exc}",
+            fields={"drug": drug, "file_name": path.name, "error": type(exc).__name__},
+            limitations=f"Source: European Medicines Agency (EMA). Failed to read or parse '{path.name}': {type(exc).__name__}",
         )
 
     ts = _get_file_timestamp(data, path)
-    return parse(data, drug, q, DEFAULT_CATALOG_URL, file_timestamp=ts)
+    return parse(data, drug, q, DEFAULT_CATALOG_URL, file_timestamp=ts, source_file=path.name)

@@ -13,7 +13,6 @@ from typing import Any, Iterable
 
 class Status(str, Enum):
     FOUND = "found"
-    OK = "found"  # alias to FOUND for compatibility with test assertions
     NOT_FOUND = "not_found"
     OUT_OF_SCOPE = "out_of_scope"
     BLOCKED = "blocked"
