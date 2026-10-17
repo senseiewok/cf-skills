@@ -40,7 +40,8 @@ from pathlib import Path
 
 from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
+from .providers import (clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda,
+                        preprints, pubmed, reporter, semantic_scholar, trials, ukri_gtr, unpaywall)
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -104,6 +105,12 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("ukri", aliases=["gtr"], help="UKRI Gateway to Research search for UK publicly funded research")
     p.add_argument("query", help="search terms (e.g. 'cystic fibrosis') or project ID")
     p.add_argument("--limit", type=int, default=25, help="maximum results (default: 25)")
+    p = sub.add_parser("unpaywall", help="Unpaywall open-access locations and PDF links by DOI")
+    p.add_argument("doi", help="DOI (e.g. 10.1038/ng.2745)")
+    p = sub.add_parser("s2", aliases=["semantic-scholar"], help="Semantic Scholar paper metadata and citation graph by DOI")
+    p.add_argument("doi", help="DOI (e.g. 10.1038/ng.2745)")
+    p = sub.add_parser("paper-trail", aliases=["paper"], help="Paper-trail layer: Crossref work metadata, Unpaywall OA, and Semantic Scholar citation graph")
+    p.add_argument("doi", help="DOI (e.g. 10.1038/ng.2745)")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
 
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
@@ -212,7 +219,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ledger: appended {n} record(s) to {a.ledger}", file=sys.stderr)
     if client.dry_run:
         for method, url in client.planned:
-            print(clean_for_terminal(f"planned: {method} {url}"), file=sys.stderr)
+            safe_planned = unpaywall.redact_url(url)
+            print(clean_for_terminal(f"planned: {method} {safe_planned}"), file=sys.stderr)
         print("dry run: requests whose URLs depend on an earlier response (summaries for the ids a search finds, further pages) are not listed",
               file=sys.stderr)
     print(client.accounting.summary(), file=sys.stderr)
@@ -243,6 +251,11 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "ema": ("drug",),
     "ukri": ("query",),
     "gtr": ("query",),
+    "unpaywall": ("doi",),
+    "s2": ("doi",),
+    "semantic-scholar": ("doi",),
+    "paper-trail": ("doi",),
+    "paper": ("doi",),
     "brief": ("subject",),
     "read-page": ("url",),
     "cite-check": ("file",),
@@ -343,6 +356,16 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return [ema.lookup(a.drug, file_path=getattr(a, "file", None))]
     elif a.cmd in ("ukri", "gtr"):
         return ukri_gtr.search_or_get(client, a.query, a.limit)
+    elif a.cmd == "unpaywall":
+        return [unpaywall.lookup(client, a.doi, contact=getattr(a, "contact", None))]
+    elif a.cmd in ("s2", "semantic-scholar"):
+        return [semantic_scholar.paper(client, a.doi)]
+    elif a.cmd in ("paper-trail", "paper"):
+        return [
+            crossref.work(client, a.doi),
+            unpaywall.lookup(client, a.doi, contact=getattr(a, "contact", None)),
+            semantic_scholar.paper(client, a.doi),
+        ]
     ap.error(a.cmd)  # pragma: no cover
 
 

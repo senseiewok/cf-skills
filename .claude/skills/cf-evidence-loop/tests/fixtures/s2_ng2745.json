@@ -1,0 +1,206 @@
+{
+  "paperId": "789d766eb8218cf6e6337c7740aee90f9c932eaf",
+  "title": "Defining the disease liability of variants in the cystic fibrosis transmembrane conductance regulator gene",
+  "venue": "Nature Genetics",
+  "year": 2013,
+  "referenceCount": 97,
+  "citationCount": 613,
+  "influentialCitationCount": 37,
+  "isOpenAccess": true,
+  "openAccessPdf": {
+    "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3874936",
+    "status": "GREEN",
+    "license": null,
+    "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC3874936, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+    {
+      "authorId": "6227871",
+      "name": "P. Sosnay"
+    },
+    {
+      "authorId": "7029960",
+      "name": "K. R. Siklosi"
+    },
+    {
+      "authorId": "38849185",
+      "name": "F. van Goor"
+    },
+    {
+      "authorId": "6206387",
+      "name": "Kyle Kaniecki"
+    },
+    {
+      "authorId": "5404455",
+      "name": "Haihui Yu"
+    },
+    {
+      "authorId": "2113524287",
+      "name": "N. Sharma"
+    },
+    {
+      "authorId": "6192016",
+      "name": "A. Ramalho"
+    },
+    {
+      "authorId": "143944195",
+      "name": "M. Amaral"
+    },
+    {
+      "authorId": "5202836",
+      "name": "R. Dorfman"
+    },
+    {
+      "authorId": "4909717",
+      "name": "J. Ziele\u0144ski"
+    },
+    {
+      "authorId": "4563716",
+      "name": "David L. Masica"
+    },
+    {
+      "authorId": "2681867",
+      "name": "R. Karchin"
+    },
+    {
+      "authorId": "6027892",
+      "name": "L. Millen"
+    },
+    {
+      "authorId": "144883590",
+      "name": "P. Thomas"
+    },
+    {
+      "authorId": "2727213",
+      "name": "G. Patrinos"
+    },
+    {
+      "authorId": "118643835",
+      "name": "M. Corey"
+    },
+    {
+      "authorId": "40062691",
+      "name": "M. Lewis"
+    },
+    {
+      "authorId": "6672234",
+      "name": "J. Rommens"
+    },
+    {
+      "authorId": "3763274",
+      "name": "C. Castellani"
+    },
+    {
+      "authorId": "5144841",
+      "name": "C. Penland"
+    },
+    {
+      "authorId": "4795123",
+      "name": "G. Cutting"
+    }
+  ],
+  "citations": [
+    {
+      "paperId": "65bf9f24ffca725643088853e36b62f16c800943",
+      "title": "ELEVATE-LNP: Empty lipid nanoparticle enabled validation and AI-guided therapeutic evaluation for efficient formulation optimization for mRNA delivery",
+      "year": 2026
+    },
+    {
+      "paperId": "42d876a76e2fd78f392c5e3e8beb9c6ebddcf9fa",
+      "title": "Timeliness to diagnostic and early care milestones after newborn screening for Cystic Fibrosis in Texas: 14 years of experience at 2 centers.",
+      "year": 2026
+    },
+    {
+      "paperId": "e4b684a30f6749fb2d0dbcdf2f39890284905515",
+      "title": "Late-Diagnosed Cystic Fibrosis with Co-Occurring CFTR 3849+10kbC>T and 5T Variants: A Case Report",
+      "year": 2026
+    },
+    {
+      "paperId": "55b7701a6508a69622fae05c75d4085c3da120aa",
+      "title": "AI-augmented evidence as the next core competence in rare disease drug development: From snapshots to 360-degree movies.",
+      "year": 2026
+    },
+    {
+      "paperId": "7c4d8787ccf8499eb9d721e8c8cb668f42a988e4",
+      "title": "Comparative Alignment of CFTR2 and CFTR-France Classifications with a Turkish Cystic Fibrosis Referral Cohort",
+      "year": 2026
+    },
+    {
+      "paperId": "e189f62fc336b4fcc158d7ddfd44ba03153c3d8c",
+      "title": "Current knowledge in pharmacogenomics and precision medicine: perspectives of the PGRN global PGx committee on improving drug therapies in underrepresented ethnic populations.",
+      "year": 2026
+    },
+    {
+      "paperId": "65c35fdfac2706437c748f1e35ae67bcd274b1f5",
+      "title": "The role of sweat chloride in determining CFTR protein restoration in people with cystic fibrosis.",
+      "year": 2026
+    },
+    {
+      "paperId": "4fd22d830b26e90c7f48529a483d93be9aca12c1",
+      "title": "Navigating Misfolded Terrain: ER-Associated Degradation of Membrane Proteins.",
+      "year": 2026
+    },
+    {
+      "paperId": "982f5d00fcefebfc7dc8976292561bdfbc165fc1",
+      "title": "DRIVE v3: Command Line Application for Identity\u2010by\u2010Descent Haplotype Clustering in Large Biobank Scale Data",
+      "year": 2026
+    },
+    {
+      "paperId": "376d86a182735f405086017d146a4e3bed3ffc23",
+      "title": "Clinical and primary cell evidence reveals complex CFTR function\u2013phenotype relationships",
+      "year": 2026
+    }
+  ],
+  "references": [
+    {
+      "paperId": "f015ba72d5b8e4c1231e6741ba6d13670c74fc34",
+      "title": "A Classification Model Relative to Splicing for Variants of Unknown Clinical Significance: Application to the CFTR Gene",
+      "year": 2013
+    },
+    {
+      "paperId": "0285c334e48e2f16ec2a2600f3fc042194a406c8",
+      "title": "Translating genes into health",
+      "year": 2012
+    },
+    {
+      "paperId": "30900bf2d58d14b79ad20bf1b65149ca279b6bc4",
+      "title": "Deleterious- and disease-allele prevalence in healthy individuals: insights from current predictions, mutation databases, and population-scale resequencing.",
+      "year": 2012
+    },
+    {
+      "paperId": "9cb6256cdfca5bec3e73d06cffcaede3e1c2d275",
+      "title": "Microattribution and nanopublication as means to incentivize the placement of human genome variation data into the public domain",
+      "year": 2012
+    },
+    {
+      "paperId": "9d1fc4e31f59310e48532932f6ddea424b3ec986",
+      "title": "An integrated map of genetic variation from 1,092 human genomes",
+      "year": 2012
+    },
+    {
+      "paperId": "f68bf97785c374bce828896421e0aa747bc1c661",
+      "title": "Relating the Disease Mutation Spectrum to the Evolution of the Cystic Fibrosis Transmembrane Conductance Regulator (CFTR)",
+      "year": 2012
+    },
+    {
+      "paperId": "d4abedcca183ccc3b86bc981e1f84d35804dc345",
+      "title": "Phenotype-Optimized Sequence Ensembles Substantially Improve Prediction of Disease-Causing Mutation in Cystic Fibrosis",
+      "year": 2012
+    },
+    {
+      "paperId": "5cc820875e74b212f4064ac290902e78884521b0",
+      "title": "Functional analysis of synonymous substitutions predicted to affect splicing of the CFTR gene",
+      "year": 2012
+    },
+    {
+      "paperId": "ba231ad4baf93180a9f0ae2f63305417d61e6803",
+      "title": "Prospective and parallel assessments of cystic fibrosis newborn screening protocols in the Czech Republic: IRT/DNA/IRT versus IRT/PAP and IRT/PAP/DNA",
+      "year": 2012
+    },
+    {
+      "paperId": "7e620fc97839edd750ca7c6720dcba6ab892acff",
+      "title": "Ivacaftor potentiation of multiple CFTR channels with gating mutations.",
+      "year": 2012
+    }
+  ]
+}

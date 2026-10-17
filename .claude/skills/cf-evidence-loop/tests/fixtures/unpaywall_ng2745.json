@@ -1,0 +1,248 @@
+{
+  "best_oa_location": {
+    "endpoint_id": "ac9de7698155b820de7",
+    "evidence": "deprecated",
+    "host_type": "repository",
+    "is_best": true,
+    "license": null,
+    "oa_date": "2013-08-25",
+    "pmh_id": "oai:pubmedcentral.nih.gov:3874936",
+    "repository_institution": "National Institutes of Health",
+    "updated": "deprecated",
+    "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+    "url_for_landing_page": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+    "url_for_pdf": null,
+    "version": "submittedVersion"
+  },
+  "data_standard": 2,
+  "doi": "10.1038/ng.2745",
+  "doi_url": "https://doi.org/10.1038/ng.2745",
+  "first_oa_location": {
+    "endpoint_id": "ac9de7698155b820de7",
+    "evidence": "deprecated",
+    "host_type": "repository",
+    "is_best": true,
+    "license": null,
+    "oa_date": "2013-08-25",
+    "pmh_id": "oai:pubmedcentral.nih.gov:3874936",
+    "repository_institution": "National Institutes of Health",
+    "updated": "deprecated",
+    "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+    "url_for_landing_page": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+    "url_for_pdf": null,
+    "version": "submittedVersion"
+  },
+  "genre": "journal-article",
+  "has_repository_copy": true,
+  "is_oa": true,
+  "is_paratext": false,
+  "journal_is_in_doaj": false,
+  "journal_is_oa": false,
+  "journal_issn_l": "1061-4036",
+  "journal_issns": "1061-4036,1546-1718",
+  "journal_name": "Nature Genetics",
+  "oa_locations": [
+    {
+      "endpoint_id": "ac9de7698155b820de7",
+      "evidence": "deprecated",
+      "host_type": "repository",
+      "is_best": true,
+      "license": null,
+      "oa_date": "2013-08-25",
+      "pmh_id": "oai:pubmedcentral.nih.gov:3874936",
+      "repository_institution": "National Institutes of Health",
+      "updated": "deprecated",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+      "url_for_landing_page": "https://www.ncbi.nlm.nih.gov/pmc/articles/3874936",
+      "url_for_pdf": null,
+      "version": "submittedVersion"
+    }
+  ],
+  "oa_locations_embargoed": [],
+  "oa_status": "green",
+  "published_date": "2013-08-25",
+  "publisher": "Springer Science and Business Media LLC",
+  "title": "Defining the disease liability of variants in the cystic fibrosis transmembrane conductance regulator gene",
+  "updated": "2026-02-10T21:43:31Z",
+  "year": 2013,
+  "z_authors": [
+    {
+      "author_position": "first",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "1] Department of Medicine, Johns Hopkins University, Baltimore, Maryland, USA. [2] Perdana University Graduate School of Medicine, Serdang, Malaysia. [3] McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA",
+        "McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA",
+        "Perdana University Graduate School of Medicine, Serdang, Malaysia",
+        "Department of Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Patrick R Sosnay"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Karen R Siklosi"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Vertex Pharmaceuticals, Inc., San Diego, California, USA"
+      ],
+      "raw_author_name": "Fredrick Van Goor"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Genetics and Development, Columbia University College of Physicians and Surgeons, New York, New York, USA",
+        "McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Kyle Kaniecki"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Vertex Pharmaceuticals, Inc., San Diego, California, USA"
+      ],
+      "raw_author_name": "Haihui Yu"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Neeraj Sharma"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Centre for Biodiversity, Functional and Integrative Genomics (BioFIG), Faculty of Sciences, University of Lisboa, Lisbon, Portugal",
+        "Department of Genetics, National Institute of Health, Lisbon, Portugal"
+      ],
+      "raw_author_name": "Anabela S Ramalho"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Centre for Biodiversity, Functional and Integrative Genomics (BioFIG), Faculty of Sciences, University of Lisboa, Lisbon, Portugal",
+        "Department of Genetics, National Institute of Health, Lisbon, Portugal"
+      ],
+      "raw_author_name": "Margarida D Amaral"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Geneyouin, Inc., Maple, Ontario, Canada",
+        "Program in Genetics and Genome Biology, The Hospital for Sick Children, Toronto, Ontario, Canada"
+      ],
+      "raw_author_name": "Ruslan Dorfman"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Program in Genetics and Genome Biology, The Hospital for Sick Children, Toronto, Ontario, Canada"
+      ],
+      "raw_author_name": "Julian Zielenski"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Biomedical Engineering, Institute for Computational Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "David L Masica"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Biomedical Engineering, Institute for Computational Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Rachel Karchin"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Physiology, University of Texas Southwestern Medical Center, Dallas, Texas, USA"
+      ],
+      "raw_author_name": "Linda Millen"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Physiology, University of Texas Southwestern Medical Center, Dallas, Texas, USA"
+      ],
+      "raw_author_name": "Philip J Thomas"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Pharmacy, School of Health Sciences, University of Patras, University Campus, Patras, Greece"
+      ],
+      "raw_author_name": "George P Patrinos"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Dalla Lana School of Public Health, University of Toronto, Toronto, Ontario, Canada",
+        "Program in Child Evaluative Health Sciences, The Hospital for Sick Children, Toronto, Ontario, Canada"
+      ],
+      "raw_author_name": "Mary Corey"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Genetics and Public Policy Center, Berman Institute for Bioethics, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Michelle H Lewis"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Department of Molecular Genetics, University of Toronto, Toronto, Ontario, Canada",
+        "Program in Genetics and Genome Biology, The Hospital for Sick Children, Toronto, Ontario, Canada"
+      ],
+      "raw_author_name": "Johanna M Rommens"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Cystic Fibrosis Center, Azienda Ospedaliera Universitaria Integrata, Verona, Italy"
+      ],
+      "raw_author_name": "Carlo Castellani"
+    },
+    {
+      "author_position": "middle",
+      "is_corresponding": false,
+      "raw_affiliation_strings": [
+        "Cystic Fibrosis Foundation, Bethesda, Maryland, USA"
+      ],
+      "raw_author_name": "Christopher M Penland"
+    },
+    {
+      "author_position": "last",
+      "is_corresponding": true,
+      "raw_affiliation_strings": [
+        "Department of Pediatrics, Johns Hopkins University School of Medicine, Baltimore, Maryland, USA",
+        "McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University, Baltimore, Maryland, USA"
+      ],
+      "raw_author_name": "Garry R Cutting"
+    }
+  ]
+}
