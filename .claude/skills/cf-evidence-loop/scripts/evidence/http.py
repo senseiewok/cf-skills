@@ -7,7 +7,8 @@ The rules (see references/NETWORK-RULES.md for the reasoning; each has a test):
   R3  Robots gate for documents: a `fetch` source's path must be allowed by the host's robots.txt for our
       agent and for `*`; 404/410 means no restrictions; 401/403 means refuse; 5xx or timeout means refuse this run.
       robots.txt is fetched once per host per process, paced (R4), capped (R10) and without following a redirect (R1);
-      a redirect or an oversized body counts as unreachable.
+      a redirect or an oversized body counts as unreachable. robots_allows also checks AI_AGENT_TOKENS (Claude,
+      ClaudeBot, Claude-User, Claude-SearchBot, anthropic-ai, GPTBot, ChatGPT-User, CCBot, Google-Extended, PerplexityBot) and refuses if any disallows the path.
   R4  Pacing: never faster than the catalog's `max_rps`, never faster than the hard ceiling of 3 requests/second,
       default 1 request/second. Single-threaded by construction.
   R5  Budget: a hard ceiling of MAX_REQUESTS_PER_PROCESS requests per process. The environment can lower it, never raise it.
@@ -43,6 +44,20 @@ from .record import Status
 
 __version__ = "1.0.0"
 PROJECT_UA = "senseiewok-research-evidence/" + __version__ + " (+https://github.com/senseiewok/cf-skills)"
+PROJECT_TOKEN = PROJECT_UA.split("/")[0]
+
+AI_AGENT_TOKENS: tuple[str, ...] = (
+    "claude",
+    "claudebot",
+    "claude-user",
+    "claude-searchbot",
+    "anthropic-ai",
+    "gptbot",
+    "chatgpt-user",
+    "ccbot",
+    "google-extended",
+    "perplexitybot",
+)
 
 HARD_MAX_RPS = 3.0                 # absolute ceiling, whatever the catalog says
 DEFAULT_MAX_RPS = 1.0              # when the catalog is silent
@@ -351,12 +366,27 @@ def _classify(resp: requests.Response) -> Fetch:
     return Fetch(Status.FOUND, code, resp.url, data=data)
 
 
-def robots_allows(body: str, path: str, agent: str) -> bool:
+def _group_allows(rules: list[tuple[str, str]], path: str) -> bool:
+    best: tuple[int, str] | None = None
+    for key, pattern in rules:
+        if pattern == "" or not _path_matches(path, pattern):
+            continue
+        if best is None or len(pattern) > best[0] or (len(pattern) == best[0] and key == "allow"):
+            best = (len(pattern), key)
+    return best is None or best[1] == "allow"
+
+
+def robots_allows(body: str, path: str, agent: str = PROJECT_TOKEN) -> bool:
     """RFC 9309 matching, written out because the standard library parser accepted a path that
     clinicaltrials.gov's file disallows. A group applies to us only when it names our product token exactly
     (ignoring case); the rules of every such group are combined, and only when none names us are the `*`
     groups combined instead. Within the chosen rules the longest match wins, and Allow beats Disallow on
-    equal length. Consecutive User-agent lines share one group; an empty value names nobody."""
+    equal length. Consecutive User-agent lines share one group; an empty value names nobody.
+
+    In addition (T-0067 / T-0094), robots_allows checks whether any group naming one of AI_AGENT_TOKENS
+    (Claude, ClaudeBot, Claude-User, Claude-SearchBot, anthropic-ai, GPTBot, ChatGPT-User, CCBot,
+    Google-Extended, PerplexityBot) disallows the path; if any AI agent group disallows it, the path is
+    refused (returns False)."""
     groups: list[tuple[set[str], list[tuple[str, str]]]] = []
     agents: set[str] = set()
     rules: list[tuple[str, str]] = []
@@ -379,13 +409,15 @@ def robots_allows(body: str, path: str, agent: str) -> bool:
     agent = agent.lower()
     named = [r for a, r in groups if agent in a]
     chosen = [rule for r in (named or [r for a, r in groups if "*" in a]) for rule in r]
-    best: tuple[int, str] | None = None
-    for key, pattern in chosen:
-        if pattern == "" or not _path_matches(path, pattern):
-            continue
-        if best is None or len(pattern) > best[0] or (len(pattern) == best[0] and key == "allow"):
-            best = (len(pattern), key)
-    return best is None or best[1] == "allow"
+    if not _group_allows(chosen, path):
+        return False
+
+    for tok in AI_AGENT_TOKENS:
+        tok_named = [r for a, r in groups if tok in a]
+        if tok_named and not _group_allows([rule for r in tok_named for rule in r], path):
+            return False
+
+    return True
 
 
 def _path_matches(path: str, pattern: str) -> bool:

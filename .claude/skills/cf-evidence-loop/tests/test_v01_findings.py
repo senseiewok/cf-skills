@@ -283,3 +283,32 @@ ROBOTS_CASES = [
 @pytest.mark.parametrize("name, body, path, expected", ROBOTS_CASES, ids=[c[0] for c in ROBOTS_CASES])
 def test_robots_group_selection(name, body, path, expected):
     assert http.robots_allows(body, path, OUR_AGENT) is expected, name
+
+
+@pytest.mark.parametrize("token", [
+    "Claude",
+    "ClaudeBot",
+    "anthropic-ai",
+    "GPTBot",
+    "ChatGPT-User",
+    "CCBot",
+    "Google-Extended",
+    "PerplexityBot",
+])
+def test_robots_ai_agent_token_disallow_refuses(token):
+    body = f"User-agent: {token}\nDisallow: /ai-forbidden/\n\nUser-agent: *\nAllow: /\n"
+    assert http.robots_allows(body, "/ai-forbidden/doc", OUR_AGENT) is False
+    assert http.robots_allows(body, "/allowed/doc", OUR_AGENT) is True
+
+
+def test_robots_ai_agent_token_disallow_overrides_our_agent_allow():
+    body = "User-agent: senseiewok-research-evidence\nAllow: /\n\nUser-agent: GPTBot\nDisallow: /sensitive/\n"
+    assert http.robots_allows(body, "/sensitive/doc", OUR_AGENT) is False
+    assert http.robots_allows(body, "/public/doc", OUR_AGENT) is True
+
+
+def test_robots_ai_agent_token_explicit_allow():
+    body = "User-agent: ClaudeBot\nAllow: /ai/public/\nDisallow: /ai/\n\nUser-agent: *\nAllow: /\n"
+    assert http.robots_allows(body, "/ai/public/doc", OUR_AGENT) is True
+    assert http.robots_allows(body, "/ai/secret/doc", OUR_AGENT) is False
+
