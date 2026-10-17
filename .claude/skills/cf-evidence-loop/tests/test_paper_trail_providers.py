@@ -349,9 +349,9 @@ def test_cli_paper_trail_dry_run(capsys):
         ret = cli.main(["paper-trail", "10.1038/ng.2745", "--contact", "test@example.org"])
     assert ret == 0
     err = capsys.readouterr().err
-    assert "api.crossref.org" in err
-    assert "api.unpaywall.org" in err
-    assert "api.semanticscholar.org" in err
+    assert "planned: GET https://api.crossref.org/works/10.1038/" in err
+    assert "planned: GET https://api.unpaywall.org/v2/10.1038/ng.2745?email=<redacted>" in err
+    assert "planned: GET https://api.semanticscholar.org/graph/v1/paper/DOI:10.1038/ng.2745" in err
 
 
 def test_cli_blank_queries_rejected(capsys):
