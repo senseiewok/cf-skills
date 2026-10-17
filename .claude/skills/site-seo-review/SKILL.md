@@ -5,7 +5,7 @@ license: CC0-1.0
 compatibility: "The checker (scripts/seo_audit.py) is written for Python 3.9+ with the standard library only (tested on 3.13 on Windows; 3.9 checked by syntax only); it makes no network request. The layout-shift measurement needs Playwright with a Chromium build. Live checks need outbound HTTPS to your own site only. Works with any Agent-Skills-spec-compatible tool that can run a shell command."
 metadata:
     version: "0.1.0"
-    last-updated: "2026-10-05"
+    last-updated: "2026-10-16"
     capabilities: "python, reads-project-files, runs-code"
     optional-capabilities: "browser, network"
     audience: "builders"
@@ -125,5 +125,6 @@ Known limits of the tests: the fixture sitemap's `lastmod` is 2026-10-01, so a m
 - [`references/health-sites.md`](references/health-sites.md): what a health or research page needs beyond the mechanical checks.
 - [`references/measuring-layout-shift.md`](references/measuring-layout-shift.md): a short Playwright script that observes layout shifts under throttled CPU and network.
 - [`references/review-prompt.md`](references/review-prompt.md): a prompt a person can paste into any agent to run this review honestly.
+- [`references/release-review.md`](references/release-review.md): recorded release review checks, test matrix, and frontier challenger audit (T-0083).
 
 Security headers (Strict-Transport-Security, Content-Security-Policy, X-Content-Type-Options, Referrer-Policy) belong to a security review. This skill mentions them only where they touch structured data; use your security baseline for the rest.
