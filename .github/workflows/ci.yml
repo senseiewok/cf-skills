@@ -45,6 +45,8 @@ jobs:
         run: python scripts/make_index.py --check
       - name: make_tested_grid.py --check (tested-with grid recounted)
         run: python scripts/make_tested_grid.py --check
+      - name: pin_catalog.py --check (catalog copy matches catalog.lock.json)
+        run: python scripts/pin_catalog.py --check
       - name: helper script tests
         run: python -m unittest discover tests
       - name: site-seo-review checker tests
