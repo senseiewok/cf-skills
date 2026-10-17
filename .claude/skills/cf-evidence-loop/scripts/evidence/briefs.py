@@ -20,7 +20,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from . import catalog
+from . import catalog, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import clinvar, openalex, openfda, pubmed, trials
 from .record import Evidence, Status, clean_for_terminal
@@ -91,7 +91,7 @@ class Brief:
         out += ["", "cross-checks:"]
         for c in self.checks:
             out.append(f"  {c.verdict:<10} {c.what}: {c.detail}")
-        out += ["", FOOTER]
+        out += ["", guardrails.GROUNDING_CONTRACT, FOOTER]
         return "\n".join(clean_for_terminal(line) for line in out)
 
     def summary(self) -> dict:
@@ -100,7 +100,9 @@ class Brief:
                           "sources": [{"step": s.name, "source_id": s.source_id, "status": s.status, "records": len(s.records)} for s in self.steps],
                           "fields": [{"step": st, "field": k, "value": v} for st, k, v in self.facts],
                           "cross_checks": [{"verdict": c.verdict, "check": c.what, "detail": c.detail} for c in self.checks],
-                          "footer": FOOTER}}
+                          "footer": FOOTER,
+                          "grounding_contract": guardrails.GROUNDING_CONTRACT}}
+
 
     def summary_json(self) -> str:
         return json.dumps(self.summary(), ensure_ascii=False, sort_keys=True)

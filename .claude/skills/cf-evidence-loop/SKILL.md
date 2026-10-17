@@ -31,12 +31,14 @@ Research, not medical advice. The records this tool returns describe public docu
 | What is this DOI? | `doi <DOI>` | Crossref |
 | When did FDA first approve this drug? | `approval <BRAND>` | openFDA Drugs@FDA |
 | What does the current US label say? | `label <BRAND> [--sections ...]` | openFDA label |
+| When did EMA authorise this medicine in the EU? | `ema <DRUG> [--file PATH]` | European Medicines Agency (offline downloaded JSON report) |
 | Which trials list this condition? | `trials "<condition>" [--term X] [--status RECRUITING]` | ClinicalTrials.gov v2 |
 | What does the registry hold for this trial? | `trial <NCTId>` | ClinicalTrials.gov v2 |
 | What is this preprint? | `preprint <biorxiv\|medrxiv> <DOI>` | bioRxiv / medRxiv |
 | Which CF preprints appeared in a window? | `preprints <server> <YYYY-MM-DD> <YYYY-MM-DD> [--pattern]` | bioRxiv / medRxiv |
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |
+| Who does UKRI fund on this topic? | `ukri "<query>" [--limit 25]` | UKRI Gateway to Research (alias: `gtr`) |
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
 | Annotate variant with CADD, ClinVar, SnpEff, gnomAD frequency | `myvariant "<variant query>" [--limit 5]` | MyVariant.info |
 | Query gnomAD aggregate allele frequencies | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access, blocked by catalog policy) |
@@ -215,4 +217,6 @@ Design rationale and failure semantics: [`references/ARCHITECTURE.md`](reference
 
 ## 10. Not covered
 
-Cochrane full text (reviews are reached through PubMed abstracts), EU regulatory records and the EU trials register, non-US registries, and document download of any kind. Guideline and registry sources need their terms read before they can enter the catalog.
+Cochrane full text (reviews are reached through PubMed abstracts), EU trials register (EU regulatory marketing authorisation is supported via offline EMA JSON report in `ema`), non-US clinical trial registries (UKRI Gateway to Research grant awards are covered via `ukri`), and document download of any kind. Guideline and registry sources need their terms read before they can enter the catalog.
+
+

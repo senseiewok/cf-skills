@@ -30,9 +30,11 @@ cf-evidence-loop/
       __init__.py        registry of providers by name
       crossref.py        DOI metadata; retraction and correction lookup (Retraction Watch via Crossref)
       openfda.py         Drugs@FDA approval history; current label sections
+      ema.py             EMA medicines JSON report: EU marketing authorisation date and status
       preprints.py       bioRxiv and medRxiv by DOI or date window with a topic filter
       clinvar.py         CFTR variant clinical significance via E-utilities
       reporter.py        NIH RePORTER funded-project search
+      ukri_gtr.py        UKRI Gateway to Research (GtR) funded-project search (OGL v3.0)
       pubmed.py          PubMed search; systematic-review view
       trials.py          ClinicalTrials.gov v2 search and record
       europepmc.py       Europe PMC search, citation count, open-access status
@@ -53,10 +55,11 @@ cf-evidence-loop/
 | 1 Literature | What was published? | `pubmed`, `europepmc`, `crossref` (metadata) | built |
 | 2 Integrity | Retracted, corrected, disputed? | `crossref` retraction lookup | built |
 | 3 Trials | What is being tested? | `trials` (ClinicalTrials.gov v2) | built |
-| 4 Regulatory | Approved where, when, for whom? | `openfda` | built |
+| 4 Regulatory | Approved where, when, for whom? | `openfda`, `ema` | built |
 | 5 Population | How many people, what outcomes? | a separate registry-extraction tool, not part of this package | separate |
 | 6 Guidelines | What does the field recommend? | `pubmed.reviews` (systematic-review subset + Cochrane journal, via abstracts); ECFS standards need terms read | partial |
-| 7 The field's conversation | Funded, presented, preprinted? | `reporter`, `preprints`; conference supplements via `crossref` | built |
+| 7 The field's conversation | Funded, presented, preprinted? | `reporter`, `ukri_gtr`, `preprints`; conference supplements via `crossref` | built |
+
 
 Variant biology: `clinvar` built; CFTR2 stays link-only until its terms are read.
 

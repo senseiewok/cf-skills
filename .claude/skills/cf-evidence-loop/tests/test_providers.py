@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence.providers import clinvar, crossref, datacommons, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
+from evidence.providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
 from evidence.record import Evidence, Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -286,6 +286,27 @@ def test_gnomad_variant_blocks_under_catalog_rules():
     assert r.status is Status.BLOCKED
     assert r.source_id == "gnomad"
     assert "AccessDenied" in r.fields["error"]
+
+
+def test_ema_parse():
+    data = load("ema_medicines_slice.json")
+    r = ema.parse(data, "Kaftrio", "question", file_timestamp="2026-10-04T18:02:25Z")
+    assert r.status is Status.FOUND
+    assert r.publisher_date == "2020-08-21"
+    assert r.fields["name_of_medicine"] == "Kaftrio"
+    assert r.fields["medicine_status"] == "Authorised"
+    assert "European Medicines Agency" in r.limitations
+
+
+def test_ukri_gtr_parse():
+    data = load("ukri_gtr_projects.json")
+    recs = ukri_gtr.parse_projects(data, "question", "https://gtr.ukri.org/gtr/api/projects")
+    assert len(recs) == 3
+    assert recs[0].status is Status.FOUND
+    assert recs[0].fields["lead_funder"] == "MRC"
+    assert recs[0].fields["license"] == "Open Government Licence v3.0 (OGL)"
+    assert "Open Government Licence v3.0" in recs[0].limitations
+
 
 
 

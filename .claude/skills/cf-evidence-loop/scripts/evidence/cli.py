@@ -38,9 +38,9 @@ import json
 import sys
 from pathlib import Path
 
-from . import briefs, catalog, cite_check
+from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import clinvar, crossref, datacommons, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials
+from .providers import clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda, preprints, pubmed, reporter, trials, ukri_gtr
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -98,7 +98,14 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("openalex-search", help="OpenAlex literature search across works")
     p.add_argument("query", help="search terms (e.g. cystic fibrosis)")
     p.add_argument("--limit", type=int, default=10, help="maximum results (default: 10)")
+    p = sub.add_parser("ema", help="EMA medicines JSON report: EU marketing authorisation date, status, indication")
+    p.add_argument("drug", help="medicine name or active substance (e.g. Kaftrio)")
+    p.add_argument("--file", help="path to EMA_medicines_json_report_en.json (defaults to sources/downloads)")
+    p = sub.add_parser("ukri", aliases=["gtr"], help="UKRI Gateway to Research search for UK publicly funded research")
+    p.add_argument("query", help="search terms (e.g. 'cystic fibrosis') or project ID")
+    p.add_argument("--limit", type=int, default=25, help="maximum results (default: 25)")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
+
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
     p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
     p.add_argument("--max-ids", type=int, default=cite_check.DEFAULT_MAX_IDS,
@@ -115,6 +122,11 @@ def main(argv: list[str] | None = None) -> int:
             if e.get("access") in catalog.AUTOMATABLE and e.get("base_url"):
                 print(f"{sid:24} {e['base_url']}")
         return 0
+
+    blank_err = _check_blank_query(a)
+    if blank_err:
+        print(f"refused: {blank_err}", file=sys.stderr)
+        return 2
 
     if a.cmd == "read-page":
         from .page_reader import NonHttpsError, PageReader, PrivateHostError
@@ -209,6 +221,58 @@ def main(argv: list[str] | None = None) -> int:
     return 3 if any(r.status in BAD for r in recs) else 0
 
 
+REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
+    "doi": ("doi",),
+    "approval": ("brand",),
+    "label": ("brand",),
+    "preprint": ("doi",),
+    "preprints": ("start", "end"),
+    "variants": ("term",),
+    "myvariant": ("term",),
+    "gnomad": ("variant_id",),
+    "grants": ("text",),
+    "pubmed": ("term",),
+    "reviews": ("term",),
+    "trial": ("nct_id",),
+    "trials": ("condition",),
+    "epmc": ("query",),
+    "cited": ("doi",),
+    "population": ("entity",),
+    "openalex": ("target",),
+    "openalex-search": ("query",),
+    "ema": ("drug",),
+    "ukri": ("query",),
+    "gtr": ("query",),
+    "brief": ("subject",),
+    "read-page": ("url",),
+    "cite-check": ("file",),
+}
+
+
+def _check_blank_query(a: argparse.Namespace) -> str | None:
+    """Return an error message if any required query argument is blank/whitespace-only, else None."""
+    if a.cmd == "sources":
+        return None
+    if a.cmd == "retractions":
+        if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
+            return "DOI argument for retractions cannot be blank or whitespace-only"
+        return None
+
+    # Check required positional arguments for the subcommand
+    for req_attr in REQUIRED_QUERY_ATTRS.get(a.cmd, ()):
+        val = getattr(a, req_attr, None)
+        if guardrails.is_blank_query(val):
+            return f"required query argument '{req_attr}' for '{a.cmd}' cannot be blank or whitespace-only"
+
+    # For any other arguments (including optional flags), reject only if present and whitespace-only
+    for attr in ("doi", "brand", "term", "variant_id", "text", "nct_id", "query", "entity", "target", "drug", "year"):
+        if hasattr(a, attr):
+            val = getattr(a, attr)
+            if val is not None and guardrails.is_blank_query(val):
+                return f"query argument '{attr}' for '{a.cmd}' cannot be blank or whitespace-only"
+    return None
+
+
 def _cite_check_preflight(a, client: Client):
     """The identifiers to look up, or an exit code when nothing may be sent: an unreadable file or a bad --max-ids (2),
     a file with no identifier (1: fail closed, not a pass), or more identifiers than --max-ids (2: refused, never truncated)."""
@@ -275,7 +339,12 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return [openalex.work(client, a.target)]
     elif a.cmd == "openalex-search":
         return openalex.search(client, a.query, a.limit)
+    elif a.cmd == "ema":
+        return [ema.lookup(a.drug, file_path=getattr(a, "file", None))]
+    elif a.cmd in ("ukri", "gtr"):
+        return ukri_gtr.search_or_get(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover
+
 
 
 if __name__ == "__main__":
