@@ -378,11 +378,14 @@ def test_cli_paper_trail_dry_run(capsys):
     assert ret == 0
     err = capsys.readouterr().err
     parsed = [urlparse(u) for u in _planned_urls(err)]
-    hosts = {p.hostname for p in parsed if p.scheme == "https"}
-    assert "api.crossref.org" in hosts
-    assert "api.unpaywall.org" in hosts
-    assert "api.semanticscholar.org" in hosts
-    assert any(p.hostname == "api.unpaywall.org" and p.query == "email=<redacted>" for p in parsed)
+    assert any(p.scheme == "https" and p.hostname == "api.crossref.org" for p in parsed)
+    assert any(
+        p.scheme == "https"
+        and p.hostname == "api.unpaywall.org"
+        and p.query == "email=<redacted>"
+        for p in parsed
+    )
+    assert any(p.scheme == "https" and p.hostname == "api.semanticscholar.org" for p in parsed)
 
 
 def test_cli_blank_queries_rejected(capsys):
