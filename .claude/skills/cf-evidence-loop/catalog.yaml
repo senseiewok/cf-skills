@@ -1454,6 +1454,301 @@ sources:
       listed in resources.yaml. Not covered: any other page, and any other host of this organisation.
       The Irish registry (cfri.ie) is a different organisation and host and has its own entry (cfri-adr-2024).
 
+  - id: fefq-resource-pages
+    title: Federación Española de Fibrosis Quística (FEFQ) website (fibrosisquistica.org)
+    publisher: Federación Española de Fibrosis Quística
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://fibrosisquistica.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national federation of regional cystic fibrosis associations in Spain. No automated tool requests this host;
+      access stays manual. The lab links to the public landing page and describes the organisation in its own plain words,
+      copying no page text, logo, image, phone number, email address or person's name.
+
+  - id: fipan-resource-pages
+    title: Asociación Argentina de Lucha contra la Enfermedad Fibroquística del Páncreas (FIPAN) website (fipan.org.ar)
+    publisher: FIPAN (Asociación Argentina de Lucha contra la Enfermedad Fibroquística del Páncreas)
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://fipan.org.ar/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient and household support association in Argentina. No automated tool requests
+      this host; access stays manual. The lab links to the public landing page and describes the organisation in its own plain
+      words, copying no page text, logo, image, phone number, email address or person's name.
+
+  - id: fcfq-resource-pages
+    title: Fundación Colombiana para Fibrosis Quística (FCFQ) website (fibrosisquisticacolombia.org)
+    publisher: Fundación Colombiana para Fibrosis Quística
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://fibrosisquisticacolombia.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient advocacy and education foundation in Colombia. No automated tool requests
+      this host; access stays manual. The lab links to the public landing page and describes the organisation in its own plain
+      words, copying no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfnz-resource-pages
+    title: Cystic Fibrosis New Zealand (CFNZ) website (www.cfnz.org.nz)
+    publisher: Cystic Fibrosis New Zealand
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.cfnz.org.nz/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis support and advocacy organization in New Zealand. No automated tool requests
+      this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: vaincrelamuco-resource-pages
+    title: Vaincre la Mucoviscidose website (www.vaincrelamuco.org)
+    publisher: Vaincre la Mucoviscidose
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.vaincrelamuco.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient and research association in France. No automated tool requests
+      this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: muko-resource-pages
+    title: Mukoviszidose e.V. website (www.muko.info)
+    publisher: Mukoviszidose e.V.
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.muko.info/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official federal cystic fibrosis patient, family, clinician, and researcher association in Germany. No automated tool
+      requests this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: lifc-resource-pages
+    title: Lega Italiana Fibrosi Cistica (LIFC) website (www.fibrosicistica.it)
+    publisher: Lega Italiana Fibrosi Cistica
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.fibrosicistica.it/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient and family association in Italy. No automated tool requests
+      this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: unidospelavida-resource-pages
+    title: Instituto Unidos pela Vida website (unidospelavida.org.br)
+    publisher: Instituto Unidos pela Vida
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://unidospelavida.org.br/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis awareness, diagnosis navigation, and patient support institute in Brazil. No automated
+      tool requests this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's
+      own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfqchile-resource-pages
+    title: Corporación para la Fibrosis Quística de Chile website (fibrosisquistica.cl)
+    publisher: Corporación para la Fibrosis Quística de Chile
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://fibrosisquistica.cl/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient and family support corporation in Chile. No automated tool requests
+      this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: ncfs-resource-pages
+    title: Nederlandse Cystic Fibrosis Stichting website (ncfs.nl)
+    publisher: Nederlandse Cystic Fibrosis Stichting
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://ncfs.nl/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis foundation in the Netherlands. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: mucobe-resource-pages
+    title: Muco vzw / Association Muco website (muco.be)
+    publisher: Muco vzw / Association Muco
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.muco.be/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis association in Belgium. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfschweiz-resource-pages
+    title: Cystische Fibrose Schweiz website (cysticfibrosisschweiz.ch)
+    publisher: Cystische Fibrose Schweiz (CFS)
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://cysticfibrosisschweiz.ch/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient organization in Switzerland. No automated tool requests this host
+      until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfhilfe-at-resource-pages
+    title: Cystische Fibrose Hilfe Österreich website (cystischefibrose.info)
+    publisher: Cystische Fibrose Hilfe Österreich
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.cystischefibrose.info/
+    url: null
+    claim_label: unverified
+    notes: >-
+      National cystic fibrosis support organization in Austria. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cff-dk-resource-pages
+    title: Cystisk Fibrose Foreningen website (cystiskfibrose.dk)
+    publisher: Cystisk Fibrose Foreningen
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://cystiskfibrose.dk/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis association in Denmark. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: rfcf-se-resource-pages
+    title: Riksförbundet Cystisk Fibros website (rfcf.se)
+    publisher: Riksförbundet Cystisk Fibros
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.rfcf.se/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis federation in Sweden. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfnorge-resource-pages
+    title: Norsk Forening for Cystisk Fibrose website (cfnorge.no)
+    publisher: Norsk Forening for Cystisk Fibrose
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://cfnorge.no/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis association in Norway. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: hengitysliitto-fi-resource-pages
+    title: Hengitysliitto cystic fibrosis support pages (hengitysliitto.fi)
+    publisher: Hengitysliitto (Organization for Respiratory Health in Finland)
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.hengitysliitto.fi/
+    url: null
+    claim_label: unverified
+    notes: >-
+      National respiratory health and rare lung disease organization in Finland hosting support resources for people
+      with cystic fibrosis. No automated tool requests this host until robots.txt and policy pages are audited; access
+      stays manual. Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone
+      number, email address or person's name.
+
+  - id: anfq-pt-resource-pages
+    title: Associação Nacional de Fibrose Quística website (anfq.pt)
+    publisher: Associação Nacional de Fibrose Quística
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.anfq.pt/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Portugal. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: fiqper-resource-pages
+    title: Fibrosis Quística Perú website (fiqper.org)
+    publisher: Asociación Peruana de Fibrosis Quística (FIQPER)
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://fiqper.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient and family association in Peru. No automated tool requests this host
+      until robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: sacfa-resource-pages
+    title: South African Cystic Fibrosis Association website (sacfa.org.za)
+    publisher: South African Cystic Fibrosis Association
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.sacfa.org.za/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis association in South Africa. No automated tool requests this host until
+      robots.txt and policy pages are audited; access stays manual. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfindia-resource-pages
+    title: Cystic Fibrosis Trust India support pages (cftrustindia.org)
+    publisher: Cystic Fibrosis Trust India
+    kind: resource_pages
+    access: manual
+    robots: unknown
+    landing_page: https://www.cftrustindia.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      National cystic fibrosis patient support and diagnostic awareness organization in India. No automated tool
+      requests this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and
+      the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
   - id: natural-earth-110m-countries
     title: Natural Earth 1:110m Admin 0 Countries (vector, GeoJSON)
     publisher: Natural Earth (Tom Patterson, Nathaniel Vaughn Kelso and contributors; supported by NACIS)

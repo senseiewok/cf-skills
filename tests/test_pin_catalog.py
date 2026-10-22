@@ -290,6 +290,14 @@ class PinCatalogTests(unittest.TestCase):
         )
         self.assertEqual(code, 0, "Standalone check without research repo must pass using lock hash")
 
+    def test_resolve_default_source_from_worktree(self):
+        # Simulate layout: <base>/cf-research and <base>/.worktrees/cf-skills/<topic>
+        cf_res = self.d / "cf-research"
+        cf_res.mkdir()
+        wt_root = self.d / ".worktrees" / "cf-skills" / "sync-topic"
+        wt_root.mkdir(parents=True)
+        self.assertEqual(pin_catalog.resolve_default_source(wt_root), cf_res)
+
 
 if __name__ == "__main__":
     unittest.main()

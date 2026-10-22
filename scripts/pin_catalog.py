@@ -45,7 +45,19 @@ SKILL_DIR = ROOT / ".claude" / "skills" / "cf-evidence-loop"
 CATALOG_PATH = SKILL_DIR / "catalog.yaml"
 LOCK_PATH = SKILL_DIR / "catalog.lock.json"
 
-DEFAULT_SOURCE = ROOT.parent / "cf-research"
+def resolve_default_source(root: Path = ROOT) -> Path:
+    """Locate sibling cf-research whether running in main checkout or .worktrees/<repo>/<topic>."""
+    sibling = root.parent / "cf-research"
+    if sibling.exists() or len(root.parents) < 3:
+        return sibling
+    if root.parents[1].name == ".worktrees":
+        wt_sibling = root.parents[2] / "cf-research"
+        if wt_sibling.exists():
+            return wt_sibling
+    return sibling
+
+
+DEFAULT_SOURCE = resolve_default_source(ROOT)
 CATALOG_RESEARCH_PATH = "sources/catalog.yaml"
 SCHEMA_VERSION = 1
 
