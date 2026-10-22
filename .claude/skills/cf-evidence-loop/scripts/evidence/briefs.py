@@ -20,7 +20,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from . import catalog, guardrails
+from . import catalog, cftr_context, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import clinvar, openalex, openfda, pubmed, trials
 from .record import Evidence, Status, clean_for_terminal
@@ -254,6 +254,16 @@ def variant(client: Client, term: str) -> Brief:
         if _value(r, "classification") == NOT_STATED or _value(r, "review_status") == NOT_STATED:
             b.checks.append(Check(NOTE, f"classification of {acc}",
                                   f"classification {_show(_value(r, 'classification'))}, review_status {_show(_value(r, 'review_status'))}"))
+
+    ctx = cftr_context.lookup_cftr_context(term)
+    if ctx is not None:
+        summary_str = (
+            f"{ctx['allele']} ({ctx['hgvs_c']}, {ctx['hgvs_p']}): "
+            f"Exon {ctx['exon']} ({ctx['transcript']}), Domain: {ctx['domain']} (UniProt {ctx['uniprot']}), "
+            f"Class: {ctx['cftr_class']}"
+        )
+        b.facts.append(("cftr_context", "domain_and_exon (computed)", summary_str))
+        b.checks.append(Check(PASS, "CFTR structural domain & exon map", summary_str))
 
     if b.steps[2].status == Status.BLOCKED.value:
         b.checks.append(Check(NOTE, "OpenAlex literature & retraction scan", "OPENALEX_API_KEY not configured or blocked"))

@@ -340,3 +340,17 @@ def test_variant_brief_openalex_unconfigured_key(monkeypatch, no_sleep):
     c = [chk for chk in b.checks if chk.what == "OpenAlex literature & retraction scan"][0]
     assert c.verdict == briefs.NOTE
     assert "OPENALEX_API_KEY not configured or blocked" in c.detail
+
+
+def test_variant_brief_includes_cftr_structural_context(monkeypatch, no_sleep):
+    s = Script([ok(esearch("4072070")), ok(load("clinvar_esummary.json")),
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page())])
+    b = briefs.variant(make_client(monkeypatch, s), "CFTR[gene] AND F508del")
+    text = b.text()
+    assert "cftr_context domain_and_exon (computed):" in text
+    assert "Exon 11 (NM_000492.4)" in text
+    assert "NBD1 (Nucleotide-Binding Domain 1) (UniProt P13569)" in text
+    c = [chk for chk in b.checks if chk.what == "CFTR structural domain & exon map"][0]
+    assert c.verdict == briefs.PASS
+    assert "Class II" in c.detail
