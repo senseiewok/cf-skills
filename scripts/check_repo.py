@@ -12,6 +12,7 @@ print ``ok`` and exit 0.
 Standard library only; no network; no subprocess; never writes a file.
 """
 
+import hashlib
 import json
 import re
 import sys
@@ -455,6 +456,50 @@ def _check_eval_cases(root: Path, errors: list):
                 )
 
 
+
+
+# ---------------------------------------------------------------------------
+# check 9: cf-evidence-loop catalog.yaml vs catalog.lock.json
+# ---------------------------------------------------------------------------
+
+def _check_catalog_lock(root: Path, errors: list):
+    ev_dir = root / SKILLS_DIR / "cf-evidence-loop"
+    if not ev_dir.is_dir():
+        return
+    cat_path = ev_dir / "catalog.yaml"
+    lock_path = ev_dir / "catalog.lock.json"
+    if not cat_path.exists() and not lock_path.exists():
+        return
+    rel_cat = _rel(root, cat_path)
+    rel_lock = _rel(root, lock_path)
+    if not lock_path.is_file():
+        errors.append("ERROR {}: missing lock file for {}".format(rel_lock, rel_cat))
+        return
+    if not cat_path.is_file():
+        errors.append("ERROR {}: missing catalog copy for {}".format(rel_cat, rel_lock))
+        return
+    raw_lock = _read_text(lock_path)
+    try:
+        lock = json.loads(raw_lock) if raw_lock is not None else None
+    except (json.JSONDecodeError, ValueError):
+        lock = None
+    if not isinstance(lock, dict) or not isinstance(lock.get("copy_sha256"), str):
+        errors.append("ERROR {}: invalid lock JSON or missing 'copy_sha256'".format(rel_lock))
+        return
+    try:
+        norm_bytes = cat_path.read_bytes().replace(b"\r\n", b"\n")
+    except OSError:
+        errors.append("ERROR {}: unreadable file".format(rel_cat))
+        return
+    actual_sha = hashlib.sha256(norm_bytes).hexdigest()
+    if actual_sha != lock["copy_sha256"]:
+        errors.append(
+            "ERROR {}: SHA-256 ({}) does not match {} copy_sha256 ({}); run scripts/pin_catalog.py".format(
+                rel_cat, actual_sha[:12], rel_lock, lock["copy_sha256"][:12]
+            )
+        )
+
+
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
@@ -489,6 +534,8 @@ def main(argv):
     _check_hygiene(root, errors)
 
     _check_eval_cases(root, errors)
+
+    _check_catalog_lock(root, errors)
 
     if errors:
         for e in sorted(errors):

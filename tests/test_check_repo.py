@@ -403,6 +403,26 @@ class CheckRepoTests(unittest.TestCase):
         r = subprocess.run([sys.executable, str(SCRIPT), str(root)], capture_output=True, text=True, encoding="utf-8", errors="replace")
         self.assertFalse([ln for ln in r.stdout.splitlines() if "evals/cases.json" in ln], r.stdout)
 
+    # ---- catalog lock consistency
+    def test_a_modified_catalog_copy_that_disagrees_with_catalog_lock_is_reported(self):
+        import hashlib
+        ev = self.root / ".claude" / "skills" / "cf-evidence-loop"
+        ev.mkdir(parents=True)
+        (ev / "SKILL.md").write_text(SKILL.format(name="cf-evidence-loop", desc="Evidence loop.").replace("[notes](references/notes.md)", "nothing"), encoding="utf-8")
+        m = json.loads((self.root / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+        m["plugins"][0]["skills"].append("./.claude/skills/cf-evidence-loop")
+        (self.root / ".claude-plugin" / "marketplace.json").write_text(json.dumps(m), encoding="utf-8")
+        cat_bytes = b"sources:\n  - id: s1\n"
+        (ev / "catalog.yaml").write_bytes(cat_bytes)
+        good_sha = hashlib.sha256(cat_bytes).hexdigest()
+        (ev / "catalog.lock.json").write_text(json.dumps({"copy_sha256": good_sha}), encoding="utf-8")
+        code, errs, text = self.errors()
+        self.assertEqual((code, errs), (0, []), text)
+        (ev / "catalog.yaml").write_bytes(cat_bytes + b"  - id: drifted\n")
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("catalog.yaml" in e and "copy_sha256" in e for e in errs), errs)
+
     # ---- output shape
     def test_errors_are_sorted_each_on_its_own_line_and_the_run_is_deterministic(self):
         self.edit(".claude/skills/alpha/SKILL.md", "references/notes.md", "references/gone.md")
