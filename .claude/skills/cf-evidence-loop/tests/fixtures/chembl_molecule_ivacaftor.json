@@ -1,0 +1,50 @@
+{
+  "page_meta": {
+    "limit": 2,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "molecules": [
+    {
+      "atc_classifications": [
+        "R07AX02"
+      ],
+      "black_box_warning": 0,
+      "first_approval": 2012,
+      "max_phase": "4.0",
+      "molecule_chembl_id": "CHEMBL2010601",
+      "molecule_properties": {
+        "alogp": "5.08",
+        "full_molformula": "C24H28N2O3",
+        "full_mwt": "392.50",
+        "num_ro5_violations": 1,
+        "psa": "82.19",
+        "ro3_pass": "N"
+      },
+      "molecule_structures": {
+        "canonical_smiles": "CC(C)(C)c1cc(C(C)(C)C)c(NC(=O)c2c[nH]c3ccccc3c2=O)cc1O",
+        "standard_inchi_key": "PURKAOJPTOLRMP-UHFFFAOYSA-N"
+      },
+      "molecule_synonyms": [
+        {
+          "molecule_synonym": "Ivacaftor",
+          "syn_type": "INN"
+        },
+        {
+          "molecule_synonym": "Kalydeco",
+          "syn_type": "TRADE_NAME"
+        },
+        {
+          "molecule_synonym": "VX-770",
+          "syn_type": "RESEARCH_CODE"
+        }
+      ],
+      "molecule_type": "Small molecule",
+      "oral": true,
+      "pref_name": "IVACAFTOR",
+      "withdrawn_flag": false
+    }
+  ]
+}

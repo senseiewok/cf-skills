@@ -5,7 +5,7 @@ license: CC0-1.0
 compatibility: "Python 3.10+ with requests and PyYAML; outbound HTTPS to api.crossref.org, eutils.ncbi.nlm.nih.gov, www.ebi.ac.uk, clinicaltrials.gov, api.fda.gov, api.biorxiv.org and api.reporter.nih.gov. No API keys required. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
 metadata:
     version: "1.0.0"
-    last-updated: "2026-10-08"
+    last-updated: "2026-10-24"
     capabilities: "network, python, runs-code"
     optional-capabilities: ""
     audience: "researchers, builders"
@@ -47,6 +47,11 @@ Research, not medical advice. The records this tool returns describe public docu
 | What open-access locations and license metadata does Unpaywall index? | `unpaywall <DOI>` | Unpaywall via OurResearch |
 | What citation graph and paper metadata does Semantic Scholar hold? | `s2 <DOI>` | Semantic Scholar via Ai2 (alias: `semantic-scholar`) |
 | Resolve full paper-trail (Crossref, Unpaywall OA, Semantic Scholar citations) | `paper-trail <DOI>` | Crossref, Unpaywall, Semantic Scholar (alias: `paper`) |
+| What compound metadata, clinical phase, and ATC codes does ChEMBL hold? | `chembl <CHEMBL_ID\|name> [--limit 5]` | EMBL-EBI ChEMBL REST API |
+| What quantitative bioactivity assays (EC50, IC50, Ki, Kd) does ChEMBL hold? | `chembl-activity <CHEMBL_ID\|name> [--target CHEMBL4051]` | EMBL-EBI ChEMBL REST API (alias: `bioactivity`) |
+| What target tractability, safety liabilities, disease scores, or FAERS stats does Open Targets hold? | `opentargets <ID\|query> [--limit 5]` | Open Targets Platform v4 GraphQL API (alias: `ot`) |
+| What supporting, contrasting, and mentioning citation tallies does Scite hold for this DOI? | `scite <DOI>` | Scite Pro MCP (`scite-mcp`, OAuth/key required) |
+| Search literature with Scite Smart Citation tallies | `scite-search "<query>" [--limit 5]` | Scite Pro MCP (`scite-mcp`, OAuth/key required) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |

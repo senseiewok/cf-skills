@@ -146,7 +146,7 @@ class Client:
 
     def _url(self, source_id: str, path: str) -> str:
         base = catalog.base_url(source_id)                    # R1
-        url = base + path.lstrip("/")
+        url = base.rstrip("/") if (not path and not str(catalog.entry(source_id).get("base_url") or "").endswith("/")) else (base + path.lstrip("/"))
         if not catalog.host_allowed(url):
             raise catalog.AccessDenied(f"{url}: host is not in the catalog's permitted set")
         return url

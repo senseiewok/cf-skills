@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-10
+updated: 2026-10-24
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1749,6 +1749,111 @@ sources:
       requests this host until robots.txt and policy pages are audited; access stays manual. Rows hold a link and
       the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
 
+  - id: ahlfq-resource-pages
+    title: Asociación Honoraria Fibrosis Quística del Uruguay website (fquruguay.org)
+    publisher: Asociación Honoraria Fibrosis Quística del Uruguay
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://fquruguay.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient organization in Uruguay (Asociación Honoraria de Lucha contra la Fibrosis Quística).
+      Robots.txt verified under project user agent on 2026-10-23 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: fibroq-resource-pages
+    title: Fundación Ecuatoriana de Fibrosis Quística website (fqec.org)
+    publisher: Fundación Ecuatoriana de Fibrosis Quística
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://www.fqec.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis foundation in Ecuador (FIBROQ). Robots.txt verified under project user agent on
+      2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: ptwm-resource-pages
+    title: Polskie Towarzystwo Walki z Mukowiscydozą website (ptwm.org.pl)
+    publisher: Polskie Towarzystwo Walki z Mukowiscydozą
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://ptwm.org.pl/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis association in Poland (PTWM). Robots.txt verified under project user agent on
+      2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: klubcf-cz-resource-pages
+    title: Klub nemocných cystickou fibrózou website (klubcf.cz)
+    publisher: Klub nemocných cystickou fibrózou
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://klubcf.cz/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient club in the Czech Republic. Robots.txt verified under project user agent on
+      2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: hcfa-gr-resource-pages
+    title: Hellenic Cystic Fibrosis Association website (cysticfibrosis.gr)
+    publisher: Hellenic Cystic Fibrosis Association
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://www.cysticfibrosis.gr/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Greece. Robots.txt verified under project user agent on
+      2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own one-sentence
+      summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cffi-il-resource-pages
+    title: Cystic Fibrosis Foundation of Israel website (cff.org.il)
+    publisher: Cystic Fibrosis Foundation of Israel
+    kind: resource_pages
+    access: manual
+    robots: unreadable
+    robots_checked: 2026-10-23
+    landing_page: https://www.cff.org.il/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis foundation in Israel. Robots.txt answered HTTP 403 on 2026-10-23; access stays
+      strictly manual under project conduct. Rows hold a link and the lab's own one-sentence summary only: no page text,
+      logo, image, phone number, email address or person's name.
+
+  - id: kifder-resource-pages
+    title: KifDer cystic fibrosis association website (kifder.org.tr)
+    publisher: Kistik Fibrozis Yardımlaşma ve Dayanışma Derneği
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-23
+    landing_page: https://www.kifder.org.tr/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient solidarity association in Turkey (KifDer). Robots.txt verified under project user
+      agent on 2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own
+      one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
   - id: natural-earth-110m-countries
     title: Natural Earth 1:110m Admin 0 Countries (vector, GeoJSON)
     publisher: Natural Earth (Tom Patterson, Nathaniel Vaughn Kelso and contributors; supported by NACIS)
@@ -1836,3 +1941,117 @@ sources:
       ClinVar monthly and weekly variant classification bulk files (variant_summary.txt.gz, clinvar.vcf.gz). Terms read
       2026-10-15 on ClinVar maintenance and use page: attribution to ClinVar requested; submitter proprietary constraints respected.
       Not for direct diagnostic use without genetics professional review. Redistribution permitted with citation.
+
+  - id: chembl
+    title: ChEMBL REST Web Services API
+    publisher: EMBL-EBI
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.ebi.ac.uk/chembl/ws
+    base_url: https://www.ebi.ac.uk/chembl/api/data/
+    terms_url: https://www.ebi.ac.uk/about/terms-of-use/
+    auth: none
+    max_rps: 1.0
+    published_limit: >-
+      No fixed numeric limit stated on the EMBL-EBI Terms of Use page read 2026-10-24; EMBL-EBI asks users not to prevent
+      or degrade service to others, so we cap at 1.0 request/second
+    claim_label: verified
+    notes: >-
+      EMBL-EBI ChEMBL bioactive molecule, mechanism of action, and experimental bioactivity (EC50, IC50, Ki, Kd) REST API.
+      Terms read 2026-10-24 via read-page on https://www.ebi.ac.uk/about/terms-of-use/ and Open Targets source licensing table
+      (https://platform-docs.opentargets.org/licence): ChEMBL data is licensed under Creative Commons Attribution-ShareAlike 3.0
+      Unported (CC BY-SA 3.0) with EMBL-EBI attribution required. Tested 2026-10-24: status.json answered 200 (ChEMBL_37,
+      release date 2026-05-01, status UP, 24,527,044 activities); molecule/search.json for ivacaftor (CHEMBL2010601) and
+      activity.json for CFTR (CHEMBL4051) answered 200 with Ussing chamber EC50 records in human bronchial epithelial cells.
+
+  - id: open-targets
+    title: Open Targets Platform GraphQL API v4
+    publisher: Open Targets (EMBL-EBI, Wellcome Sanger Institute, and partners)
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://platform-docs.opentargets.org/data-access/graphql-api
+    base_url: https://api.platform.opentargets.org/api/v4/
+    terms_url: https://platform-docs.opentargets.org/licence
+    auth: none
+    max_rps: 1.0
+    published_limit: >-
+      Documentation read 2026-10-24 states the GraphQL API supports single-entity queries (target, disease, drug, search)
+      and asks users to use bulk downloads for systematic multi-target sweeps; capped at 1.0 request/second
+    claim_label: verified
+    notes: >-
+      Open Targets Platform GraphQL API v4 for gene-disease association scores, target tractability, target safety liabilities,
+      and pharmacovigilance. Licence and API documentation read 2026-10-24 via read-page on
+      https://platform-docs.opentargets.org/licence and https://platform-docs.opentargets.org/data-access/graphql-api: data in
+      the Open Targets Platform is dedicated to the public domain under CC0 1.0, and codebases are Apache-2.0. robots.txt on
+      api.platform.opentargets.org answered 404 (no restrictions) and platform-docs.opentargets.org answered 200 (allowed).
+      Per T-0071, the lab provider queries target tractability, safety liabilities, gene-disease associations, and drug
+      mechanisms, and does not extract ClinGen or gnomAD variant curations through this wrapper while those catalog entries
+      remain forbidden or manual.
+
+  - id: nice-guidance
+    title: UK NICE Clinical Guidance and Technology Appraisals (NG78 Cystic Fibrosis and TA988)
+    publisher: National Institute for Health and Care Excellence (NICE)
+    kind: clinical_guideline
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.nice.org.uk/guidance/ng78
+    terms_url: https://www.nice.org.uk/terms-and-conditions
+    url: null
+    claim_label: verified
+    notes: >-
+      Terms read 2026-10-24 via read-page on https://www.nice.org.uk/terms-and-conditions (robots.txt 200, allowed). Clause 8
+      states that NICE functions do not extend beyond the United Kingdom and that neither the websites nor any part of their
+      content is intended to be relied on outside the United Kingdom; Clause 13 and Clause 20 subject all content to NICE
+      Notice of Rights and UK Open Content Licence, and Clause 43 contains a broad user indemnity under the laws of England
+      and Wales. Access is therefore recorded as manual (link and human browser reading only; no automated scraping or
+      syndication from outside the UK without a NICE syndication licence).
+
+  - id: isrctn
+    title: ISRCTN Clinical Study Registry (UK and international clinical trials)
+    publisher: BioMed Central Limited on behalf of ISRCTN
+    kind: trial_registry
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.isrctn.com/
+    terms_url: https://www.isrctn.com/page/terms
+    url: null
+    claim_label: verified
+    notes: >-
+      Terms read 2026-10-24 via read-page on https://www.isrctn.com/page/terms (robots.txt 200, allowed). Clause 7.3 states
+      that study metadata submitted on or after 1 January 2019 is CC0 and Plain English Summary, objectives, interventions,
+      and outcome measures are CC BY. However, Clause 3.3(d) prohibits copying or downloading content, files, feeds or data
+      to populate a database or publication (except Open Access material), Clause 6.2 prohibits accessing the site by any
+      means other than through a normal web browser, and Clause 6.3 contains an on-demand indemnity. Recorded as manual until
+      a maintainer decides whether to accept Springer Nature / BioMed Central terms or query ISRCTN records via Europe PMC.
+
+  - id: scite-mcp
+    title: Scite MCP Server (Smart Citations and Full-Text Citation Statements)
+    publisher: Scite LLC (Research Solutions)
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://scite.ai/mcp
+    base_url: https://api.scite.ai/mcp
+    terms_url: https://scite.ai/mcp
+    auth: api_key_required
+    max_rps: 1.0
+    published_limit: >-
+      Authenticated Scite Personal Pro MCP endpoint (OAuth 2.0 PKCE S256 via https://api.scite.ai/mcp/oauth/authorize,
+      RateLimit-Limit 600/minute observed on 2026-10-24); capped at 1.0 request/second for polite lab use
+    claim_label: verified
+    notes: >-
+      Scite Model Context Protocol (MCP) Streamable HTTP server for Smart Citations (supporting, contrasting, mentioning
+      tallies and in-text citation statements across 1.6B+ citation statements and 44+ publishing partners). Checked
+      2026-10-24 via read-page on https://scite.ai/mcp (HTTP 200, robots: 200 allowed=True) and
+      https://api.scite.ai/.well-known/oauth-authorization-server (HTTP 200, robots: 404 allowed=True). Admitted as a
+      read-only citation-polarity and literature verification MCP alongside cf-evidence-loop (board task T-0047; see
+      cf-lab docs/scite-mcp-admission-review.md). Returned citation snippets are wrapped in <untrusted_data> boundaries,
+      polarity classifications are labelled as Scite ML classifications, and shipped citations are verified through
+      cf-evidence-loop.
