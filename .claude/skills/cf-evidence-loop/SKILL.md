@@ -50,7 +50,11 @@ Research, not medical advice. The records this tool returns describe public docu
 | What compound metadata, clinical phase, and ATC codes does ChEMBL hold? | `chembl <CHEMBL_ID\|name> [--limit 5]` | EMBL-EBI ChEMBL REST API |
 | What quantitative bioactivity assays (EC50, IC50, Ki, Kd) does ChEMBL hold? | `chembl-activity <CHEMBL_ID\|name> [--target CHEMBL4051]` | EMBL-EBI ChEMBL REST API (alias: `bioactivity`) |
 | What target tractability, safety liabilities, disease scores, or FAERS stats does Open Targets hold? | `opentargets <ID\|query> [--limit 5]` | Open Targets Platform v4 GraphQL API (alias: `ot`) |
-| What supporting, contrasting, and mentioning citation tallies does Scite hold for this DOI? | `scite <DOI>` | Scite Pro MCP (`scite-mcp`, OAuth/key required) |
+| What supporting, contrasting, and mentioning citation tallies does Scite hold for this DOI? | `scite <DOI> [--rest]` | Scite Pro MCP (`scite-mcp`) or zero-quota public REST (`--rest`, `scite-api`) |
+| Screen up to 500 DOIs per request for Smart Citation tallies, retractions, and section breakdown at 0 quota cost | `scite-batch <DOI...> [--papers] [--sections]` | Scite public REST (`POST /tallies`, `POST /papers`, `POST /tallies/cited-by-sections`; 0 quota cost) |
+| How are citations to this DOI distributed across Introduction, Methods, Results, and Discussion sections? | `scite-sections <DOI>` | Scite public REST (`GET /tallies/cited-by-sections/{doi}` + `/tallies/{doi}`; 0 quota cost) |
+| Read verbatim full-text excerpts and Smart Citation snippets inside a specific paper | `scite-excerpts <DOI> "<query>" [--limit 5]` | Scite Pro MCP Mode C (`scite-mcp`, quarantined in `<untrusted_data>`) |
+| Which related papers does Scite recommend from a seed DOI? | `scite-recommend <DOI> [--limit 5]` | Scite Partner REST (`GET /api_partner/recommend-papers/{doi}`, gated by 650/month REST shield) |
 | Search literature with Scite Smart Citation tallies | `scite-search "<query>" [--limit 5]` | Scite Pro MCP (`scite-mcp`, OAuth/key required) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | What may this tool reach at all? | `sources` | the catalog |

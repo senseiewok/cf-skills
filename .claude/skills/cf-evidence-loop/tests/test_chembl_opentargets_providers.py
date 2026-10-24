@@ -381,12 +381,193 @@ def test_scite_blocked_when_unauthenticated_and_quota_capped(monkeypatch, tmp_pa
 def test_scite_dry_run_and_shape_errors(monkeypatch, capsys):
     monkeypatch.setenv("EVIDENCE_DRY_RUN", "1")
     assert cli.main(["scite", "10.1056/NEJMoa1908639"]) == 0
+    assert cli.main(["scite", "10.1056/NEJMoa1908639", "--rest"]) == 0
     assert cli.main(["scite-search", "vanzacaftor CFTR", "--limit", "2"]) == 0
     capsys.readouterr()
 
-    r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    r_rest = scite.parse_rest_tally(
+        {
+            "total": 1980,
+            "supporting": 109,
+            "contradicting": 5,
+            "mentioning": 1812,
+            "unclassified": 54,
+            "doi": "10.1056/nejmoa1908639",
+            "citingPublications": 2305,
+        },
+        "10.1056/NEJMoa1908639",
+        "q",
+        "https://api.scite.ai/tallies/10.1056/NEJMoa1908639",
+    )
+    assert r_rest.status is Status.FOUND
+    assert r_rest.source_id == "scite-api"
+    assert r_rest.fields["supporting"] == 109
+    assert r_rest.fields["contrasting"] == 5
+    assert r_rest.fields["mentioning"] == 1812
+    assert r_rest.fields["unclassified"] == 54
+    assert r_rest.fields["quota_bucket"] == "scite-public-tallies-free"
+
+    r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp")
     assert r_err.status is Status.ERROR
     assert "bad token" in r_err.fields.get("shape_error", "")
 
-    r_nf = scite.parse_tally({"hits": [], "total": 0}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    r_nf = scite.parse_tally({"hits": [], "total": 0}, "10.1000/x", "q", "https://api.scite.ai/mcp")
     assert r_nf.status is Status.NOT_FOUND
+
+
+def test_scite_superpowers_batch_sections_excerpts_and_recommend(monkeypatch, capsys, tmp_path):
+    monkeypatch.setenv("EVIDENCE_DRY_RUN", "1")
+    assert cli.main(["scite-batch", "10.1056/NEJMoa1908639", "10.1126/science.ade2216", "--papers", "--sections"]) == 0
+    assert cli.main(["scite-sections", "10.1056/NEJMoa1908639"]) == 0
+    assert cli.main(["scite-excerpts", "10.1056/NEJMoa1908639", "sweat chloride", "--limit", "3"]) == 0
+    assert cli.main(["scite-recommend", "10.1056/NEJMoa1908639", "--limit", "3"]) == 0
+    assert cli.main(["scite-batch", "   "]) == 2
+    assert cli.main(["scite-sections", "   "]) == 2
+    assert cli.main(["scite-excerpts", "10.1056/NEJMoa1908639", "   "]) == 2
+    assert cli.main(["scite-recommend", "   "]) == 2
+    capsys.readouterr()
+
+    # 1. Section-weighted triage parser (0 quota cost)
+    r_sec = scite.parse_rest_sections(
+        {
+            "total": 1980,
+            "introduction": 701,
+            "results": 87,
+            "methods": 21,
+            "discussion": 453,
+            "other": 533,
+            "doi": "10.1056/nejmoa1908639",
+        },
+        {
+            "total": 1980,
+            "supporting": 109,
+            "contradicting": 5,
+            "mentioning": 1812,
+            "unclassified": 54,
+            "doi": "10.1056/nejmoa1908639",
+            "citingPublications": 2305,
+        },
+        "10.1056/NEJMoa1908639",
+        "q",
+        "https://api.scite.ai/tallies/cited-by-sections/10.1056/NEJMoa1908639",
+    )
+    assert r_sec.status is Status.FOUND
+    assert r_sec.fields["section_tallies"]["results"] == 87
+    assert r_sec.fields["section_tallies"]["methods"] == 21
+    assert r_sec.fields["section_triage_computed"] == "EMPIRICAL_OR_METHODOLOGICAL_ATTENTION"
+    assert r_sec.fields["quota_bucket"] == "scite-public-tallies-free"
+
+    # 2. Bulk tallies + papers + sections parser (0 quota cost)
+    batch_recs = scite.parse_batch_tallies(
+        {
+            "tallies": {
+                "10.1056/nejmoa1908639": {
+                    "total": 1980,
+                    "supporting": 109,
+                    "contradicting": 5,
+                    "mentioning": 1812,
+                    "unclassified": 54,
+                    "doi": "10.1056/nejmoa1908639",
+                    "citingPublications": 2305,
+                }
+            }
+        },
+        {
+            "papers": {
+                "10.1056/nejmoa1908639": {
+                    "doi": "10.1056/nejmoa1908639",
+                    "title": "Elexacaftor-Tezacaftor-Ivacaftor for Cystic Fibrosis",
+                    "journal": "NEJM",
+                    "year": 2019,
+                    "retracted": False,
+                    "editorialNotices": [],
+                }
+            }
+        },
+        {
+            "tallies": {
+                "10.1056/nejmoa1908639": {
+                    "total": 1980,
+                    "introduction": 701,
+                    "results": 87,
+                    "methods": 21,
+                    "discussion": 453,
+                    "other": 533,
+                    "doi": "10.1056/nejmoa1908639",
+                }
+            }
+        },
+        ["10.1056/NEJMoa1908639", "10.1000/nonexistent"],
+        "q",
+        "https://api.scite.ai/tallies",
+    )
+    assert len(batch_recs) == 2
+    assert batch_recs[0].status is Status.FOUND
+    assert batch_recs[0].fields["retracted"] is False
+    assert batch_recs[0].fields["section_triage_computed"] == "EMPIRICAL_OR_METHODOLOGICAL_ATTENTION"
+    assert batch_recs[1].status is Status.NOT_FOUND
+
+    # 3. Mode C full-text excerpts with <untrusted_data> quarantine & ANSI stripping
+    ex_payload = {
+        "result": {
+            "content": [
+                {
+                    "type": "text",
+                    "text": json.dumps(
+                        {
+                            "hits": [
+                                {
+                                    "doi": "10.1056/nejmoa1908639",
+                                    "title": "ETI study",
+                                    "year": 2019,
+                                    "tally": {"supporting": 109, "contrasting": 5, "mentioning": 1812, "total": 1980},
+                                    "fulltextExcerpts": ["\x1b[31mMean sweat chloride decreased by 41.8 mmol/L.\x1b[0m"],
+                                    "citations": [
+                                        {
+                                            "snippet": "Replicated in real-world cohort.",
+                                            "type": "supporting",
+                                            "section": "Results",
+                                            "sourceDoi": "10.1016/j.jcf.2021.01.001",
+                                        }
+                                    ],
+                                }
+                            ]
+                        }
+                    ),
+                }
+            ]
+        }
+    }
+    r_ex = scite.parse_excerpts(ex_payload, "10.1056/NEJMoa1908639", "sweat chloride", "q", "https://api.scite.ai/mcp")
+    assert r_ex.status is Status.FOUND
+    assert r_ex.fields["untrusted_data_quarantined"] is True
+    assert "\x1b" not in r_ex.fields["fulltext_excerpts"][0]
+    assert r_ex.fields["fulltext_excerpts"][0].startswith('<untrusted_data source="scite" doi="10.1056/nejmoa1908639">')
+    assert "41.8 mmol/L" in r_ex.fields["fulltext_excerpts"][0]
+
+    # 4. Partner REST recommendations & monthly hard cap (650/month)
+    rec_data = {
+        "papers": [
+            {
+                "score": 0.942,
+                "paper": {
+                    "doi": "10.1056/nejmoa1908638",
+                    "title": "Homozygous Phe508del ETI Trial",
+                    "journal": "NEJM",
+                    "year": 2019,
+                    "tally": {"supporting": 88, "contradicting": 2, "mentioning": 940, "total": 1030},
+                },
+            }
+        ]
+    }
+    recs_rec = scite.parse_recommendations(
+        rec_data,
+        "10.1056/NEJMoa1908639",
+        "q",
+        "https://api.scite.ai/api_partner/recommend-papers/10.1056/NEJMoa1908639",
+    )
+    assert len(recs_rec) == 1
+    assert recs_rec[0].status is Status.FOUND
+    assert recs_rec[0].fields["recommendation_score"] == 0.942
+    assert recs_rec[0].fields["quota_bucket"] == "scite-rest-partner-650"
+

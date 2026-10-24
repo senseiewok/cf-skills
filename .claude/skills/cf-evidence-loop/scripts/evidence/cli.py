@@ -121,8 +121,22 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("opentargets", aliases=["ot"], help="Open Targets Platform v4: target tractability, safety liabilities, disease scores, and drug mechanisms/FAERS")
     p.add_argument("query", help="Ensembl ID (ENSG00000001626), EFO/MONDO ID (MONDO_0009061), ChEMBL ID (CHEMBL2010601), or search term")
     p.add_argument("--limit", type=int, default=open_targets.DEFAULT_LIMIT, help=f"maximum results (default: {open_targets.DEFAULT_LIMIT})")
-    p = sub.add_parser("scite", help="Scite Smart Citations (supporting, contrasting, mentioning tallies) by DOI via Scite MCP")
+    p = sub.add_parser("scite", help="Scite Smart Citations (supporting, contrasting, mentioning tallies) by DOI via Scite MCP or REST API")
     p.add_argument("doi", help="DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("--rest", action="store_true", help="use Scite public REST API GET /tallies/{doi} (0 quota cost) instead of MCP (2,500/month bucket)")
+    p = sub.add_parser("scite-batch", help="Zero-quota bulk Smart Citation tallies, retractions, and section breakdown for up to 500 DOIs per request")
+    p.add_argument("dois", nargs="+", help="one or more DOIs (e.g. 10.1056/NEJMoa1908639 10.1126/science.ade2216)")
+    p.add_argument("--papers", action="store_true", help="also fetch bulk paper metadata, retraction flags, and editorial notices (0 quota cost)")
+    p.add_argument("--sections", action="store_true", help="also fetch bulk section-level citation breakdown and Empirical Refutation Triage (0 quota cost)")
+    p = sub.add_parser("scite-sections", help="Zero-quota section-level citation breakdown (Introduction, Methods, Results, Discussion) and triage by DOI")
+    p.add_argument("doi", help="DOI (e.g. 10.1056/NEJMoa1908639)")
+    p = sub.add_parser("scite-excerpts", help="Retrieve in-paper verbatim full-text excerpts and citation snippets via Scite MCP Mode C (dois + term)")
+    p.add_argument("doi", help="DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("query", help="targeted term query inside the paper (e.g. 'sweat chloride' or 'hepatotoxicity')")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum excerpts/snippets (default: {scite.DEFAULT_LIMIT})")
+    p = sub.add_parser("scite-recommend", help="Recommend related papers given a seed DOI via Scite Partner REST API (gated by 650/month REST shield)")
+    p.add_argument("doi", help="seed DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum recommendations (default: {scite.DEFAULT_LIMIT})")
     p = sub.add_parser("scite-search", help="Scite literature search with Smart Citation tallies via Scite MCP")
     p.add_argument("query", help="search terms (e.g. 'vanzacaftor CFTR')")
     p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum results (default: {scite.DEFAULT_LIMIT})")
@@ -277,6 +291,9 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "opentargets": ("query",),
     "ot": ("query",),
     "scite": ("doi",),
+    "scite-sections": ("doi",),
+    "scite-excerpts": ("doi", "query"),
+    "scite-recommend": ("doi",),
     "scite-search": ("query",),
     "brief": ("subject",),
     "read-page": ("url",),
@@ -288,9 +305,9 @@ def _check_blank_query(a: argparse.Namespace) -> str | None:
     """Return an error message if any required query argument is blank/whitespace-only, else None."""
     if a.cmd == "sources":
         return None
-    if a.cmd == "retractions":
+    if a.cmd in ("retractions", "scite-batch"):
         if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
-            return "DOI argument for retractions cannot be blank or whitespace-only"
+            return f"DOI argument for {a.cmd} cannot be blank or whitespace-only"
         return None
 
     # Check required positional arguments for the subcommand
@@ -395,7 +412,20 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
     elif a.cmd in ("opentargets", "ot"):
         return open_targets.lookup(client, a.query, a.limit)
     elif a.cmd == "scite":
-        return [scite.tally(client, a.doi)]
+        return [scite.tally(client, a.doi, use_rest=getattr(a, "rest", False))]
+    elif a.cmd == "scite-batch":
+        return scite.batch_tallies(
+            client,
+            a.dois,
+            include_papers=getattr(a, "papers", False),
+            include_sections=getattr(a, "sections", False),
+        )
+    elif a.cmd == "scite-sections":
+        return [scite.tally_sections(client, a.doi)]
+    elif a.cmd == "scite-excerpts":
+        return [scite.excerpts(client, a.doi, a.query, a.limit)]
+    elif a.cmd == "scite-recommend":
+        return scite.recommend(client, a.doi, a.limit)
     elif a.cmd == "scite-search":
         return scite.search(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover
