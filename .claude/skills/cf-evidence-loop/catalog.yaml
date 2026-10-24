@@ -2038,7 +2038,7 @@ sources:
     robots: allow
     robots_checked: 2026-10-24
     landing_page: https://scite.ai/mcp
-    base_url: https://api.scite.ai/mcp/
+    base_url: https://api.scite.ai/mcp
     terms_url: https://scite.ai/mcp
     auth: api_key_required
     max_rps: 1.0

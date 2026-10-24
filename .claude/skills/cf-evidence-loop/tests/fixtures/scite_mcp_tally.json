@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"total\": 1,\n  \"count\": 1,\n  \"query\": \"\",\n  \"limit\": 1,\n  \"offset\": 0,\n  \"hits\": [\n    {\n      \"doi\": \"10.1056/nejmoa1908639\",\n      \"title\": \"Elexacaftor–Tezacaftor–Ivacaftor for Cystic Fibrosis with a Single Phe508del Allele\",\n      \"authors\": [\n        {\n          \"authorName\": \"Peter Gordon Middleton\"\n        },\n        {\n          \"authorName\": \"Marcus Alexander Mall\"\n        }\n      ],\n      \"journal\": \"new england journal of medicine\",\n      \"publisher\": \"Massachusetts Medical Society\",\n      \"year\": 2019,\n      \"date\": \"2019-11-07\",\n      \"tally\": {\n        \"total\": 1980,\n        \"supporting\": 109,\n        \"contrasting\": 5,\n        \"mentioning\": 1812,\n        \"citingPublications\": 2305\n      },\n      \"editorialNotices\": [],\n      \"isOa\": true,\n      \"oaStatus\": \"bronze\"\n    }\n  ]\n}"
+      }
+    ]
+  }
+}

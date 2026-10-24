@@ -14,7 +14,7 @@ import pytest
 
 from evidence import cli
 from evidence.http import Client
-from evidence.providers import chembl, open_targets
+from evidence.providers import chembl, open_targets, scite
 from evidence.record import Status
 
 FX = Path(__file__).parent / "fixtures"
@@ -306,4 +306,87 @@ def test_open_targets_dry_run_and_cli_dispatch(monkeypatch, capsys):
     assert cli.main(["chembl", "   "]) == 2
     assert cli.main(["chembl-activity", "   "]) == 2
     assert cli.main(["opentargets", "   "]) == 2
+    assert cli.main(["scite", "   "]) == 2
+    assert cli.main(["scite-search", "   "]) == 2
     capsys.readouterr()
+
+
+# ---------------------------------------------------------------------------
+# Scite Smart Citations provider tests (T-0047)
+# ---------------------------------------------------------------------------
+
+
+def test_scite_parse_tally_and_search_from_fixture():
+    data = load_fixture("scite_mcp_tally.json")
+    url = "https://api.scite.ai/mcp"
+
+    r = scite.parse_tally(
+        data,
+        "10.1056/NEJMoa1908639",
+        "What are the Scite supporting, contrasting, and mentioning citation tallies for DOI '10.1056/NEJMoa1908639'?",
+        url,
+    )
+    assert r.status is Status.FOUND
+    assert r.source_id == "scite-mcp"
+    assert r.publisher_date == "2019-11-07"
+    assert r.fields["doi"] == "10.1056/nejmoa1908639"
+    assert r.fields["supporting"] == 109
+    assert r.fields["contrasting"] == 5
+    assert r.fields["mentioning"] == 1812
+    assert r.fields["total_smart_citations"] == 1980
+    assert r.fields["citing_publications"] == 2305
+    assert r.fields["classification_provenance"] == "Scite ML citation classification"
+    assert "[observed: Scite ML citation classification]" in r.limitations
+    assert "machine-learning" in r.limitations
+
+    recs = scite.parse_search(data, "elexacaftor", "Which publications in Scite match 'elexacaftor'?", url, limit=3)
+    assert len(recs) == 1
+    assert recs[0].status is Status.FOUND
+    assert recs[0].fields["search_total"] == 1
+
+
+def test_scite_blocked_when_unauthenticated_and_quota_capped(monkeypatch, tmp_path):
+    monkeypatch.delenv("SCITE_API_KEY", raising=False)
+    monkeypatch.setenv("SCITE_MCP_OAUTH_FILE", str(tmp_path / "missing_oauth.json"))
+    client = Client()
+
+    r_blocked = scite.tally(client, "10.1056/NEJMoa1908639")
+    assert r_blocked.status is Status.BLOCKED
+    assert "credentials not found" in r_blocked.fields.get("error", "")
+
+    recs_blocked = scite.search(client, "vanzacaftor")
+    assert len(recs_blocked) == 1 and recs_blocked[0].status is Status.BLOCKED
+
+    # Quota cap enforcement
+    monkeypatch.setenv("SCITE_API_KEY", "test-scite-token")
+    usage_log = tmp_path / "scite_usage.jsonl"
+    monkeypatch.setenv("SCITE_MCP_USAGE_LOG", str(usage_log))
+    monkeypatch.setenv("SCITE_MCP_DAILY_CAP", "1")
+
+    from test_conduct import FakeResponse, Script, make_client
+
+    fx = load_fixture("scite_mcp_tally.json")
+    s = Script([FakeResponse(200, body=fx)])
+    c = make_client(monkeypatch, s)
+    r_ok = scite.tally(c, "https://doi.org/10.1056/NEJMoa1908639")
+    assert r_ok.status is Status.FOUND
+    assert r_ok.fields["supporting"] == 109
+
+    # Second call exceeds SCITE_MCP_DAILY_CAP=1 and is blocked before network
+    r_capped = scite.tally(c, "10.1056/NEJMoa1908639")
+    assert r_capped.status is Status.BLOCKED
+    assert "daily quota cap reached" in r_capped.fields.get("error", "")
+
+
+def test_scite_dry_run_and_shape_errors(monkeypatch, capsys):
+    monkeypatch.setenv("EVIDENCE_DRY_RUN", "1")
+    assert cli.main(["scite", "10.1056/NEJMoa1908639"]) == 0
+    assert cli.main(["scite-search", "vanzacaftor CFTR", "--limit", "2"]) == 0
+    capsys.readouterr()
+
+    r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    assert r_err.status is Status.ERROR
+    assert "bad token" in r_err.fields.get("shape_error", "")
+
+    r_nf = scite.parse_tally({"hits": [], "total": 0}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    assert r_nf.status is Status.NOT_FOUND
