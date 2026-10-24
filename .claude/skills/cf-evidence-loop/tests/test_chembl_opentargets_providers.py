@@ -405,7 +405,7 @@ def test_scite_dry_run_and_shape_errors(monkeypatch, capsys):
     assert r_rest.fields["contrasting"] == 5
     assert r_rest.fields["mentioning"] == 1812
     assert r_rest.fields["unclassified"] == 54
-    assert r_rest.fields["quota_bucket"] == "scite-api-rest-750"
+    assert r_rest.fields["quota_bucket"] == "scite-public-tallies-free"
 
     r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp")
     assert r_err.status is Status.ERROR

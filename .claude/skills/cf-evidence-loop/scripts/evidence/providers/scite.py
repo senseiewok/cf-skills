@@ -1,13 +1,17 @@
-"""Scite Smart Citations provider via Scite Pro MCP (https://api.scite.ai/mcp) and REST API (https://api.scite.ai/).
+"""Scite Smart Citations provider with 3-tier Zero-Overage Quota Protection (T-0047).
 
-Supports both quota buckets included in the Scite Personal Pro subscription (board task T-0047):
-  1. MCP Bucket (`source="scite-mcp"`, 2,500 MCP tool uses/month, `SCITE_MCP_DAILY_CAP=60`).
-  2. REST API Bucket (`source="scite-api"`, 750 Included REST API calls/month, `SCITE_REST_DAILY_CAP=20`).
-
-Automatically refreshes expired OAuth 2.0 PKCE tokens in `~/.gemini/config/scite_mcp_oauth.json`
-when `refresh_token` and `client_id` are present, and returns Evidence records with supporting,
-contrasting, and mentioning citation tallies plus the mandatory `[observed: Scite ML citation classification]`
-provenance limitation.
+Per https://docs.scite.ai/quickstart and https://docs.scite.ai/pricing-and-plans:
+  1. Tier 1 — Public Unauthenticated REST (`source="scite-api"`, `GET /tallies/{doi}` & `GET /papers/{doi}`):
+     Public endpoints require NO API key and consume ZERO of the 750 monthly REST API calls
+     and ZERO of the 2,500 monthly MCP credits. Default for `scite <DOI>` when `--rest` is passed
+     (or when unauthenticated).
+  2. Tier 2 — Authenticated Scite Pro MCP (`source="scite-mcp"`, `POST https://api.scite.ai/mcp`):
+     Uses ONLY the OAuth 2.0 PKCE token (`~/.gemini/config/scite_mcp_oauth.json`, never `SCITE_API_KEY`)
+     so MCP calls only draw from the 2,500/month MCP bucket (which has no pay-as-you-go overage).
+     Hard-capped fail-closed at `SCITE_MCP_DAILY_CAP=60` and `SCITE_MCP_MONTHLY_CAP=2400` (100-call buffer).
+  3. Tier 3 — Authenticated Scite REST API (`SCITE_API_KEY`, 750 included calls/month; $0.08/call overage):
+     Hard-capped fail-closed at `SCITE_REST_DAILY_CAP=20` and `SCITE_REST_MONTHLY_CAP=650` (100-call safety
+     buffer below 750) so no script or agent can ever reach 750 calls or trigger pay-as-you-go billing.
 """
 
 from __future__ import annotations
@@ -45,59 +49,70 @@ LIMITATION = (
 )
 
 
-def _resolve_bearer_token() -> str | None:
-    """Resolve Scite bearer token from SCITE_API_KEY env var or ~/.gemini/config/scite_mcp_oauth.json (with auto-refresh)."""
-    env_key = (os.environ.get("SCITE_API_KEY") or "").strip()
-    if env_key and env_key != "your_key_here":
-        return env_key
+def _resolve_bearer_token(*, allow_api_key: bool = True) -> str | None:
+    """Resolve Scite bearer token.
 
+    For MCP calls, prefers the OAuth 2.0 PKCE token in ~/.gemini/config/scite_mcp_oauth.json
+    (with auto-refresh) so MCP calls draw from the 2,500/month MCP credit pool rather than the
+    750/month REST API key pool. Falls back to SCITE_API_KEY only when allow_api_key=True.
+    """
     oauth_path_str = os.environ.get("SCITE_MCP_OAUTH_FILE")
     oauth_path = Path(oauth_path_str) if oauth_path_str else DEFAULT_OAUTH_FILE
-    if not oauth_path.is_file():
-        return None
-    try:
-        data = json.loads(oauth_path.read_text(encoding="utf-8"))
-        token = (data.get("access_token") or "").strip()
-        expires_at = float(data.get("expires_at") or 0)
-        if token and (expires_at == 0 or time.time() < expires_at - 30):
-            return token
+    if oauth_path.is_file():
+        try:
+            data = json.loads(oauth_path.read_text(encoding="utf-8"))
+            token = (data.get("access_token") or "").strip()
+            expires_at = float(data.get("expires_at") or 0)
+            if token and (expires_at == 0 or time.time() < expires_at - 30):
+                return token
 
-        refresh_token = (data.get("refresh_token") or "").strip()
-        client_id = (data.get("client_id") or "").strip()
-        if refresh_token and client_id and not os.environ.get("PYTEST_CURRENT_TEST"):
-            resp = requests.post(
-                TOKEN_URL,
-                data={
-                    "grant_type": "refresh_token",
-                    "refresh_token": refresh_token,
-                    "client_id": client_id,
-                },
-                timeout=15,
-            )
-            if resp.status_code == 200:
-                tok = resp.json()
-                new_token = (tok.get("access_token") or "").strip()
-                if new_token:
-                    data["access_token"] = new_token
-                    if tok.get("refresh_token"):
-                        data["refresh_token"] = tok["refresh_token"]
-                    data["expires_at"] = time.time() + int(tok.get("expires_in", 3600))
-                    oauth_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-                    return new_token
-    except Exception:
-        return None
+            refresh_token = (data.get("refresh_token") or "").strip()
+            client_id = (data.get("client_id") or "").strip()
+            if refresh_token and client_id and not os.environ.get("PYTEST_CURRENT_TEST"):
+                resp = requests.post(
+                    TOKEN_URL,
+                    data={
+                        "grant_type": "refresh_token",
+                        "refresh_token": refresh_token,
+                        "client_id": client_id,
+                    },
+                    timeout=15,
+                )
+                if resp.status_code == 200:
+                    tok = resp.json()
+                    new_token = (tok.get("access_token") or "").strip()
+                    if new_token:
+                        data["access_token"] = new_token
+                        if tok.get("refresh_token"):
+                            data["refresh_token"] = tok["refresh_token"]
+                        data["expires_at"] = time.time() + int(tok.get("expires_in", 3600))
+                        oauth_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+                        return new_token
+        except Exception:
+            pass
+
+    if allow_api_key:
+        env_key = (os.environ.get("SCITE_API_KEY") or "").strip()
+        if env_key and env_key != "your_key_here":
+            return env_key
     return None
 
 
 def _check_daily_cap(*, rest: bool = False) -> str | None:
-    """Enforce SCITE_MCP_DAILY_CAP (default 60/day) or SCITE_REST_DAILY_CAP (default 20/day)."""
-    env_cap_name = "SCITE_REST_DAILY_CAP" if rest else "SCITE_MCP_DAILY_CAP"
-    default_cap = 20 if rest else 60
-    cap_str = os.environ.get(env_cap_name, str(default_cap))
+    """Enforce fail-closed daily AND monthly hard caps (MCP: 60/day & 2400/month; REST: 20/day & 650/month)."""
+    env_daily_name = "SCITE_REST_DAILY_CAP" if rest else "SCITE_MCP_DAILY_CAP"
+    env_monthly_name = "SCITE_REST_MONTHLY_CAP" if rest else "SCITE_MCP_MONTHLY_CAP"
+    default_daily = 20 if rest else 60
+    default_monthly = 650 if rest else 2400
+
     try:
-        cap = int(cap_str)
+        daily_cap = int(os.environ.get(env_daily_name, str(default_daily)))
     except ValueError:
-        cap = default_cap
+        daily_cap = default_daily
+    try:
+        monthly_cap = int(os.environ.get(env_monthly_name, str(default_monthly)))
+    except ValueError:
+        monthly_cap = default_monthly
 
     env_log_name = "SCITE_REST_USAGE_LOG" if rest else "SCITE_MCP_USAGE_LOG"
     log_str = os.environ.get(env_log_name)
@@ -105,17 +120,29 @@ def _check_daily_cap(*, rest: bool = False) -> str | None:
         return None
     log_path = Path(log_str) if log_str else (DEFAULT_REST_USAGE_LOG if rest else DEFAULT_USAGE_LOG)
     today = time.strftime("%Y-%m-%d", time.gmtime())
-    used = 0
+    month_prefix = today[:7]  # YYYY-MM
+    daily_used = 0
+    monthly_used = 0
+    bucket = "REST" if rest else "MCP"
+
     if log_path.is_file():
         try:
             for line in log_path.read_text(encoding="utf-8").splitlines():
                 if f'"date": "{today}"' in line:
-                    used += 1
-        except Exception:
-            pass
-    if used >= cap:
-        bucket = "REST" if rest else "MCP"
-        return f"Scite {bucket} daily quota cap reached ({used}/{cap} calls today; {env_cap_name}={cap})"
+                    daily_used += 1
+                if f'"date": "{month_prefix}' in line:
+                    monthly_used += 1
+        except Exception as exc:
+            return f"Scite {bucket} quota ledger unreadable (fail-closed to prevent overage): {exc}"
+
+    if monthly_used >= monthly_cap:
+        return (
+            f"Scite {bucket} monthly hard cap reached ({monthly_used}/{monthly_cap} calls in {month_prefix}; "
+            f"{env_monthly_name}={monthly_cap}) — fail-closed to prevent pay-as-you-go overage"
+        )
+    if daily_used >= daily_cap:
+        return f"Scite {bucket} daily quota cap reached ({daily_used}/{daily_cap} calls today; {env_daily_name}={daily_cap})"
+
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
         with log_path.open("a", encoding="utf-8") as fh:
@@ -129,8 +156,8 @@ def _check_daily_cap(*, rest: bool = False) -> str | None:
                 )
                 + "\n"
             )
-    except Exception:
-        pass
+    except Exception as exc:
+        return f"Scite {bucket} quota ledger write failed (fail-closed to prevent overage): {exc}"
     return None
 
 
@@ -227,7 +254,7 @@ def _parse_hit(hit: dict[str, Any], question: str, url: str, search_total: int |
 
 
 def parse_rest_tally(data: Any, doi_query: str, question: str, url: str) -> Evidence:
-    """Pure parser for Scite REST GET /tallies/{doi} response (750/month REST API bucket)."""
+    """Pure parser for Scite public REST GET /tallies/{doi} response (0 API/MCP quota cost)."""
     try:
         if not isinstance(data, dict):
             raise ShapeError(f"Scite REST tally response is {type(data).__name__}, not an object")
@@ -252,7 +279,7 @@ def parse_rest_tally(data: Any, doi_query: str, question: str, url: str) -> Evid
             "unclassified": unclassified,
             "total_smart_citations": total_cit,
             "citing_publications": citing_pubs,
-            "quota_bucket": "scite-api-rest-750",
+            "quota_bucket": "scite-public-tallies-free",
             "classification_provenance": "Scite ML citation classification",
         }
         return Evidence(
@@ -344,9 +371,13 @@ def _normalize_doi(doi: str) -> str:
 
 
 def tally_rest(client: Client, doi: str) -> Evidence:
-    """Look up Smart Citation tallies via Scite REST API GET /tallies/{doi} (750/month Included API calls bucket)."""
+    """Look up Smart Citation tallies via public unauthenticated Scite REST GET /tallies/{doi} (0 quota cost!).
+
+    Per https://docs.scite.ai/quickstart, /tallies/{doi} is a public endpoint that requires no API key.
+    Sending no Authorization header ensures zero calls are billed against the 750/month REST API key quota.
+    """
     norm_doi = _normalize_doi(doi)
-    q = f"What are the Scite REST API supporting, contrasting, and mentioning citation tallies for DOI '{norm_doi}'?"
+    q = f"What are the Scite public REST API supporting, contrasting, and mentioning citation tallies for DOI '{norm_doi}'?"
     path = f"tallies/{quote(norm_doi, safe='/')}"
 
     if client.dry_run:
@@ -357,46 +388,18 @@ def tally_rest(client: Client, doi: str) -> Evidence:
             source_id=REST_SOURCE,
             url=f.url,
             provider=PROVIDER,
-            fields={"doi": norm_doi, "planned_endpoint": path, "quota_bucket": "scite-api-rest-750"},
+            fields={"doi": norm_doi, "planned_endpoint": path, "quota_bucket": "scite-public-tallies-free"},
             limitations=LIMITATION,
         )
 
-    token = _resolve_bearer_token()
-    if not token:
-        return Evidence(
-            status=Status.BLOCKED,
-            question=q,
-            source_id=REST_SOURCE,
-            url=client._url(REST_SOURCE, path),
-            provider=PROVIDER,
-            fields={
-                "doi": norm_doi,
-                "error": "Scite credentials not found (set SCITE_API_KEY or authenticate ~/.gemini/config/scite_mcp_oauth.json)",
-            },
-            limitations=LIMITATION,
-        )
-
-    cap_err = _check_daily_cap(rest=True)
-    if cap_err:
-        return Evidence(
-            status=Status.BLOCKED,
-            question=q,
-            source_id=REST_SOURCE,
-            url=client._url(REST_SOURCE, path),
-            provider=PROVIDER,
-            fields={"doi": norm_doi, "error": cap_err},
-            limitations=LIMITATION,
-        )
-
-    headers = {"Authorization": f"Bearer {token}"}
-    f = client.get(REST_SOURCE, path, headers=headers)
+    f = client.get(REST_SOURCE, path)
     if f.status is not Status.FOUND:
         return _fail(f, q, {"doi": norm_doi}, source_id=REST_SOURCE)
     return parse_rest_tally(f.data, norm_doi, q, f.url)
 
 
 def tally(client: Client, doi: str, *, use_rest: bool = False) -> Evidence:
-    """Look up supporting, contrasting, and mentioning Smart Citation tallies for a DOI via Scite MCP (or REST if use_rest=True)."""
+    """Look up supporting, contrasting, and mentioning Smart Citation tallies for a DOI via Scite MCP (or public REST if use_rest=True)."""
     if use_rest:
         return tally_rest(client, doi)
 
