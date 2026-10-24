@@ -1854,6 +1854,141 @@ sources:
       agent on 2026-10-23 (HTTP 200); access stays manual until full terms audit. Rows hold a link and the lab's own
       one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
 
+  - id: cisztasfibrozis-hu-resource-pages
+    title: Cisztás Fibrózis Betegek Egyesülete website (cisztasfibrozis.hu)
+    publisher: Cisztás Fibrózis Betegek Egyesülete
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.cisztasfibrozis.hu/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Hungary (Cisztás Fibrózis Betegek Egyesülete).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cfasociacia-sk-resource-pages
+    title: Slovenská asociácia cystickej fibrózy website (cfasociacia.sk)
+    publisher: Slovenská asociácia cystickej fibrózy
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.cfasociacia.sk/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Slovakia (Slovenská asociácia cystickej fibrózy - SCFA).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cystic-fibrosis-hr-resource-pages
+    title: Hrvatska udruga oboljelih od cistične fibroze website (cystic-fibrosis.hr)
+    publisher: Hrvatska udruga oboljelih od cistične fibroze
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://cystic-fibrosis.hr/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Croatia (Hrvatska udruga oboljelih od cistične fibroze).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: afcr-ro-resource-pages
+    title: Asociația de Fibroză Chistică din România website (afcr.ro)
+    publisher: Asociația de Fibroză Chistică din România
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://afcr.ro/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Romania (Asociația de Fibroză Chistică din România - AFCR).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: cistinefibroze-lt-resource-pages
+    title: Lietuvos cistinės fibrozės asociacija website (cistinefibroze.lt)
+    publisher: Lietuvos cistinės fibrozės asociacija
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://www.cistinefibroze.lt/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Lithuania (Lietuvos cistinės fibrozės asociacija).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: lifewithcf-bg-resource-pages
+    title: Bulgarian Cystic Fibrosis Association website (lifewithcf.org)
+    publisher: Bulgarian Cystic Fibrosis Association
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://lifewithcf.org/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Bulgaria (Асоциация Муковисцидоза България).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: drustvocf-si-resource-pages
+    title: Društvo za cistično fibrozo Slovenije website (drustvocf.si)
+    publisher: Društvo za cistično fibrozo Slovenije
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://drustvocf.si/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Slovenia (Društvo za cistično fibrozo Slovenije).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: fqpanama-resource-pages
+    title: Asociación Panameña de Fibrosis Quística website (fqpanama.com)
+    publisher: Asociación Panameña de Fibrosis Quística
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://fqpanama.com/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Panama.
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
+  - id: agafq-gt-resource-pages
+    title: Asociación Guatemalteca de Fibrosis Quística website (fibrosisquisticagt.site)
+    publisher: Asociación Guatemalteca de Fibrosis Quística
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://fibrosisquisticagt.site/
+    url: null
+    claim_label: unverified
+    notes: >-
+      Official national cystic fibrosis patient association in Guatemala (AGAFQ).
+      Robots.txt verified under project user agent on 2026-10-24 (HTTP 200); access stays manual until full terms audit.
+      Rows hold a link and the lab's own one-sentence summary only: no page text, logo, image, phone number, email address or person's name.
+
   - id: natural-earth-110m-countries
     title: Natural Earth 1:110m Admin 0 Countries (vector, GeoJSON)
     publisher: Natural Earth (Tom Patterson, Nathaniel Vaughn Kelso and contributors; supported by NACIS)
