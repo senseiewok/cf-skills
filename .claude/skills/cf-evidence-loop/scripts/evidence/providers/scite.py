@@ -757,7 +757,8 @@ def parse_batch_tallies(
                 fields["title"] = p_obj.get("title")
                 fields["journal"] = p_obj.get("journal")
                 fields["year"] = p_obj.get("year")
-                fields["retracted"] = bool(p_obj.get("retracted", False))
+                has_retracted_notice = any("retract" in str(n.get("status") or "").lower() for n in notices)
+                fields["retracted"] = bool(p_obj.get("retracted", False)) or has_retracted_notice
                 fields["editorial_notices"] = notices
                 if p_obj.get("year") is not None:
                     pub_date = str(p_obj.get("year"))
