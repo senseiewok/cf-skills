@@ -2048,7 +2048,7 @@ sources:
     claim_label: verified
     notes: >-
       Scite Model Context Protocol (MCP) Streamable HTTP server for Smart Citations (supporting, contrasting, mentioning
-      tallies and in-text citation statements across 1.6B+ citation statements and 44+ publishing partners). Checked
+      tallies, Mode C in-paper fulltextExcerpts, and 8 Evidence dataset tool families: search_patents, search_clinical_trials, search_grants, search_device510k/search_510k_summaries, search_mhra, search_maude, search_faers, and search_drugs). Checked
       2026-10-24 via read-page on https://scite.ai/mcp (HTTP 200, robots: 200 allowed=True) and
       https://api.scite.ai/.well-known/oauth-authorization-server (HTTP 200, robots: 404 allowed=True). Admitted as a
       read-only citation-polarity and literature verification MCP alongside cf-evidence-loop (board task T-0047; see
@@ -2057,7 +2057,7 @@ sources:
       cf-evidence-loop.
 
   - id: scite-api
-    title: Scite REST API (Smart Citation Tallies, Papers, Journals, Funders, and Regulatory Endpoints)
+    title: Scite REST API (Public Bulk Tallies, Papers, Section Breakdown, and Partner Recommendation Endpoints)
     publisher: Scite LLC (Research Solutions)
     kind: api
     access: api
@@ -2066,15 +2066,18 @@ sources:
     landing_page: https://api.scite.ai/docs
     base_url: https://api.scite.ai/
     terms_url: https://scite.ai/mcp
-    auth: api_key_required
+    auth: none
     max_rps: 1.0
     published_limit: >-
-      Scite Personal Pro plan includes 750 REST API calls/month (separate from the 2,500 MCP tool uses/month bucket;
-      pay-as-you-go overages disabled by default); capped at 1.0 request/second and SCITE_REST_DAILY_CAP=20/day
+      Public endpoints (GET/POST /tallies, GET/POST /papers, GET/POST /tallies/cited-by-sections, GET /papers/pmid/{pmid})
+      require no API key and consume 0 quota; authenticated /api_partner/* endpoints share 750 included calls/month on
+      Personal Pro and are hard-capped fail-closed at SCITE_REST_DAILY_CAP=20 and SCITE_REST_MONTHLY_CAP=650 (100-call
+      safety buffer to prevent $0.08/call overage billing)
     claim_label: verified
     notes: >-
-      Scite REST API (/tallies/{doi}, /papers/{doi}, /journals/{issn}, /funders, etc.) included in the Scite Pro plan
-      (750 included calls/month resetting monthly on the 1st, alongside 2,500 MCP tool uses/month). Accepts either a
-      static SCITE_API_KEY or a refreshed OAuth 2.0 PKCE Bearer token from ~/.gemini/config/scite_mcp_oauth.json
-      (board task T-0047). Returned polarity counts are labelled as Scite ML citation classifications and verified
-      alongside cf-evidence-loop.
+      Scite REST API providing zero-quota public endpoints for single and bulk (up to 500 DOIs/request) Smart Citation
+      tallies (GET/POST /tallies), paper metadata and retraction notices (GET/POST /papers), section-level citation
+      breakdowns (GET/POST /tallies/cited-by-sections), and PMID-to-DOI resolution (GET /papers/pmid/{pmid}), alongside
+      authenticated partner endpoints (/api_partner/recommend-papers/{doi}) gated by SCITE_API_KEY and fail-closed
+      monthly caps (board task T-0047). Returned polarity counts are labelled as Scite ML citation classifications and
+      verified alongside cf-evidence-loop.
