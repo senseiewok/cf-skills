@@ -1,0 +1,53 @@
+{
+  "page_meta": {
+    "limit": 2,
+    "next": "/chembl/api/data/activity.json?limit=2&offset=2",
+    "offset": 0,
+    "previous": null,
+    "total_count": 21
+  },
+  "activities": [
+    {
+      "activity_id": 15065262,
+      "assay_chembl_id": "CHEMBL3385212",
+      "assay_description": "Potentiation of human CFTR F508del/G551D mutant in human bronchial epithelial cells by Ussing chambers recording technique",
+      "assay_type": "B",
+      "assay_variant_accession": "P13569",
+      "assay_variant_mutation": "F508del,G551D",
+      "document_chembl_id": "CHEMBL3352164",
+      "document_journal": "J Med Chem",
+      "document_year": 2014,
+      "molecule_chembl_id": "CHEMBL2010601",
+      "molecule_pref_name": "IVACAFTOR",
+      "pchembl_value": "7.66",
+      "standard_relation": "=",
+      "standard_type": "EC50",
+      "standard_units": "nM",
+      "standard_value": "22.0",
+      "target_chembl_id": "CHEMBL4051",
+      "target_organism": "Homo sapiens",
+      "target_pref_name": "Cystic fibrosis transmembrane conductance regulator"
+    },
+    {
+      "activity_id": 15136254,
+      "assay_chembl_id": "CHEMBL3382095",
+      "assay_description": "Potentiation of human CFTR F508del mutant expressed in mouse NIH-3T3 cells after 30 mins by fluorescent voltage sensing optical assay",
+      "assay_type": "B",
+      "assay_variant_accession": "P13569",
+      "assay_variant_mutation": "F508del",
+      "document_chembl_id": "CHEMBL3352164",
+      "document_journal": "J Med Chem",
+      "document_year": 2014,
+      "molecule_chembl_id": "CHEMBL2010601",
+      "molecule_pref_name": "IVACAFTOR",
+      "pchembl_value": "8.52",
+      "standard_relation": "=",
+      "standard_type": "EC50",
+      "standard_units": "nM",
+      "standard_value": "3.0",
+      "target_chembl_id": "CHEMBL4051",
+      "target_organism": "Homo sapiens",
+      "target_pref_name": "Cystic fibrosis transmembrane conductance regulator"
+    }
+  ]
+}

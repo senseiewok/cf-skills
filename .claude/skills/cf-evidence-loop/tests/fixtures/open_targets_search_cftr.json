@@ -1,0 +1,123 @@
+{
+  "data": {
+    "search": {
+      "total": 3,
+      "hits": [
+        {
+          "id": "ENSG00000001626",
+          "entity": "target",
+          "name": "CFTR",
+          "description": "CF transmembrane conductance regulator",
+          "object": {
+            "id": "ENSG00000001626",
+            "approvedSymbol": "CFTR",
+            "approvedName": "CF transmembrane conductance regulator",
+            "biotype": "protein_coding",
+            "tractability": [
+              {
+                "label": "Approved Drug",
+                "modality": "SM",
+                "value": true
+              },
+              {
+                "label": "Small Molecule Binder",
+                "modality": "PR",
+                "value": true
+              },
+              {
+                "label": "Clinical Precedence",
+                "modality": "AB",
+                "value": false
+              }
+            ],
+            "safetyLiabilities": [
+              {
+                "event": "adverse events",
+                "eventId": null,
+                "biosamples": [
+                  {
+                    "tissueLabel": "lung"
+                  }
+                ],
+                "effects": [
+                  {
+                    "direction": "Activation/Increase/Upregulation",
+                    "dosing": "acute"
+                  }
+                ]
+              }
+            ],
+            "associatedDiseases": {
+              "count": 1889,
+              "rows": [
+                {
+                  "score": 0.921141,
+                  "disease": {
+                    "id": "MONDO_0009061",
+                    "name": "cystic fibrosis"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "MONDO_0009061",
+          "entity": "disease",
+          "name": "cystic fibrosis",
+          "description": "Cystic fibrosis (CF) is a genetic disorder characterized by the production of sweat with a high salt content and mucus secretions with an abnormal viscosity.",
+          "object": {
+            "id": "MONDO_0009061",
+            "name": "cystic fibrosis",
+            "description": "Cystic fibrosis (CF) is a genetic disorder characterized by the production of sweat with a high salt content and mucus secretions with an abnormal viscosity.",
+            "associatedTargets": {
+              "count": 3294,
+              "rows": [
+                {
+                  "score": 0.921141,
+                  "target": {
+                    "id": "ENSG00000001626",
+                    "approvedSymbol": "CFTR",
+                    "approvedName": "CF transmembrane conductance regulator"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "CHEMBL2010601",
+          "entity": "drug",
+          "name": "IVACAFTOR",
+          "description": "Small molecule drug with a maximum clinical stage of Approval.",
+          "object": {
+            "id": "CHEMBL2010601",
+            "name": "IVACAFTOR",
+            "drugType": "Small molecule",
+            "maximumClinicalStage": "APPROVAL",
+            "mechanismsOfAction": {
+              "rows": [
+                {
+                  "mechanismOfAction": "Cystic fibrosis transmembrane conductance regulator positive modulator",
+                  "actionType": "POSITIVE MODULATOR",
+                  "targetName": "Cystic fibrosis transmembrane conductance regulator"
+                }
+              ]
+            },
+            "adverseEvents": {
+              "count": 30,
+              "rows": [
+                {
+                  "name": "infective pulmonary exacerbation of cystic fibrosis",
+                  "meddraCode": "",
+                  "count": 1801,
+                  "logLR": 9317.6961
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
