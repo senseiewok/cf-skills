@@ -22,6 +22,7 @@ DEFAULT_ACTIVITY_LIMIT = 10
 MAX_LIMIT = 50
 EXCERPT_CHARS = 700
 CHEMBL_ID_PATTERN = re.compile(r"^CHEMBL[0-9]+$", re.IGNORECASE)
+RESEARCH_CODE_PATTERN = re.compile(r"^[A-Z]{2,5}[- ]?[0-9]{2,6}[A-Z]?$", re.IGNORECASE)
 
 CC_BY_SA_LICENSE = "CC BY-SA 3.0"
 CC_BY_SA_ATTRIBUTION = (
@@ -283,8 +284,26 @@ def _fail(f: Fetch, question: str) -> Evidence:
     )
 
 
+def _resolve_exact_molecules(client: Client, stripped: str, max_items: int) -> tuple[Fetch | None, list[Evidence] | None]:
+    """Attempt deterministic exact synonym or preferred-name resolution via molecule.json before full-text search."""
+    q = f"Which ChEMBL molecules match '{stripped}'?"
+    for param_key in ("molecule_synonyms__molecule_synonym__iexact", "pref_name__iexact"):
+        f = client.get(
+            SOURCE,
+            "molecule.json",
+            params={param_key: stripped, "limit": max_items},
+        )
+        if f.dry_run:
+            return f, None
+        if f.status is Status.FOUND:
+            recs = parse_molecules(f.data, q, f.url, limit=max_items)
+            if recs and recs[0].status is Status.FOUND:
+                return f, recs
+    return None, None
+
+
 def molecule(client: Client, query: str, limit: int = DEFAULT_LIMIT) -> list[Evidence]:
-    """Look up a ChEMBL molecule by ChEMBL ID or search by name/synonym."""
+    """Look up a ChEMBL molecule by ChEMBL ID, deterministic synonym match, or full-text search."""
     stripped = query.strip()
     max_items = max(1, min(limit, MAX_LIMIT))
 
@@ -321,6 +340,11 @@ def molecule(client: Client, query: str, limit: int = DEFAULT_LIMIT) -> list[Evi
         return [parse_molecule(f.data, q, f.url)]
 
     q = f"Which ChEMBL molecules match '{stripped}'?"
+    if not client.dry_run:
+        _, exact_recs = _resolve_exact_molecules(client, stripped, max_items)
+        if exact_recs is not None:
+            return exact_recs
+
     f = client.get(SOURCE, "molecule/search.json", params={"q": stripped, "limit": max_items})
     if f.dry_run:
         return [
@@ -369,8 +393,18 @@ def activities(
         "standard_type__in": "EC50,IC50,Ki,Kd",
         "limit": max_items,
     }
+    resolved_synonym_id: str | None = None
     if CHEMBL_ID_PATTERN.match(stripped):
         params["molecule_chembl_id"] = stripped.upper()
+    elif not client.dry_run and RESEARCH_CODE_PATTERN.match(stripped):
+        _, exact_mols = _resolve_exact_molecules(client, stripped, 1)
+        if exact_mols and exact_mols[0].status is Status.FOUND:
+            cand = exact_mols[0].fields.get("molecule_chembl_id")
+            if isinstance(cand, str) and CHEMBL_ID_PATTERN.match(cand):
+                resolved_synonym_id = cand.upper()
+                params["molecule_chembl_id"] = resolved_synonym_id
+        if "molecule_chembl_id" not in params:
+            params["molecule_pref_name__iexact"] = stripped
     else:
         params["molecule_pref_name__iexact"] = stripped
     if norm_target:
@@ -403,4 +437,27 @@ def activities(
         ]
     if f.status is not Status.FOUND:
         return [_fail(f, q)]
-    return parse_activities(f.data, q, f.url, limit=max_items)
+    recs = parse_activities(f.data, q, f.url, limit=max_items)
+    if (
+        len(recs) == 1
+        and recs[0].status is Status.NOT_FOUND
+        and not CHEMBL_ID_PATTERN.match(stripped)
+        and resolved_synonym_id is None
+    ):
+        _, exact_mols = _resolve_exact_molecules(client, stripped, 1)
+        if exact_mols and exact_mols[0].status is Status.FOUND:
+            resolved_id = exact_mols[0].fields.get("molecule_chembl_id")
+            if isinstance(resolved_id, str) and CHEMBL_ID_PATTERN.match(resolved_id):
+                retry_params: dict[str, Any] = {
+                    "standard_type__in": "EC50,IC50,Ki,Kd",
+                    "limit": max_items,
+                    "molecule_chembl_id": resolved_id.upper(),
+                }
+                if norm_target:
+                    retry_params["target_chembl_id"] = norm_target
+                f_retry = client.get(SOURCE, "activity.json", params=retry_params)
+                if f_retry.status is Status.FOUND:
+                    return parse_activities(f_retry.data, q, f_retry.url, limit=max_items)
+                if f_retry.status is not Status.NOT_FOUND:
+                    return [_fail(f_retry, q)]
+    return recs

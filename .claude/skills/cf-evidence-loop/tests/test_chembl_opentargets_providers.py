@@ -119,6 +119,68 @@ def test_chembl_empty_results_return_not_found():
     assert recs_acts[0].fields["search_total"] == 0
 
 
+def test_chembl_synonym_resolution_for_molecule_and_activities(monkeypatch):
+    from test_conduct import FakeResponse, Script, make_client
+
+    mol_fx = load_fixture("chembl_molecule_ivacaftor.json")
+    act_fx = load_fixture("chembl_activities_cftr.json")
+    empty_acts = {"activities": [], "page_meta": {"total_count": 0}}
+
+    # 1. molecule('VX-770') resolves directly via molecule.json?molecule_synonyms__molecule_synonym__iexact=VX-770
+    s_mol = Script([FakeResponse(200, body=mol_fx)])
+    c_mol = make_client(monkeypatch, s_mol)
+    recs_mol = chembl.molecule(c_mol, "VX-770", limit=3)
+    assert len(recs_mol) == 1
+    assert recs_mol[0].status is Status.FOUND
+    assert recs_mol[0].fields["molecule_chembl_id"] == "CHEMBL2010601"
+    assert recs_mol[0].fields["pref_name"] == "IVACAFTOR"
+    assert len(s_mol.calls) == 1
+
+    # 2. activities('VX-770') recognizes research code pattern, resolves synonym to CHEMBL2010601 first, and fetches CFTR activities in 2 calls
+    s_code = Script(
+        [
+            FakeResponse(200, body=mol_fx),
+            FakeResponse(200, body=act_fx),
+        ]
+    )
+    c_code = make_client(monkeypatch, s_code)
+    recs_code = chembl.activities(c_code, "VX-770", target_id="CHEMBL4051", limit=2)
+    assert len(recs_code) == 2
+    assert recs_code[0].status is Status.FOUND
+    assert recs_code[0].fields["molecule_chembl_id"] == "CHEMBL2010601"
+    assert recs_code[0].fields["standard_value"] == "22.0"
+    assert len(s_code.calls) == 2
+
+    # 3. activities('Kalydeco') (brand synonym) gets 0 hits on molecule_pref_name__iexact, resolves synonym to CHEMBL2010601, and fetches CFTR activities
+    s_brand = Script(
+        [
+            FakeResponse(200, body=empty_acts),
+            FakeResponse(200, body=mol_fx),
+            FakeResponse(200, body=act_fx),
+        ]
+    )
+    c_brand = make_client(monkeypatch, s_brand)
+    recs_brand = chembl.activities(c_brand, "Kalydeco", target_id="CHEMBL4051", limit=2)
+    assert len(recs_brand) == 2
+    assert recs_brand[0].status is Status.FOUND
+    assert recs_brand[0].fields["molecule_chembl_id"] == "CHEMBL2010601"
+    assert len(s_brand.calls) == 3
+
+    # 4. R2-01 regression test: if activity retry returns HTTP 500, it must return Status.ERROR (never mask as NOT_FOUND)
+    s_err = Script(
+        [
+            FakeResponse(200, body=empty_acts),
+            FakeResponse(200, body=mol_fx),
+            FakeResponse(500, text="Internal Server Error"),
+        ]
+    )
+    c_err = make_client(monkeypatch, s_err)
+    recs_err = chembl.activities(c_err, "Kalydeco", target_id="CHEMBL4051", limit=2)
+    assert len(recs_err) == 1
+    assert recs_err[0].status is Status.ERROR
+    assert recs_err[0].fields["http_status"] == 500
+
+
 def test_chembl_dry_run(monkeypatch):
     monkeypatch.setenv("EVIDENCE_DRY_RUN", "1")
     client = Client()
