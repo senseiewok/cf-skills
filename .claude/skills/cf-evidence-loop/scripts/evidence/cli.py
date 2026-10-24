@@ -40,8 +40,8 @@ from pathlib import Path
 
 from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import (clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, openalex, openfda,
-                        preprints, pubmed, reporter, semantic_scholar, trials, ukri_gtr, unpaywall)
+from .providers import (chembl, clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, open_targets,
+                        openalex, openfda, preprints, pubmed, reporter, scite, semantic_scholar, trials, ukri_gtr, unpaywall)
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -111,6 +111,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("doi", help="DOI (e.g. 10.1038/ng.2745)")
     p = sub.add_parser("paper-trail", aliases=["paper"], help="Paper-trail layer: Crossref work metadata, Unpaywall OA, and Semantic Scholar citation graph")
     p.add_argument("doi", help="DOI (e.g. 10.1038/ng.2745)")
+    p = sub.add_parser("chembl", help="ChEMBL compound metadata, clinical phase, ATC codes, and molecular properties")
+    p.add_argument("query", help="ChEMBL ID (e.g. CHEMBL2010601) or compound name (e.g. ivacaftor)")
+    p.add_argument("--limit", type=int, default=chembl.DEFAULT_LIMIT, help=f"maximum results (default: {chembl.DEFAULT_LIMIT})")
+    p = sub.add_parser("chembl-activity", aliases=["bioactivity"], help="ChEMBL quantitative bioactivity assays (EC50, IC50, Ki, Kd, pChEMBL)")
+    p.add_argument("query", help="ChEMBL ID (e.g. CHEMBL2010601) or compound name (e.g. ivacaftor)")
+    p.add_argument("--target", default=chembl.CFTR_CHEMBL_ID, help=f"target ChEMBL ID or 'all' (default: {chembl.CFTR_CHEMBL_ID} for human CFTR)")
+    p.add_argument("--limit", type=int, default=chembl.DEFAULT_ACTIVITY_LIMIT, help=f"maximum results (default: {chembl.DEFAULT_ACTIVITY_LIMIT})")
+    p = sub.add_parser("opentargets", aliases=["ot"], help="Open Targets Platform v4: target tractability, safety liabilities, disease scores, and drug mechanisms/FAERS")
+    p.add_argument("query", help="Ensembl ID (ENSG00000001626), EFO/MONDO ID (MONDO_0009061), ChEMBL ID (CHEMBL2010601), or search term")
+    p.add_argument("--limit", type=int, default=open_targets.DEFAULT_LIMIT, help=f"maximum results (default: {open_targets.DEFAULT_LIMIT})")
+    p = sub.add_parser("scite", help="Scite Smart Citations (supporting, contrasting, mentioning tallies) by DOI via Scite MCP")
+    p.add_argument("doi", help="DOI (e.g. 10.1056/NEJMoa1908639)")
+    p = sub.add_parser("scite-search", help="Scite literature search with Smart Citation tallies via Scite MCP")
+    p.add_argument("query", help="search terms (e.g. 'vanzacaftor CFTR')")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum results (default: {scite.DEFAULT_LIMIT})")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
 
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
@@ -256,6 +271,13 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "semantic-scholar": ("doi",),
     "paper-trail": ("doi",),
     "paper": ("doi",),
+    "chembl": ("query",),
+    "chembl-activity": ("query",),
+    "bioactivity": ("query",),
+    "opentargets": ("query",),
+    "ot": ("query",),
+    "scite": ("doi",),
+    "scite-search": ("query",),
     "brief": ("subject",),
     "read-page": ("url",),
     "cite-check": ("file",),
@@ -366,6 +388,16 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
             unpaywall.lookup(client, a.doi, contact=getattr(a, "contact", None)),
             semantic_scholar.paper(client, a.doi),
         ]
+    elif a.cmd == "chembl":
+        return chembl.molecule(client, a.query, a.limit)
+    elif a.cmd in ("chembl-activity", "bioactivity"):
+        return chembl.activities(client, a.query, getattr(a, "target", chembl.CFTR_CHEMBL_ID), a.limit)
+    elif a.cmd in ("opentargets", "ot"):
+        return open_targets.lookup(client, a.query, a.limit)
+    elif a.cmd == "scite":
+        return [scite.tally(client, a.doi)]
+    elif a.cmd == "scite-search":
+        return scite.search(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover
 
 
