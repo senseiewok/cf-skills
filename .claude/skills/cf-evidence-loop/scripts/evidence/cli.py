@@ -121,8 +121,9 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("opentargets", aliases=["ot"], help="Open Targets Platform v4: target tractability, safety liabilities, disease scores, and drug mechanisms/FAERS")
     p.add_argument("query", help="Ensembl ID (ENSG00000001626), EFO/MONDO ID (MONDO_0009061), ChEMBL ID (CHEMBL2010601), or search term")
     p.add_argument("--limit", type=int, default=open_targets.DEFAULT_LIMIT, help=f"maximum results (default: {open_targets.DEFAULT_LIMIT})")
-    p = sub.add_parser("scite", help="Scite Smart Citations (supporting, contrasting, mentioning tallies) by DOI via Scite MCP")
+    p = sub.add_parser("scite", help="Scite Smart Citations (supporting, contrasting, mentioning tallies) by DOI via Scite MCP or REST API")
     p.add_argument("doi", help="DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("--rest", action="store_true", help="use Scite REST API GET /tallies/{doi} (750/month bucket) instead of MCP (2,500/month bucket)")
     p = sub.add_parser("scite-search", help="Scite literature search with Smart Citation tallies via Scite MCP")
     p.add_argument("query", help="search terms (e.g. 'vanzacaftor CFTR')")
     p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum results (default: {scite.DEFAULT_LIMIT})")
@@ -395,7 +396,7 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
     elif a.cmd in ("opentargets", "ot"):
         return open_targets.lookup(client, a.query, a.limit)
     elif a.cmd == "scite":
-        return [scite.tally(client, a.doi)]
+        return [scite.tally(client, a.doi, use_rest=getattr(a, "rest", False))]
     elif a.cmd == "scite-search":
         return scite.search(client, a.query, a.limit)
     ap.error(a.cmd)  # pragma: no cover

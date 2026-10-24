@@ -2055,3 +2055,26 @@ sources:
       cf-lab docs/scite-mcp-admission-review.md). Returned citation snippets are wrapped in <untrusted_data> boundaries,
       polarity classifications are labelled as Scite ML classifications, and shipped citations are verified through
       cf-evidence-loop.
+
+  - id: scite-api
+    title: Scite REST API (Smart Citation Tallies, Papers, Journals, Funders, and Regulatory Endpoints)
+    publisher: Scite LLC (Research Solutions)
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://api.scite.ai/docs
+    base_url: https://api.scite.ai/
+    terms_url: https://scite.ai/mcp
+    auth: api_key_required
+    max_rps: 1.0
+    published_limit: >-
+      Scite Personal Pro plan includes 750 REST API calls/month (separate from the 2,500 MCP tool uses/month bucket;
+      pay-as-you-go overages disabled by default); capped at 1.0 request/second and SCITE_REST_DAILY_CAP=20/day
+    claim_label: verified
+    notes: >-
+      Scite REST API (/tallies/{doi}, /papers/{doi}, /journals/{issn}, /funders, etc.) included in the Scite Pro plan
+      (750 included calls/month resetting monthly on the 1st, alongside 2,500 MCP tool uses/month). Accepts either a
+      static SCITE_API_KEY or a refreshed OAuth 2.0 PKCE Bearer token from ~/.gemini/config/scite_mcp_oauth.json
+      (board task T-0047). Returned polarity counts are labelled as Scite ML citation classifications and verified
+      alongside cf-evidence-loop.

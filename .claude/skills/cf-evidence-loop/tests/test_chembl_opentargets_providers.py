@@ -381,12 +381,35 @@ def test_scite_blocked_when_unauthenticated_and_quota_capped(monkeypatch, tmp_pa
 def test_scite_dry_run_and_shape_errors(monkeypatch, capsys):
     monkeypatch.setenv("EVIDENCE_DRY_RUN", "1")
     assert cli.main(["scite", "10.1056/NEJMoa1908639"]) == 0
+    assert cli.main(["scite", "10.1056/NEJMoa1908639", "--rest"]) == 0
     assert cli.main(["scite-search", "vanzacaftor CFTR", "--limit", "2"]) == 0
     capsys.readouterr()
 
-    r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    r_rest = scite.parse_rest_tally(
+        {
+            "total": 1980,
+            "supporting": 109,
+            "contradicting": 5,
+            "mentioning": 1812,
+            "unclassified": 54,
+            "doi": "10.1056/nejmoa1908639",
+            "citingPublications": 2305,
+        },
+        "10.1056/NEJMoa1908639",
+        "q",
+        "https://api.scite.ai/tallies/10.1056/NEJMoa1908639",
+    )
+    assert r_rest.status is Status.FOUND
+    assert r_rest.source_id == "scite-api"
+    assert r_rest.fields["supporting"] == 109
+    assert r_rest.fields["contrasting"] == 5
+    assert r_rest.fields["mentioning"] == 1812
+    assert r_rest.fields["unclassified"] == 54
+    assert r_rest.fields["quota_bucket"] == "scite-api-rest-750"
+
+    r_err = scite.parse_tally({"error": {"message": "bad token"}}, "10.1000/x", "q", "https://api.scite.ai/mcp")
     assert r_err.status is Status.ERROR
     assert "bad token" in r_err.fields.get("shape_error", "")
 
-    r_nf = scite.parse_tally({"hits": [], "total": 0}, "10.1000/x", "q", "https://api.scite.ai/mcp/")
+    r_nf = scite.parse_tally({"hits": [], "total": 0}, "10.1000/x", "q", "https://api.scite.ai/mcp")
     assert r_nf.status is Status.NOT_FOUND
