@@ -128,6 +128,8 @@ def overlap(a: str, b: str) -> float:
 
 def title_check(line: str, record_title: Any) -> tuple[str, str]:
     """(verdict, detail). Uses the line's best-matching phrase; never an error by itself."""
+    if isinstance(record_title, str) and record_title.strip().upper().startswith(("RETRACTED:", "WITHDRAWN:")):
+        return TITLE_CHECK, f"the record's title is marked retracted or withdrawn ({record_title.strip()})"
     cands = phrases(line)
     if not cands:
         return TITLE_NOT_STATED, "no title given on the line"
