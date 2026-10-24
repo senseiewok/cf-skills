@@ -2029,3 +2029,29 @@ sources:
       to populate a database or publication (except Open Access material), Clause 6.2 prohibits accessing the site by any
       means other than through a normal web browser, and Clause 6.3 contains an on-demand indemnity. Recorded as manual until
       a maintainer decides whether to accept Springer Nature / BioMed Central terms or query ISRCTN records via Europe PMC.
+
+  - id: scite-mcp
+    title: Scite MCP Server (Smart Citations and Full-Text Citation Statements)
+    publisher: Scite LLC (Research Solutions)
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-24
+    landing_page: https://scite.ai/mcp
+    base_url: https://api.scite.ai/mcp/
+    terms_url: https://scite.ai/mcp
+    auth: api_key_required
+    max_rps: 1.0
+    published_limit: >-
+      Authenticated Scite Personal Pro MCP endpoint (OAuth 2.0 PKCE S256 via https://api.scite.ai/mcp/oauth/authorize,
+      RateLimit-Limit 600/minute observed on 2026-10-24); capped at 1.0 request/second for polite lab use
+    claim_label: verified
+    notes: >-
+      Scite Model Context Protocol (MCP) Streamable HTTP server for Smart Citations (supporting, contrasting, mentioning
+      tallies and in-text citation statements across 1.6B+ citation statements and 44+ publishing partners). Checked
+      2026-10-24 via read-page on https://scite.ai/mcp (HTTP 200, robots: 200 allowed=True) and
+      https://api.scite.ai/.well-known/oauth-authorization-server (HTTP 200, robots: 404 allowed=True). Admitted as a
+      read-only citation-polarity and literature verification MCP alongside cf-evidence-loop (board task T-0047; see
+      cf-lab docs/scite-mcp-admission-review.md). Returned citation snippets are wrapped in <untrusted_data> boundaries,
+      polarity classifications are labelled as Scite ML classifications, and shipped citations are verified through
+      cf-evidence-loop.
