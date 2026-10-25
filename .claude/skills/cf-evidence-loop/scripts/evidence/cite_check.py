@@ -26,7 +26,7 @@ from typing import Any
 
 from .briefs import _run
 from .http import Client
-from .providers import crossref, pubmed, trials
+from .providers import crossref, pubmed, scite, trials
 from .record import Evidence, Status, clean_for_terminal
 
 PROVIDER = "cite-check/0.1"
@@ -183,16 +183,64 @@ def _shown(f: Found, r: Evidence) -> list[tuple[str, Any]]:
         return [("title", _value(r.fields.get("title"))), ("start", _value(r.fields.get("start"))),
                 ("last update posted", _value(r.publisher_date))]
     label = "year" if f.kind == "DOI" else "publication date"
-    return [("title", _value(r.fields.get("title"))), (label, _value(r.publisher_date))]
+    base = [("title", _value(r.fields.get("title"))), (label, _value(r.publisher_date))]
+    if r.source_id == scite.REST_SOURCE:
+        base.append(("supporting", _value(r.fields.get("supporting"))))
+        base.append(("contrasting", _value(r.fields.get("contrasting"))))
+        if r.fields.get("retracted") is not None:
+            base.append(("retracted", r.fields.get("retracted")))
+        if r.fields.get("section_triage_computed"):
+            base.append(("section_triage", r.fields.get("section_triage_computed")))
+    return base
 
 
-def resolve(client: Client, found: list[Found]) -> list[Item]:
+def resolve(client: Client, found: list[Found], *, scite_bulk: bool = False) -> list[Item]:
+    scite_map: dict[str, Evidence] = {}
+    pmid_to_doi: dict[str, str] = {}
+    if scite_bulk:
+        for f in found:
+            if f.kind == "PMID":
+                step_pmid = _run(
+                    "scite-pmid",
+                    scite.REST_SOURCE,
+                    f"What DOI does Scite resolve for PMID {f.ident}?",
+                    lambda p=f.ident: [scite.resolve_pmid(client, p)],
+                    provider=PROVIDER,
+                )
+                r_pmid = step_pmid.records[0]
+                if r_pmid.status is Status.FOUND and isinstance(r_pmid.fields.get("doi"), str):
+                    pmid_to_doi[f.ident] = r_pmid.fields["doi"]
+
+        batch_dois = [f.ident for f in found if f.kind == "DOI"] + list(pmid_to_doi.values())
+        if batch_dois:
+            step_batch = _run(
+                "scite-batch",
+                scite.REST_SOURCE,
+                f"What does Scite hold for {len(batch_dois)} DOI(s)?",
+                lambda: scite.batch_tallies(client, batch_dois, include_papers=True, include_sections=True),
+                provider=PROVIDER,
+            )
+            for rec in step_batch.records:
+                doi_k = rec.fields.get("doi")
+                if rec.status is Status.FOUND and isinstance(doi_k, str) and rec.fields.get("title"):
+                    scite_map[doi_k.lower()] = rec
+
     items = []
     for f in found:
-        r = _lookup(client, f)
+        r: Evidence | None = None
+        if scite_bulk:
+            if f.kind == "DOI":
+                r = scite_map.get(f.ident.lower())
+            elif f.kind == "PMID" and f.ident in pmid_to_doi:
+                r = scite_map.get(pmid_to_doi[f.ident].lower())
+        if r is None:
+            r = _lookup(client, f)
         if r.status is Status.FOUND:
             verdict = PASS
-            tv, td = title_check(f.line, r.fields.get("title"))
+            if r.fields.get("retracted") is True:
+                tv, td = TITLE_CHECK, f"the record is flagged retracted in Scite ({_value(r.fields.get('title'))})"
+            else:
+                tv, td = title_check(f.line, r.fields.get("title"))
         else:
             verdict = NOT_FOUND if r.status is Status.NOT_FOUND else UNRESOLVED
             tv, td = TITLE_NOT_COMPARED, "no record to compare with"
@@ -275,5 +323,5 @@ def read_text(path: str) -> str:
     return Path(path).read_text(encoding="utf-8", errors="replace")
 
 
-def run(client: Client, path: str, text: str) -> Report:
-    return Report(path, resolve(client, extract(text)))
+def run(client: Client, path: str, text: str, *, scite_bulk: bool = False) -> Report:
+    return Report(path, resolve(client, extract(text), scite_bulk=scite_bulk))
