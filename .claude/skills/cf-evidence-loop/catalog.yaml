@@ -2179,17 +2179,22 @@ sources:
     max_rps: 1.0
     published_limit: >-
       Authenticated Scite Personal Pro MCP endpoint (OAuth 2.0 PKCE S256 via https://api.scite.ai/mcp/oauth/authorize,
-      RateLimit-Limit 600/minute observed on 2026-10-24); capped at 1.0 request/second for polite lab use
+      2,500 MCP tool uses/month on Pro, RateLimit-Limit 600/minute observed on 2026-10-24); capped at 1.0 request/second
+      and hard-stopped at SCITE_MCP_DAILY_CAP=60 and SCITE_MCP_MONTHLY_CAP=2400
     claim_label: verified
     notes: >-
       Scite Model Context Protocol (MCP) Streamable HTTP server for Smart Citations (supporting, contrasting, mentioning
-      tallies, Mode C in-paper fulltextExcerpts, and 8 Evidence dataset tool families: search_patents, search_clinical_trials, search_grants, search_device510k/search_510k_summaries, search_mhra, search_maude, search_faers, and search_drugs). Checked
-      2026-10-24 via read-page on https://scite.ai/mcp (HTTP 200, robots: 200 allowed=True) and
+      tallies, Mode C in-paper fulltextExcerpts, citation_graph, read_fulltext, report_citations/citation_report,
+      bibliography, 4 zero-credit MCP prompt templates via prompts/get, and 8 Evidence dataset tool families:
+      search_patents/get_patent/get_patent_citations, search_clinical_trials/get_clinical_trial, search_grants/get_grant,
+      search_device510k/get_device510k/search_510k_summaries/get_510k_summary, search_mhra/get_mhra_alert,
+      search_maude/get_maude_report, search_faers/get_faers_report, and search_drugs/get_drug). Checked 2026-10-24 via
+      read-page on https://scite.ai/mcp, https://docs.scite.ai/llms-full.txt (HTTP 200, robots: 200 allowed=True), and
       https://api.scite.ai/.well-known/oauth-authorization-server (HTTP 200, robots: 404 allowed=True). Admitted as a
       read-only citation-polarity and literature verification MCP alongside cf-evidence-loop (board task T-0047; see
-      cf-lab docs/scite-mcp-admission-review.md). Returned citation snippets are wrapped in <untrusted_data> boundaries,
-      polarity classifications are labelled as Scite ML classifications, and shipped citations are verified through
-      cf-evidence-loop.
+      cf-lab docs/scite-mcp-admission-review.md). Returned citation snippets and full-text excerpts are wrapped in
+      <untrusted_data> boundaries, polarity classifications are labelled as Scite ML classifications, and shipped
+      citations are verified through cf-evidence-loop.
 
   - id: scite-api
     title: Scite REST API (Public Bulk Tallies, Papers, Section Breakdown, and Partner Recommendation Endpoints)
@@ -2198,21 +2203,24 @@ sources:
     access: api
     robots: allow
     robots_checked: 2026-10-24
-    landing_page: https://api.scite.ai/docs
+    landing_page: https://docs.scite.ai/introduction
     base_url: https://api.scite.ai/
     terms_url: https://scite.ai/mcp
     auth: none
     max_rps: 1.0
     published_limit: >-
-      Public endpoints (GET/POST /tallies, GET/POST /papers, GET/POST /tallies/cited-by-sections, GET /papers/pmid/{pmid})
-      require no API key and consume 0 quota; authenticated /api_partner/* endpoints share 750 included calls/month on
-      Personal Pro and are hard-capped fail-closed at SCITE_REST_DAILY_CAP=20 and SCITE_REST_MONTHLY_CAP=650 (100-call
-      safety buffer to prevent $0.08/call overage billing)
+      Public endpoints (GET/POST /tallies, GET/POST /papers, GET/POST /tallies/cited-by-sections, POST /tallies/aggregate,
+      GET /papers/resolve-pmid/{pmid}, GET /papers/sources/{target_doi}, GET /issn-sji, POST /issn-sji-bulk,
+      GET /issn-editorial-notices) require no API key and consume 0 quota when called without an Authorization header;
+      authenticated /api_partner/* endpoints are hard-capped fail-closed at SCITE_REST_DAILY_CAP=20 and
+      SCITE_REST_MONTHLY_CAP=650
     claim_label: verified
     notes: >-
       Scite REST API providing zero-quota public endpoints for single and bulk (up to 500 DOIs/request) Smart Citation
       tallies (GET/POST /tallies), paper metadata and retraction notices (GET/POST /papers), section-level citation
-      breakdowns (GET/POST /tallies/cited-by-sections), and PMID-to-DOI resolution (GET /papers/pmid/{pmid}), alongside
-      authenticated partner endpoints (/api_partner/recommend-papers/{doi}) gated by SCITE_API_KEY and fail-closed
-      monthly caps (board task T-0047). Returned polarity counts are labelled as Scite ML citation classifications and
-      verified alongside cf-evidence-loop.
+      breakdowns (GET/POST /tallies/cited-by-sections), aggregated tallies (POST /tallies/aggregate, up to 100 DOIs),
+      citing paper metadata (GET /papers/sources/{target_doi}), PMID-to-DOI resolution (GET /papers/resolve-pmid/{pmid}),
+      and journal metrics (GET /issn-sji, POST /issn-sji-bulk, GET /issn-editorial-notices), alongside authenticated
+      partner endpoints (/api_partner/recommend-papers/{doi}) gated by SCITE_API_KEY and fail-closed monthly caps
+      (board task T-0047; docs read 2026-10-24 at https://docs.scite.ai/llms-full.txt). Returned polarity counts are
+      labelled as Scite ML citation classifications and verified alongside cf-evidence-loop.
