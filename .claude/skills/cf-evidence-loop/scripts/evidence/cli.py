@@ -40,8 +40,9 @@ from pathlib import Path
 
 from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
-from .providers import (chembl, clinvar, crossref, datacommons, ema, europepmc, gnomad, myvariant, open_targets,
-                        openalex, openfda, preprints, pubmed, reporter, scite, semantic_scholar, trials, ukri_gtr, unpaywall)
+from .providers import (chembl, clinvar, crossref, dailymed, datacommons, ema, ensembl, europepmc, gnomad, myvariant,
+                        ncbi_variation, open_targets, openalex, openfda, preprints, pubmed, reporter, scite,
+                        semantic_scholar, trials, ukri_gtr, uniprot, unpaywall)
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
 BAD = {Status.BLOCKED, Status.RATE_LIMITED, Status.ERROR}
@@ -140,12 +141,45 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("scite-search", help="Scite literature search with Smart Citation tallies via Scite MCP")
     p.add_argument("query", help="search terms (e.g. 'vanzacaftor CFTR')")
     p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum results (default: {scite.DEFAULT_LIMIT})")
+    p = sub.add_parser("scite-pmid", help="Zero-quota PMID-to-DOI resolution via Scite public REST GET /papers/resolve-pmid/{pmid}")
+    p.add_argument("pmid", help="PubMed ID (e.g. 31697873)")
+    p = sub.add_parser("scite-aggregate", help="Zero-quota aggregated Smart Citation tallies across up to 100 DOIs via POST /tallies/aggregate")
+    p.add_argument("dois", nargs="+", help="one or more DOIs (up to 100)")
+    p = sub.add_parser("scite-sources", help="Zero-quota citing publications and retraction counts for a target DOI via GET /papers/sources/{target_doi}")
+    p.add_argument("doi", help="target DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum sample citing papers returned (default: {scite.DEFAULT_LIMIT})")
+    p = sub.add_parser("scite-graph", help="Scite MCP citation_graph (1-hop network with intent & quarantined snippets)")
+    p.add_argument("doi", help="seed DOI (e.g. 10.1056/NEJMoa1908639)")
+    p.add_argument("--direction", default="both", choices=["citing", "cited", "in", "out", "both"], help="citation direction (default: both)")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum edges (default: {scite.DEFAULT_LIMIT})")
+    p = sub.add_parser("scite-fulltext", help="Scite MCP read_fulltext (paginated full text by DOI or PMID with <untrusted_data> quarantine)")
+    p.add_argument("identifier", help="DOI or PubMed ID")
+    p.add_argument("--offset", type=int, default=0, help="character offset (default: 0)")
+    p.add_argument("--length", type=int, default=8000, help="character length (default: 8000, max: 8000)")
+    p = sub.add_parser("scite-evidence", help="Scite MCP Evidence dataset search (mhra, patents, trials, grants, device510k, 510k-summaries, maude, faers, drugs)")
+    p.add_argument("dataset", choices=sorted(scite.EVIDENCE_DATASETS), help="Evidence dataset family")
+    p.add_argument("query", help="search query (e.g. 'Kaftrio', 'vanzacaftor', 'eFlow nebulizer')")
+    p.add_argument("--filter", dest="filter_str", help="compact filter expression (e.g. 'year:2025')")
+    p.add_argument("--page", type=int, default=1, help="1-indexed page number (default: 1)")
+    p.add_argument("--limit", type=int, default=scite.DEFAULT_LIMIT, help=f"maximum results (default: {scite.DEFAULT_LIMIT})")
+    p = sub.add_parser("ncbi-variation", help="NCBI Variation Services SPDI/HGVS contextual allele normalization (0 Scite quota)")
+    p.add_argument("hgvs", help="HGVS or SPDI expression (e.g. NM_000492.4:c.1521_1523del)")
+    p = sub.add_parser("uniprot", help="UniProtKB protein sequence, domain boundaries, and natural variant annotations (CC BY 4.0)")
+    p.add_argument("query", help="UniProt accession (e.g. P13569) or gene/protein search term (e.g. CFTR)")
+    p.add_argument("--limit", type=int, default=uniprot.DEFAULT_LIMIT, help=f"maximum results (default: {uniprot.DEFAULT_LIMIT})")
+    p = sub.add_parser("ensembl", help="Ensembl REST API genomic coordinates, canonical transcripts, and variant consequences")
+    p.add_argument("query", help="rsID (e.g. rs113993960), Ensembl ID (ENSG00000001626), or human gene symbol (CFTR)")
+    p = sub.add_parser("dailymed", help="NLM DailyMed Structured Product Labels (SPL) search by drug name")
+    p.add_argument("drug", help="drug or brand name (e.g. TRIKAFTA)")
+    p.add_argument("--limit", type=int, default=dailymed.DEFAULT_LIMIT, help=f"maximum results (default: {dailymed.DEFAULT_LIMIT})")
     p = sub.add_parser("brief", help="several sources for one question, with cross-checks: drug BRAND | variant QUERY | trial NCTID")
 
     p.add_argument("recipe", choices=briefs.RECIPES); p.add_argument("subject")
     p = sub.add_parser("cite-check", help="look up every DOI, PMID and NCT id in a text file (the lab's rule 5)"); p.add_argument("file")
     p.add_argument("--max-ids", type=int, default=cite_check.DEFAULT_MAX_IDS,
                    help=f"refuse a file with more distinct identifiers than this (default {cite_check.DEFAULT_MAX_IDS}, at most {cite_check.HARD_MAX_IDS})")
+    p.add_argument("--scite-bulk", action="store_true",
+                   help="resolve PMIDs and DOIs in bulk via zero-quota Scite REST pre-flight before single-provider fallback")
 
     p = sub.add_parser("read-page", help="read one HTTPS web page or PDF under lab conduct rules (for terms and human review, not data)")
     p.add_argument("url", help="HTTPS URL of the page or PDF to read")
@@ -220,7 +254,7 @@ def main(argv: list[str] | None = None) -> int:
             return early
     try:
         if a.cmd == "cite-check":                 # each lookup catches its own refusal, so a cite-check always returns
-            report = cite_check.Report(a.file, cite_check.resolve(client, early))
+            report = cite_check.Report(a.file, cite_check.resolve(client, early, scite_bulk=getattr(a, "scite_bulk", False)))
             recs = report.records
         elif a.cmd == "brief":                      # each step catches its own refusal, so a brief always returns
             brief = briefs.run(client, a.recipe, a.subject)
@@ -295,6 +329,15 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "scite-excerpts": ("doi", "query"),
     "scite-recommend": ("doi",),
     "scite-search": ("query",),
+    "scite-pmid": ("pmid",),
+    "scite-sources": ("doi",),
+    "scite-graph": ("doi",),
+    "scite-fulltext": ("identifier",),
+    "scite-evidence": ("dataset", "query"),
+    "ncbi-variation": ("hgvs",),
+    "uniprot": ("query",),
+    "ensembl": ("query",),
+    "dailymed": ("drug",),
     "brief": ("subject",),
     "read-page": ("url",),
     "cite-check": ("file",),
@@ -305,7 +348,7 @@ def _check_blank_query(a: argparse.Namespace) -> str | None:
     """Return an error message if any required query argument is blank/whitespace-only, else None."""
     if a.cmd == "sources":
         return None
-    if a.cmd in ("retractions", "scite-batch"):
+    if a.cmd in ("retractions", "scite-batch", "scite-aggregate"):
         if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
             return f"DOI argument for {a.cmd} cannot be blank or whitespace-only"
         return None
@@ -428,6 +471,33 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return scite.recommend(client, a.doi, a.limit)
     elif a.cmd == "scite-search":
         return scite.search(client, a.query, a.limit)
+    elif a.cmd == "scite-pmid":
+        return [scite.resolve_pmid(client, a.pmid)]
+    elif a.cmd == "scite-aggregate":
+        return [scite.aggregate_tallies(client, a.dois)]
+    elif a.cmd == "scite-sources":
+        return [scite.citing_sources(client, a.doi, a.limit)]
+    elif a.cmd == "scite-graph":
+        return [scite.citation_graph(client, a.doi, direction=a.direction, limit=a.limit)]
+    elif a.cmd == "scite-fulltext":
+        return [scite.read_fulltext(client, a.identifier, offset=a.offset, length=a.length)]
+    elif a.cmd == "scite-evidence":
+        return scite.evidence_search(
+            client,
+            a.dataset,
+            a.query,
+            filter_str=getattr(a, "filter_str", None),
+            page=getattr(a, "page", 1),
+            limit=a.limit,
+        )
+    elif a.cmd == "ncbi-variation":
+        return [ncbi_variation.normalize(client, a.hgvs)]
+    elif a.cmd == "uniprot":
+        return uniprot.lookup(client, a.query, a.limit)
+    elif a.cmd == "ensembl":
+        return [ensembl.lookup(client, a.query)]
+    elif a.cmd == "dailymed":
+        return dailymed.spls(client, a.drug, a.limit)
     ap.error(a.cmd)  # pragma: no cover
 
 

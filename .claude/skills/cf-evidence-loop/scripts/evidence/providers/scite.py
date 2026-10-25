@@ -1228,3 +1228,730 @@ def recommend(client: Client, doi: str, limit: int = DEFAULT_LIMIT) -> list[Evid
         return [_fail(f, q, {"seed_doi": norm_doi}, source_id=REST_SOURCE)]
     return parse_recommendations(f.data, norm_doi, q, f.url, limit=max_items)
 
+
+# ---------------------------------------------------------------------------
+# Additional Zero-Quota Public Scite REST Endpoints (resolve-pmid, aggregate, sources)
+# ---------------------------------------------------------------------------
+
+MAX_AGGREGATE_DOIS = 100
+
+
+def parse_resolve_pmid(data: Any, pmid_query: str, question: str, url: str) -> Evidence:
+    """Pure parser for Scite public REST GET /papers/resolve-pmid/{pmid} (0 quota cost)."""
+    try:
+        if not isinstance(data, dict):
+            raise ShapeError(f"Scite resolve-pmid response is {type(data).__name__}, not an object")
+        if "detail" in data and not data.get("doi"):
+            raise ShapeError(f"Scite resolve-pmid error: {data['detail']}")
+        doi_val = data.get("doi")
+        if not doi_val or not isinstance(doi_val, str):
+            return Evidence(
+                status=Status.NOT_FOUND,
+                question=question,
+                source_id=REST_SOURCE,
+                url=url,
+                provider=PROVIDER,
+                fields={"pmid": pmid_query, "quota_bucket": "scite-public-tallies-free"},
+                limitations=LIMITATION,
+            )
+        pmid_val = str(data.get("pmid") or pmid_query)
+        return Evidence(
+            status=Status.FOUND,
+            question=question,
+            source_id=REST_SOURCE,
+            url=f"https://scite.ai/reports/{doi_val}",
+            provider=PROVIDER,
+            fields={
+                "pmid": pmid_val,
+                "doi": doi_val,
+                "quota_bucket": "scite-public-tallies-free",
+            },
+            limitations=LIMITATION,
+        )
+    except ShapeError as exc:
+        return error_record(
+            exc,
+            question=question,
+            source_id=REST_SOURCE,
+            url=url,
+            provider=PROVIDER,
+            fields={"pmid": pmid_query},
+        )
+
+
+def resolve_pmid(client: Client, pmid: str) -> Evidence:
+    """Resolve a PubMed ID to a DOI via unauthenticated public GET /papers/resolve-pmid/{pmid} (0 quota cost!)."""
+    clean_pmid = pmid.strip()
+    if clean_pmid.lower().startswith("pmid:"):
+        clean_pmid = clean_pmid[5:].strip()
+    q = f"What DOI does Scite resolve for PubMed ID '{clean_pmid}'?"
+    path = f"papers/resolve-pmid/{quote(clean_pmid, safe='')}"
+
+    if client.dry_run:
+        f = client.get(REST_SOURCE, path)
+        return Evidence(
+            status=Status.OUT_OF_SCOPE,
+            question=q,
+            source_id=REST_SOURCE,
+            url=f.url,
+            provider=PROVIDER,
+            fields={"pmid": clean_pmid, "planned_endpoint": path, "quota_bucket": "scite-public-tallies-free"},
+            limitations=LIMITATION,
+        )
+
+    f = client.get(REST_SOURCE, path)
+    if f.status is not Status.FOUND:
+        return _fail(f, q, {"pmid": clean_pmid}, source_id=REST_SOURCE)
+    return parse_resolve_pmid(f.data, clean_pmid, q, f.url)
+
+
+def parse_aggregate_tallies(data: Any, dois: list[str], question: str, url: str) -> Evidence:
+    """Pure parser for Scite public REST POST /tallies/aggregate (up to 100 DOIs, 0 quota cost)."""
+    try:
+        if not isinstance(data, dict):
+            raise ShapeError(f"Scite aggregate tallies response is {type(data).__name__}, not an object")
+        if "detail" in data and "total" not in data:
+            raise ShapeError(f"Scite aggregate tallies error: {data['detail']}")
+        supporting = count(data.get("supporting", 0), "Scite aggregate supporting")
+        contrasting = count(data.get("contradicting", data.get("contrasting", 0)), "Scite aggregate contradicting")
+        mentioning = count(data.get("mentioning", 0), "Scite aggregate mentioning")
+        unclassified = count(data.get("unclassified", 0), "Scite aggregate unclassified")
+        total_cit = count(data.get("total", 0), "Scite aggregate total")
+        citing_pubs = count(data.get("citingPublications", 0), "Scite aggregate citingPublications")
+        return Evidence(
+            status=Status.FOUND,
+            question=question,
+            source_id=REST_SOURCE,
+            url=url,
+            provider=PROVIDER,
+            fields={
+                "dois_aggregated": len(dois),
+                "dois": dois,
+                "supporting": supporting,
+                "contrasting": contrasting,
+                "mentioning": mentioning,
+                "unclassified": unclassified,
+                "total_smart_citations": total_cit,
+                "citing_publications": citing_pubs,
+                "quota_bucket": "scite-public-tallies-free",
+                "classification_provenance": "Scite ML citation classification",
+            },
+            limitations=LIMITATION,
+        )
+    except ShapeError as exc:
+        return error_record(
+            exc,
+            question=question,
+            source_id=REST_SOURCE,
+            url=url,
+            provider=PROVIDER,
+            fields={"dois_aggregated": len(dois)},
+        )
+
+
+def aggregate_tallies(client: Client, dois: list[str]) -> Evidence:
+    """Compute aggregated Smart Citation counts across up to 100 DOIs via public POST /tallies/aggregate (0 quota cost!)."""
+    seen: set[str] = set()
+    clean_dois: list[str] = []
+    for d in dois:
+        nd = _normalize_doi(d)
+        if nd and nd.lower() not in seen:
+            seen.add(nd.lower())
+            clean_dois.append(nd)
+
+    q = f"What are the aggregated Scite Smart Citation tallies across {len(clean_dois)} DOI(s)?"
+    if len(clean_dois) > MAX_AGGREGATE_DOIS:
+        return Evidence(
+            status=Status.BLOCKED,
+            question=q,
+            source_id=REST_SOURCE,
+            url=client._url(REST_SOURCE, "tallies/aggregate"),
+            provider=PROVIDER,
+            fields={
+                "error": f"Refused: {len(clean_dois)} DOIs exceeds MAX_AGGREGATE_DOIS={MAX_AGGREGATE_DOIS}",
+                "dois_requested": len(clean_dois),
+            },
+            limitations=LIMITATION,
+        )
+
+    if client.dry_run:
+        f = client.post(REST_SOURCE, "tallies/aggregate", json=clean_dois)  # type: ignore[arg-type]
+        return Evidence(
+            status=Status.OUT_OF_SCOPE,
+            question=q,
+            source_id=REST_SOURCE,
+            url=f.url,
+            provider=PROVIDER,
+            fields={
+                "dois_aggregated": len(clean_dois),
+                "planned_endpoint": "tallies/aggregate",
+                "quota_bucket": "scite-public-tallies-free",
+            },
+            limitations=LIMITATION,
+        )
+
+    f = client.post(REST_SOURCE, "tallies/aggregate", json=clean_dois)  # type: ignore[arg-type]
+    if f.status is not Status.FOUND:
+        return _fail(f, q, {"dois_aggregated": len(clean_dois)}, source_id=REST_SOURCE)
+    return parse_aggregate_tallies(f.data, clean_dois, q, f.url)
+
+
+def parse_citing_sources(data: Any, target_doi: str, question: str, url: str, limit: int = DEFAULT_LIMIT) -> Evidence:
+    """Pure parser for Scite public REST GET /papers/sources/{target_doi} (0 quota cost)."""
+    try:
+        if not isinstance(data, dict):
+            raise ShapeError(f"Scite citing sources response is {type(data).__name__}, not an object")
+        if "detail" in data and "papers" not in data:
+            raise ShapeError(f"Scite citing sources error: {data['detail']}")
+        papers_map = need(data, "papers", "Scite citing sources response")
+        if not isinstance(papers_map, dict):
+            raise ShapeError(f"Scite 'papers' is {type(papers_map).__name__}, not an object")
+
+        if not papers_map:
+            return Evidence(
+                status=Status.NOT_FOUND,
+                question=question,
+                source_id=REST_SOURCE,
+                url=url,
+                provider=PROVIDER,
+                fields={"target_doi": target_doi, "citing_sources_total": 0, "quota_bucket": "scite-public-tallies-free"},
+                limitations=LIMITATION,
+            )
+
+        retracted_citing = 0
+        noticed_citing = 0
+        items: list[dict[str, Any]] = []
+        max_items = max(1, min(limit, MAX_LIMIT))
+
+        for doi_key, p_obj in papers_map.items():
+            if not isinstance(p_obj, dict):
+                continue
+            notices_raw = p_obj.get("editorialNotices")
+            has_notices = isinstance(notices_raw, list) and len(notices_raw) > 0
+            is_retracted = bool(p_obj.get("retracted", False)) or (
+                has_notices and any("retract" in str((n or {}).get("status") or "").lower() for n in notices_raw if isinstance(n, dict))
+            )
+            if is_retracted:
+                retracted_citing += 1
+            if has_notices:
+                noticed_citing += 1
+            if len(items) < max_items:
+                items.append(
+                    {
+                        "doi": p_obj.get("doi") or doi_key,
+                        "title": p_obj.get("title"),
+                        "year": p_obj.get("year"),
+                        "journal": p_obj.get("journal"),
+                        "retracted": is_retracted,
+                    }
+                )
+
+        return Evidence(
+            status=Status.FOUND,
+            question=question,
+            source_id=REST_SOURCE,
+            url=f"https://scite.ai/reports/{target_doi}",
+            provider=PROVIDER,
+            fields={
+                "target_doi": target_doi,
+                "citing_sources_total": len(papers_map),
+                "retracted_citing_sources_counted": retracted_citing,
+                "editorial_noticed_citing_sources_counted": noticed_citing,
+                "citing_papers_sample": items,
+                "quota_bucket": "scite-public-tallies-free",
+            },
+            limitations=LIMITATION,
+        )
+    except ShapeError as exc:
+        return error_record(
+            exc,
+            question=question,
+            source_id=REST_SOURCE,
+            url=url,
+            provider=PROVIDER,
+            fields={"target_doi": target_doi},
+        )
+
+
+def citing_sources(client: Client, doi: str, limit: int = DEFAULT_LIMIT) -> Evidence:
+    """Retrieve citing publications and their retraction/editorial status via public GET /papers/sources/{target_doi} (0 quota cost!)."""
+    norm_doi = _normalize_doi(doi)
+    max_items = max(1, min(limit, MAX_LIMIT))
+    q = f"Which publications cite DOI '{norm_doi}' in Scite's public sources index, and are any citing papers retracted?"
+    path = f"papers/sources/{quote(norm_doi, safe='/')}"
+
+    if client.dry_run:
+        f = client.get(REST_SOURCE, path)
+        return Evidence(
+            status=Status.OUT_OF_SCOPE,
+            question=q,
+            source_id=REST_SOURCE,
+            url=f.url,
+            provider=PROVIDER,
+            fields={
+                "target_doi": norm_doi,
+                "planned_endpoint": path,
+                "quota_bucket": "scite-public-tallies-free",
+            },
+            limitations=LIMITATION,
+        )
+
+    f = client.get(REST_SOURCE, path)
+    if f.status is not Status.FOUND:
+        return _fail(f, q, {"target_doi": norm_doi}, source_id=REST_SOURCE)
+    return parse_citing_sources(f.data, norm_doi, q, f.url, limit=max_items)
+
+
+# ---------------------------------------------------------------------------
+# Scite Pro MCP Extended Tools: citation_graph, read_fulltext & Evidence Datasets
+# ---------------------------------------------------------------------------
+
+EVIDENCE_DATASETS: dict[str, tuple[str, bool]] = {
+    # dataset_key: (mcp_tool_name, supports_sort)
+    "mhra": ("search_mhra", False),
+    "patents": ("search_patents", True),
+    "trials": ("search_clinical_trials", True),
+    "clinical_trials": ("search_clinical_trials", True),
+    "grants": ("search_grants", True),
+    "device510k": ("search_device510k", True),
+    "510k_summaries": ("search_510k_summaries", False),
+    "510k-summaries": ("search_510k_summaries", False),
+    "maude": ("search_maude", True),
+    "faers": ("search_faers", False),
+    "drugs": ("search_drugs", False),
+}
+
+
+def parse_citation_graph(data: Any, doi_query: str, direction: str, question: str, url: str) -> Evidence:
+    """Pure parser for Scite MCP `citation_graph` tool response."""
+    try:
+        inner = _unwrap_mcp_payload(data)
+        edges_raw = inner.get("edges") or inner.get("citations") or inner.get("hits") or []
+        if not isinstance(edges_raw, list):
+            raise ShapeError(f"Scite citation_graph edges is {type(edges_raw).__name__}, not a list")
+
+        quarantined_edges: list[dict[str, Any]] = []
+        for edge in edges_raw[:MAX_LIMIT]:
+            if not isinstance(edge, dict):
+                continue
+            src_doi = str(edge.get("s") or edge.get("sourceDoi") or edge.get("citingDoi") or edge.get("doi") or doi_query)
+            tgt_doi = edge.get("t") or edge.get("targetDoi") or edge.get("citedDoi")
+            snips_raw = edge.get("snippets")
+            if isinstance(snips_raw, list):
+                snip = " | ".join(s.strip() for s in snips_raw if isinstance(s, str) and s.strip())
+            else:
+                snip = edge.get("snippet") or edge.get("quote")
+            quarantined_edges.append(
+                {
+                    "source_doi": edge.get("s") or edge.get("sourceDoi") or edge.get("citingDoi"),
+                    "target_doi": tgt_doi,
+                    "type": edge.get("type") or edge.get("intent"),
+                    "section": edge.get("section"),
+                    "snippet": _quarantine_excerpt(snip, src_doi) if isinstance(snip, str) and snip.strip() else None,
+                }
+            )
+
+        return Evidence(
+            status=Status.FOUND if quarantined_edges or inner.get("nodes") else Status.NOT_FOUND,
+            question=question,
+            source_id=SOURCE,
+            url=f"https://scite.ai/reports/{doi_query}",
+            provider=PROVIDER,
+            fields={
+                "doi": doi_query,
+                "direction": direction,
+                "edges_returned": len(quarantined_edges),
+                "edges": quarantined_edges,
+                "untrusted_data_quarantined": True,
+                "quota_bucket": "scite-mcp-2500",
+                "classification_provenance": "Scite ML citation classification",
+            },
+            limitations=LIMITATION,
+        )
+    except ShapeError as exc:
+        return error_record(exc, question=question, source_id=SOURCE, url=url, provider=PROVIDER, fields={"doi": doi_query})
+
+
+def citation_graph(client: Client, doi: str, direction: str = "both", limit: int = DEFAULT_LIMIT) -> Evidence:
+    """Explore 1-hop citation network with intent classification and quarantined snippets via Scite MCP `citation_graph`."""
+    norm_doi = _normalize_doi(doi)
+    max_items = max(1, min(limit, MAX_LIMIT))
+    dir_map = {"citing": "in", "in": "in", "cited": "out", "out": "out", "both": "both"}
+    mcp_direction = dir_map.get(direction.strip().lower(), "both")
+    q = f"What is the Scite citation graph ({mcp_direction}) with intent classifications for DOI '{norm_doi}'?"
+    args = {
+        "seeds": [norm_doi],
+        "direction": mcp_direction,
+        "depth": 1,
+        "max_edges": max_items,
+        "include_intent": True,
+        "include_snippets": True,
+    }
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {
+            "name": "citation_graph",
+            "arguments": args,
+        },
+    }
+
+    if client.dry_run:
+        f = client.post(SOURCE, "", json=payload)
+        return Evidence(
+            status=Status.OUT_OF_SCOPE,
+            question=q,
+            source_id=SOURCE,
+            url=f.url,
+            provider=PROVIDER,
+            fields={
+                "doi": norm_doi,
+                "direction": mcp_direction,
+                "planned_tool": "citation_graph",
+                "planned_arguments": args,
+                "quota_bucket": "scite-mcp-2500",
+            },
+            limitations=LIMITATION,
+        )
+
+    token = _resolve_bearer_token()
+    if not token:
+        return Evidence(
+            status=Status.BLOCKED,
+            question=q,
+            source_id=SOURCE,
+            url=client._url(SOURCE, ""),
+            provider=PROVIDER,
+            fields={"doi": norm_doi, "error": "Scite credentials not found"},
+            limitations=LIMITATION,
+        )
+
+    cap_err = _check_daily_cap(rest=False)
+    if cap_err:
+        return Evidence(
+            status=Status.BLOCKED,
+            question=q,
+            source_id=SOURCE,
+            url=client._url(SOURCE, ""),
+            provider=PROVIDER,
+            fields={"doi": norm_doi, "error": cap_err},
+            limitations=LIMITATION,
+        )
+
+    headers = {"Authorization": f"Bearer {token}"}
+    f = client.post(SOURCE, "", json=payload, headers=headers)
+    if f.status is not Status.FOUND:
+        return _fail(f, q, {"doi": norm_doi})
+    return parse_citation_graph(f.data, norm_doi, direction, q, f.url)
+
+
+def parse_fulltext(data: Any, identifier: str, offset: int, length: int, question: str, url: str) -> Evidence:
+    """Pure parser for Scite MCP `read_fulltext` tool response with <untrusted_data> quarantine."""
+    try:
+        inner = _unwrap_mcp_payload(data)
+        text_body = inner.get("text") or inner.get("content") or inner.get("fulltext") or ""
+        if not isinstance(text_body, str) or not text_body.strip():
+            return Evidence(
+                status=Status.NOT_FOUND,
+                question=question,
+                source_id=SOURCE,
+                url=url,
+                provider=PROVIDER,
+                fields={"identifier": identifier, "offset": offset, "length": length},
+                limitations=LIMITATION,
+            )
+        doi_val = str(inner.get("doi") or identifier)
+        quarantined = _quarantine_excerpt(text_body, doi_val)
+        return Evidence(
+            status=Status.FOUND,
+            question=question,
+            source_id=SOURCE,
+            url=f"https://scite.ai/reports/{doi_val}",
+            provider=PROVIDER,
+            fields={
+                "identifier": identifier,
+                "doi": doi_val,
+                "title": inner.get("title"),
+                "offset": offset,
+                "length": length,
+                "total_length": inner.get("totalLength") or inner.get("total_length") or len(text_body),
+                "has_more": bool(inner.get("hasMore") or inner.get("has_more")),
+                "fulltext_quarantined": quarantined,
+                "untrusted_data_quarantined": True,
+                "quota_bucket": "scite-mcp-2500",
+            },
+            excerpt=quarantined[:600],
+            limitations=LIMITATION,
+        )
+    except ShapeError as exc:
+        return error_record(exc, question=question, source_id=SOURCE, url=url, provider=PROVIDER, fields={"identifier": identifier})
+
+
+def read_fulltext(client: Client, identifier: str, offset: int = 0, length: int = 8000) -> Evidence:
+    """Read paginated full text by DOI or PMID via Scite MCP `read_fulltext` with <untrusted_data> quarantine."""
+    clean_id = identifier.strip()
+    bounded_len = max(1, min(length, 8000))
+    bounded_off = max(0, offset)
+    is_pmid = clean_id.isdigit() or clean_id.lower().startswith("pmid:")
+    arg_id = clean_id[5:].strip() if clean_id.lower().startswith("pmid:") else _normalize_doi(clean_id)
+    args: dict[str, Any] = {"offset": bounded_off, "length": bounded_len}
+    if is_pmid and arg_id.isdigit():
+        args["pmid"] = str(arg_id)
+    else:
+        args["doi"] = arg_id
+
+    q = f"What is the Scite full-text chunk (offset={bounded_off}, length={bounded_len}) for '{arg_id}'?"
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {"name": "read_fulltext", "arguments": args},
+    }
+
+    if client.dry_run:
+        f = client.post(SOURCE, "", json=payload)
+        return Evidence(
+            status=Status.OUT_OF_SCOPE,
+            question=q,
+            source_id=SOURCE,
+            url=f.url,
+            provider=PROVIDER,
+            fields={
+                "identifier": arg_id,
+                "offset": bounded_off,
+                "length": bounded_len,
+                "planned_tool": "read_fulltext",
+                "quota_bucket": "scite-mcp-2500",
+            },
+            limitations=LIMITATION,
+        )
+
+    token = _resolve_bearer_token()
+    if not token:
+        return Evidence(
+            status=Status.BLOCKED,
+            question=q,
+            source_id=SOURCE,
+            url=client._url(SOURCE, ""),
+            provider=PROVIDER,
+            fields={"identifier": arg_id, "error": "Scite credentials not found"},
+            limitations=LIMITATION,
+        )
+
+    cap_err = _check_daily_cap(rest=False)
+    if cap_err:
+        return Evidence(
+            status=Status.BLOCKED,
+            question=q,
+            source_id=SOURCE,
+            url=client._url(SOURCE, ""),
+            provider=PROVIDER,
+            fields={"identifier": arg_id, "error": cap_err},
+            limitations=LIMITATION,
+        )
+
+    headers = {"Authorization": f"Bearer {token}"}
+    f = client.post(SOURCE, "", json=payload, headers=headers)
+    if f.status is not Status.FOUND:
+        return _fail(f, q, {"identifier": arg_id})
+    return parse_fulltext(f.data, arg_id, bounded_off, bounded_len, q, f.url)
+
+
+def parse_evidence_search(
+    data: Any,
+    dataset: str,
+    query: str,
+    question: str,
+    url: str,
+    limit: int = DEFAULT_LIMIT,
+) -> list[Evidence]:
+    """Pure parser for Scite MCP Evidence dataset search tools (`search_mhra`, `search_patents`, `search_510k_summaries`, etc.)."""
+    try:
+        inner = _unwrap_mcp_payload(data)
+        hits = inner.get("hits") if isinstance(inner.get("hits"), list) else (
+            inner.get("results") if isinstance(inner.get("results"), list) else (
+                inner.get("items") if isinstance(inner.get("items"), list) else None
+            )
+        )
+        if hits is None:
+            raise ShapeError("Scite Evidence response missing 'hits'/'results' list")
+        total = count(inner.get("total", inner.get("totalCount", len(hits))), "Scite Evidence total")
+        if total == 0 or not hits:
+            return [
+                Evidence(
+                    status=Status.NOT_FOUND,
+                    question=question,
+                    source_id=SOURCE,
+                    url=url,
+                    provider=PROVIDER,
+                    fields={"dataset": dataset, "query": query, "search_total": 0},
+                    limitations=LIMITATION,
+                )
+            ]
+
+        out: list[Evidence] = []
+        max_items = max(1, min(limit, MAX_LIMIT))
+        for idx, hit in enumerate(hits[:max_items]):
+            if not isinstance(hit, dict):
+                raise ShapeError(f"Scite Evidence hit {idx} is not an object")
+            rec_id = str(
+                hit.get("id")
+                or hit.get("kNumber")
+                or hit.get("nctId")
+                or hit.get("patentNumber")
+                or hit.get("grantNumber")
+                or hit.get("applicationNumber")
+                or f"{dataset}-{idx}"
+            )
+            title_raw = hit.get("title") or hit.get("deviceName") or hit.get("brandName") or hit.get("briefTitle")
+            summary_raw = (
+                hit.get("summary")
+                or hit.get("abstract")
+                or hit.get("description")
+                or hit.get("statementOrSummary")
+                or hit.get("narrative")
+            )
+            quarantined_summary = (
+                _quarantine_excerpt(str(summary_raw), rec_id)
+                if isinstance(summary_raw, str) and summary_raw.strip()
+                else None
+            )
+            pub_date = str(
+                hit.get("date")
+                or hit.get("publishedDate")
+                or hit.get("decisionDate")
+                or hit.get("filingDate")
+                or hit.get("startDate")
+                or ""
+            ) or None
+            out.append(
+                Evidence(
+                    status=Status.FOUND,
+                    question=question,
+                    source_id=SOURCE,
+                    url=str(hit.get("url") or url),
+                    provider=PROVIDER,
+                    publisher_date=pub_date,
+                    fields={
+                        "dataset": dataset,
+                        "id": rec_id,
+                        "title": clean_for_terminal(str(title_raw)) if title_raw else None,
+                        "summary_quarantined": quarantined_summary,
+                        "search_total": total,
+                        "untrusted_data_quarantined": True,
+                        "quota_bucket": "scite-mcp-2500",
+                    },
+                    excerpt=quarantined_summary,
+                    limitations=LIMITATION,
+                )
+            )
+        return out
+    except ShapeError as exc:
+        return [
+            error_record(
+                exc,
+                question=question,
+                source_id=SOURCE,
+                url=url,
+                provider=PROVIDER,
+                fields={"dataset": dataset, "query": query},
+            )
+        ]
+
+
+def evidence_search(
+    client: Client,
+    dataset: str,
+    query: str,
+    *,
+    filter_str: str | None = None,
+    page: int = 1,
+    sort_field: str | None = None,
+    sort_dir: str | None = None,
+    limit: int = DEFAULT_LIMIT,
+) -> list[Evidence]:
+    """Query one of Scite's 8 Evidence dataset families via Scite Pro MCP using the compact `q`/`f`/`p` grammar.
+
+    Automatically omits `s`/`sortDir` on relevance-only datasets (`510k_summaries`, `mhra`, `faers`, `drugs`)
+    so JSON-RPC -32602 parameter validation errors are never triggered.
+    """
+    ds_key = dataset.strip().lower()
+    if ds_key not in EVIDENCE_DATASETS:
+        raise ValueError(f"Unknown Scite Evidence dataset {dataset!r}; choose from {', '.join(sorted(EVIDENCE_DATASETS))}")
+    tool_name, supports_sort = EVIDENCE_DATASETS[ds_key]
+    q_str = query.strip()
+    max_items = max(1, min(limit, MAX_LIMIT))
+
+    args: dict[str, Any] = {"q": q_str, "p": max(1, page)}
+    if filter_str and filter_str.strip():
+        args["f"] = filter_str.strip()
+    if supports_sort:
+        if sort_field:
+            args["s"] = sort_field
+        if sort_dir in ("asc", "desc"):
+            args["sortDir"] = sort_dir
+
+    question = f"Which records in Scite Evidence dataset '{ds_key}' ({tool_name}) match '{q_str}'?"
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {"name": tool_name, "arguments": args},
+    }
+
+    if client.dry_run:
+        f = client.post(SOURCE, "", json=payload)
+        return [
+            Evidence(
+                status=Status.OUT_OF_SCOPE,
+                question=question,
+                source_id=SOURCE,
+                url=f.url,
+                provider=PROVIDER,
+                fields={
+                    "dataset": ds_key,
+                    "planned_query": q_str,
+                    "planned_tool": tool_name,
+                    "planned_arguments": args,
+                    "quota_bucket": "scite-mcp-2500",
+                },
+                limitations=LIMITATION,
+            )
+        ]
+
+    token = _resolve_bearer_token()
+    if not token:
+        return [
+            Evidence(
+                status=Status.BLOCKED,
+                question=question,
+                source_id=SOURCE,
+                url=client._url(SOURCE, ""),
+                provider=PROVIDER,
+                fields={"dataset": ds_key, "query": q_str, "error": "Scite credentials not found"},
+                limitations=LIMITATION,
+            )
+        ]
+
+    cap_err = _check_daily_cap(rest=False)
+    if cap_err:
+        return [
+            Evidence(
+                status=Status.BLOCKED,
+                question=question,
+                source_id=SOURCE,
+                url=client._url(SOURCE, ""),
+                provider=PROVIDER,
+                fields={"dataset": ds_key, "query": q_str, "error": cap_err},
+                limitations=LIMITATION,
+            )
+        ]
+
+    headers = {"Authorization": f"Bearer {token}"}
+    f = client.post(SOURCE, "", json=payload, headers=headers)
+    if f.status is not Status.FOUND:
+        return [_fail(f, question, {"dataset": ds_key, "query": q_str})]
+    return parse_evidence_search(f.data, ds_key, q_str, question, f.url, limit=max_items)
+
+

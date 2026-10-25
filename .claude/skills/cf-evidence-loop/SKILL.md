@@ -56,10 +56,20 @@ Research, not medical advice. The records this tool returns describe public docu
 | Read verbatim full-text excerpts and Smart Citation snippets inside a specific paper | `scite-excerpts <DOI> "<query>" [--limit 5]` | Scite Pro MCP Mode C (`scite-mcp`, quarantined in `<untrusted_data>`) |
 | Which related papers does Scite recommend from a seed DOI? | `scite-recommend <DOI> [--limit 5]` | Scite Partner REST (`GET /api_partner/recommend-papers/{doi}`, gated by 650/month REST shield) |
 | Search literature with Scite Smart Citation tallies | `scite-search "<query>" [--limit 5]` | Scite Pro MCP (`scite-mcp`, OAuth/key required) |
+| Resolve a PubMed ID to a DOI at 0 quota cost | `scite-pmid <PMID>` | Scite public REST (`GET /papers/resolve-pmid/{pmid}`, 0 quota cost) |
+| Aggregate Smart Citation tallies across up to 100 DOIs at 0 quota cost | `scite-aggregate <DOI...>` | Scite public REST (`POST /tallies/aggregate`, 0 quota cost) |
+| List citing publications and retracted citing counts for a target DOI at 0 quota cost | `scite-sources <DOI> [--limit 5]` | Scite public REST (`GET /papers/sources/{target_doi}`, 0 quota cost) |
+| Explore 1-hop citation network with intent classification and quarantined snippets | `scite-graph <DOI> [--direction both] [--limit 5]` | Scite Pro MCP (`citation_graph`, quarantined in `<untrusted_data>`) |
+| Read paginated full-text body by DOI or PMID | `scite-fulltext <DOI\|PMID> [--offset 0] [--length 8000]` | Scite Pro MCP (`read_fulltext`, quarantined in `<untrusted_data>`) |
+| Search Scite Evidence datasets (UK MHRA, Patents, 510(k), MAUDE, FAERS, Grants, Drugs, Trials) | `scite-evidence <dataset> "<query>" [--filter F] [--page 1]` | Scite Pro MCP (`search_mhra`, `search_patents`, `search_510k_summaries`, etc., quarantined in `<untrusted_data>`) |
+| Normalize HGVS or SPDI variant coordinates | `ncbi-variation <HGVS\|SPDI>` | NCBI Variation Services (`ncbi-variation`) |
+| Look up UniProtKB protein sequence, domain boundaries, and natural variants | `uniprot <ACCESSION\|query> [--limit 5]` | UniProt REST API (`uniprot-rest`, CC BY 4.0) |
+| Look up Ensembl genomic coordinates, canonical transcripts, or rsID consequences | `ensembl <rsID\|ENSG\|symbol>` | Ensembl REST API (`ensembl-rest`, CC BY 4.0 / Apache 2.0) |
+| Search NLM DailyMed Structured Product Labels (SPL) by drug name | `dailymed <DRUG> [--limit 5]` | DailyMed RESTful web services v2 (`dailymed-web-services`) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
-| Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30]` | Crossref, PubMed, ClinicalTrials.gov (see Cite-check) |
+| Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30] [--scite-bulk]` | Crossref, PubMed, ClinicalTrials.gov, plus optional zero-quota Scite bulk pre-flight (see Cite-check) |
 
 What the client code refuses to do: reach any host not permitted in `catalog.yaml` (a redirect is never followed in API data queries); present itself as a browser; skip certificate checks; retry past a refusal. For pre-catalog terms reading, `read-page` enforces the lab's strict network conduct: HTTPS only, robots.txt first via `robots_allows`, Crawl-delay honoured, refused/unreadable robots aborts fetch, same-site HTTPS redirects re-checked against robots, certificate verification on, 5 MB body cap, single request. It needs no catalog entry because it exists specifically for a human-started reading of terms pages before a catalog entry exists, not for data extraction. The package also never calls a language model and queries no source that holds individual-level data.
 
