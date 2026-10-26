@@ -76,7 +76,7 @@ def test_unpaywall_parse_found():
 def test_unpaywall_redacts_email_in_record():
     """Operator email must be redacted in the record's URL so it never enters ledgers or commits."""
     data = load_fixture("unpaywall_ng2745.json")
-    secret_email = "diego-secret-operator@senseiewok.ai"
+    secret_email = "operator@example.org"
     raw_url = f"https://api.unpaywall.org/v2/10.1038/ng.2745?email={secret_email}"
 
     rec = unpaywall.parse_unpaywall(
@@ -193,8 +193,8 @@ def test_semantic_scholar_parse_found():
 
 def test_semantic_scholar_never_sends_evidence_contact():
     """EVIDENCE_CONTACT is for Unpaywall only; Semantic Scholar requests MUST NOT send mailto: or email."""
-    client = Client(contact="operator-private@senseiewok.ai")
-    assert "operator-private@senseiewok.ai" in client.session.headers["User-Agent"]
+    client = Client(contact="operator@example.invalid")
+    assert "operator@example.invalid" in client.session.headers["User-Agent"]
 
     captured_headers = {}
 

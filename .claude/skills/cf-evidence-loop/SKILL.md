@@ -105,7 +105,7 @@ What a brief does not do: it adds no fact of its own. Every value it prints is c
 
 ### Cite-check
 
-The lab's rule 5: citations go through the evidence record, and one that cannot be resolved is deleted or fixed from a source, never repaired from memory. `cite-check FILE` applies it to a whole note. It finds every DOI, every PubMed id written as `PMID 123`, `PMID: 123` or a `pubmed/123` URL, and every `NCT` id, removes duplicates (keeping the line of first occurrence), and looks each one up with the single-lookup code: `doi` for a DOI, a PubMed search on the `[pmid]` field for a PMID (two requests), `trial` for an NCT id. The usual client applies: catalog gate, pacing, budget, circuit breaker, accounting.
+Every citation goes through the evidence record, and one that cannot be resolved is deleted or fixed from a source, never repaired from memory. `cite-check FILE` applies it to a whole note. It finds every DOI, every PubMed id written as `PMID 123`, `PMID: 123` or a `pubmed/123` URL, and every `NCT` id, removes duplicates (keeping the line of first occurrence), and looks each one up with the single-lookup code: `doi` for a DOI, a PubMed search on the `[pmid]` field for a PMID (two requests), `trial` for an NCT id. The usual client applies: catalog gate, pacing, budget, circuit breaker, accounting.
 
 | Line | Meaning |
 | --- | --- |
@@ -226,7 +226,7 @@ Live check, if you have network access: `python scripts/evidence_cli.py retracti
 - **Scanning a whole month of bioRxiv.** The listing is paged; the tool stops after ten pages and says so with an `out_of_scope` record. Narrow the window.
 - **Expecting ClinVar to be the CF authority.** It aggregates submitters. For CF-specific annotation, CFTR2 is the field's reference; this tool names it in its limitation text rather than fetching it, because its terms have not been read.
 - **Forgetting the limitation.** If you copy `fields` into a document, copy `limitations` too.
-- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction (`AH-12`).** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism, enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`), and log included/excluded citations via Scite MCP `report_citations` + `citation_report`.
+- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction.** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism, enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`), and log included/excluded citations via Scite MCP `report_citations` + `citation_report`.
 
 ## 9. Adding a provider
 
