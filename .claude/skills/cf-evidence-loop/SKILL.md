@@ -226,6 +226,7 @@ Live check, if you have network access: `python scripts/evidence_cli.py retracti
 - **Scanning a whole month of bioRxiv.** The listing is paged; the tool stops after ten pages and says so with an `out_of_scope` record. Narrow the window.
 - **Expecting ClinVar to be the CF authority.** It aggregates submitters. For CF-specific annotation, CFTR2 is the field's reference; this tool names it in its limitation text rather than fetching it, because its terms have not been read.
 - **Forgetting the limitation.** If you copy `fields` into a document, copy `limitations` too.
+- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction (`AH-12`).** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism, enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`), and log included/excluded citations via Scite MCP `report_citations` + `citation_report`.
 
 ## 9. Adding a provider
 
