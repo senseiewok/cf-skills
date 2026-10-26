@@ -3187,6 +3187,126 @@ sources:
     claim_label: unverified
     notes: Official national health authority coordinating specialized pediatric care and tertiary hospital guidance in Liberia; robots.txt allow (2026-10-25), manual access, link and summary only.
 
+  - id: fig-fk-resource-pages
+    title: Falkland Islands Government Health and Social Services Department website (gov.fk)
+    publisher: Falkland Islands Government Health and Social Services Department
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.gov.fk/
+    url: null
+    claim_label: unverified
+    notes: Official public health authority and hospital referral portal in the Falkland Islands; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: naalakkersuisut-gl-resource-pages
+    title: Government of Greenland health portal (naalakkersuisut.gl)
+    publisher: Government of Greenland (Naalakkersuisut)
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://naalakkersuisut.gl/
+    url: null
+    claim_label: unverified
+    notes: Official government portal of Greenland providing access to the Department of Health (Departementet for Sundhed / Peqqissutsimut Naalakkersuisoqarfik) and national public health administration; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: health-pg-resource-pages
+    title: National Department of Health Papua New Guinea portal (health.gov.pg)
+    publisher: National Department of Health, Papua New Guinea
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.health.gov.pg/
+    url: null
+    claim_label: unverified
+    notes: Official public healthcare and tertiary referral portal in Papua New Guinea; robots.txt 404 allow (2026-10-25), manual access, link and summary only.
+
+  - id: ncdc-ly-resource-pages
+    title: National Centre for Disease Control Libya portal (ncdc.org.ly)
+    publisher: National Centre for Disease Control Libya
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://ncdc.org.ly/
+    url: null
+    claim_label: unverified
+    notes: Official public disease control and healthcare guidance portal in Libya; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: sante-cg-resource-pages
+    title: Ministère de la Santé et de la Population République du Congo portal (sante.gouv.cg)
+    publisher: Ministère de la Santé et de la Population de la République du Congo
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://sante.gouv.cg/
+    url: null
+    claim_label: unverified
+    notes: Official public healthcare and tertiary pediatric referral portal in Republic of the Congo; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: dass-nc-resource-pages
+    title: Direction des Affaires Sanitaires et Sociales de Nouvelle-Calédonie portal (dass.gouv.nc)
+    publisher: Direction des Affaires Sanitaires et Sociales de la Nouvelle-Calédonie
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://dass.gouv.nc/
+    url: null
+    claim_label: unverified
+    notes: Official public healthcare administration and territorial hospital referral portal in New Caledonia; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: moh-vu-resource-pages
+    title: Ministry of Health Republic of Vanuatu portal (moh.gov.vu)
+    publisher: Ministry of Health, Republic of Vanuatu
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://moh.gov.vu/
+    url: null
+    claim_label: unverified
+    notes: Official public health authority and hospital referral portal in Vanuatu; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: hngv-tl-resource-pages
+    title: Hospital Nacional Guido Valadares portal (hngv.ms.gov.tl)
+    publisher: Hospital Nacional Guido Valadares, Timor-Leste
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://hngv.ms.gov.tl/
+    url: null
+    claim_label: unverified
+    notes: Official tertiary referral and university hospital portal in Timor-Leste; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: chuk-bi-resource-pages
+    title: Centre Hospitalo-Universitaire de Kamenge portal (chuk.bi)
+    publisher: Centre Hospitalo-Universitaire de Kamenge
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.chuk.bi/
+    url: null
+    claim_label: unverified
+    notes: Official national university teaching and referral hospital portal in Burundi; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: cuh-sy-resource-pages
+    title: Children's University Hospital Damascus portal (children-hospital.edu.sy)
+    publisher: Children's University Hospital, Damascus University
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.children-hospital.edu.sy/
+    url: null
+    claim_label: unverified
+    notes: Official tertiary pediatric referral and university teaching hospital portal in Syria; robots.txt allow (2026-10-25), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
