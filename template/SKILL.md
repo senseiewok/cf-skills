@@ -1,7 +1,8 @@
 ---
-name: template-skill
+name: template
 description: Replace this with what the skill does and when an agent should use it, in one or two sentences. Name the tasks and the words a user would say.
 license: CC0-1.0
+compatibility: "Plain Markdown; works in any assistant."
 metadata:
     version: "0.1.0"
     capabilities: ""
@@ -9,11 +10,12 @@ metadata:
     audience: "patients-families, care-teams"
     level: "base"
     category: "communication"
+    summary: "One-line summary of what the skill does (at most 160 characters)."
 ---
 
 # Template skill
 
-Replace this file. Keep it short: an agent reads it whenever your request matches the description above.
+Replace this file and set `name:` in the frontmatter to match your skill folder's name. Keep it short: an agent reads it whenever your request matches the description above.
 
 ## When to use
 

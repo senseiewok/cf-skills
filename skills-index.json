@@ -84,7 +84,7 @@
     {
       "name": "cf-evidence-loop",
       "description": "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks, or check that every DOI, PMID and trial id cited in a note exists. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model.",
-      "summary": "",
+      "summary": "Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations.",
       "license": "CC0-1.0",
       "version": "1.0.0",
       "path": ".claude/skills/cf-evidence-loop",
@@ -153,7 +153,7 @@
     {
       "name": "site-seo-review",
       "description": "An honest SEO and discoverability review for small static or mostly-static websites, health and research sites included: a standard-library checker for titles, descriptions, canonicals, Open Graph, sitemap and robots agreement, headings, images, link text, preloads, third-party scripts and structured data, plus a workflow for reading the pages, proposing copy, getting the wording reviewed, and verifying the live site. Use when asked to improve how a site appears in search or when shared, to audit metadata before a launch, to check that structured data and descriptions claim nothing the page does not show, or to hand bounded parts of such a review to a smaller local model.",
-      "summary": "",
+      "summary": "Honest search-and-sharing review for small websites, with a static-site checker and rules for health and research pages.",
       "license": "CC0-1.0",
       "version": "0.1.0",
       "path": ".claude/skills/site-seo-review",

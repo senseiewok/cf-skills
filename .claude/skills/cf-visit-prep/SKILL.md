@@ -2,6 +2,7 @@
 name: cf-visit-prep
 description: "Help a person with CF, a parent or a carer get ready for a CF clinic visit: turn their own worries and observations into a short, ordered list of questions for the care team, plus a one-page summary they choose to hand over, and a what-to-bring list. Use when someone says help me prepare for clinic, what should I ask the doctor, I never remember my questions, or help me write down what has changed. Never answers the medical question itself and never asks for names, dates of birth or record numbers."
 license: CC0-1.0
+compatibility: "The rules and steps are plain Markdown and work in any assistant."
 metadata:
     version: "0.1.0"
     last-updated: "2026-10-08"

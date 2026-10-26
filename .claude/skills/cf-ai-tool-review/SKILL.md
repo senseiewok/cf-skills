@@ -2,7 +2,7 @@
 name: cf-ai-tool-review
 description: "A structured way for a CF care team, a patient group or a builder to review an AI tool before using it with people with cystic fibrosis: question sets for design, development, deployment, monitoring and evaluation, a worksheet where every answer points to a document, demo or test or stays unknown, a red-flag list, and a one-page review whose decision is chosen by people, not the assistant. Use when someone asks should our clinic use this chatbot, is this AI app safe for our families, how do we evaluate an AI tool, or help us write up our review. Includes a script that turns a filled worksheet into the one-page review."
 license: CC0-1.0
-compatibility: "The questions and worksheet work in any assistant or on paper. The optional script (scripts/render_review.py) needs Python 3.9+ with the standard library only and makes no network request."
+compatibility: "The questions and worksheet work in any assistant or on paper. The optional script (scripts/render_review.py) needs Python 3.9+ (tested on Python 3.13) with the standard library only and makes no network request."
 metadata:
     version: "0.1.0"
     last-updated: "2026-10-08"

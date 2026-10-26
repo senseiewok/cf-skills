@@ -13,49 +13,70 @@
       "description": "Answers a CF researcher's evidence questions (retractions, approvals, preprints, variants, funding) as evidence records with source, date, exact fields and a limitation.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-evidence-loop"]
+      "skills": [
+        "./.claude/skills/cf-evidence-loop"
+      ],
+      "version": "1.0.0"
     },
     {
       "name": "site-seo-review",
       "description": "A careful, honest search-and-sharing review of a small website, with a checker script for static sites and rules for health and research sites.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/site-seo-review"]
+      "skills": [
+        "./.claude/skills/site-seo-review"
+      ],
+      "version": "0.1.0"
     },
     {
       "name": "cf-ai-safe-use",
       "description": "Baseline rules for an AI assistant answering CF or health questions: general information only, no doses, diagnosis or eligibility, no identifying details, and it says what each answer rests on.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-ai-safe-use"]
+      "skills": [
+        "./.claude/skills/cf-ai-safe-use"
+      ],
+      "version": "0.1.0"
     },
     {
       "name": "cf-plain-language-rewrite",
       "description": "Rewrites a CF handout or message in plain language without adding, dropping or changing any fact, with a verify-before-use list and scripts for reading level and fact differences.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-plain-language-rewrite"]
+      "skills": [
+        "./.claude/skills/cf-plain-language-rewrite"
+      ],
+      "version": "0.1.0"
     },
     {
       "name": "cf-visit-prep",
       "description": "Helps a person with CF, a parent or a carer turn their worries into a short, ordered list of questions for the CF care team, without answering the medical question.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-visit-prep"]
+      "skills": [
+        "./.claude/skills/cf-visit-prep"
+      ],
+      "version": "0.1.0"
     },
     {
       "name": "cf-answer-check",
       "description": "Checks an AI answer about CF one claim at a time against primary sources and marks what could not be checked as unverified, with a script that drafts a claims worksheet.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-answer-check"]
+      "skills": [
+        "./.claude/skills/cf-answer-check"
+      ],
+      "version": "0.1.0"
     },
     {
       "name": "cf-ai-tool-review",
       "description": "A structured review of an AI tool before a CF care team or patient group uses it, where every answer points to a document, demo or test, and people make the decision.",
       "source": "./",
       "strict": false,
-      "skills": ["./.claude/skills/cf-ai-tool-review"]
+      "skills": [
+        "./.claude/skills/cf-ai-tool-review"
+      ],
+      "version": "0.1.0"
     }
   ]
 }

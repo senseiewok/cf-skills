@@ -2,7 +2,7 @@
 name: cf-answer-check
 description: "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Use when someone asks is this answer right, can I trust what the chatbot said, check these facts, find the source for this, or before putting AI-written text into a handout, a post or a note. Includes a script that turns an answer into a claims worksheet. For anyone: patients, families, care teams, researchers and builders."
 license: CC0-1.0
-compatibility: "The steps work in any assistant. The optional script (scripts/claim_worksheet.py) needs Python 3.9+ with the standard library only and makes no network request. Finding sources needs a person or a tool that can read the source pages."
+compatibility: "The steps work in any assistant. The optional script (scripts/claim_worksheet.py) needs Python 3.9+ (tested on Python 3.13) with the standard library only and makes no network request. Finding sources needs a person or a tool that can read the source pages."
 metadata:
     version: "0.1.0"
     last-updated: "2026-10-08"

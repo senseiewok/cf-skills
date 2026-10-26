@@ -9,8 +9,8 @@
 # it. Tools and agents read this file instead of hardcoding URLs or guessing
 # at terms.
 #
-# Field reference and the rules an agent must follow: sources/README.md
-# Access policy evidence (what was tested, when): landscape/registry-data-access.md
+# Field reference and the rules an agent must follow: https://github.com/senseiewok/cf-research/blob/main/sources/README.md
+# Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md
 
 schema_version: 1
 updated: 2026-10-24

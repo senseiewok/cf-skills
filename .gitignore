@@ -19,7 +19,20 @@ Thumbs.db
 .claude/settings.local.json
 CLAUDE.local.md
 
-# python tool caches
+# python & IDE tool caches and local artifacts
 __pycache__/
 .pytest_cache/
 *.pyc
+.venv/
+venv/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.vscode/
+.idea/
+.lab-files/
+evidence/

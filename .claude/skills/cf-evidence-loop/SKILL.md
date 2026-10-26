@@ -2,7 +2,7 @@
 name: cf-evidence-loop
 description: "Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. Use when a task needs to search PubMed or Europe PMC, find systematic or Cochrane reviews, check whether a paper was retracted or corrected, list or inspect ClinicalTrials.gov studies, confirm a US drug approval date or read a current label section, look up or scan preprints, read a variant's ClinVar classification, see which projects NIH funds on a topic, run a brief that puts several of these sources side by side for one drug, variant or trial with explicit cross-checks, or check that every DOI, PMID and trial id cited in a note exists. Every record carries source, date, exact fields and a non-empty limitation; the tool never reaches a source its catalog does not permit and never calls a language model."
 license: CC0-1.0
-compatibility: "Python 3.10+ with requests and PyYAML; outbound HTTPS to api.crossref.org, eutils.ncbi.nlm.nih.gov, www.ebi.ac.uk, clinicaltrials.gov, api.fda.gov, api.biorxiv.org and api.reporter.nih.gov. No API keys required. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
+compatibility: "Python 3.10+ (tested on Python 3.13) with requests and PyYAML; outbound HTTPS to the hosts permitted in catalog.yaml (sources command). Most commands require no API key; optional providers such as OpenAlex and authenticated Scite require keys. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
 metadata:
     version: "1.0.0"
     last-updated: "2026-10-24"
@@ -11,6 +11,7 @@ metadata:
     audience: "researchers, builders"
     level: "advanced"
     category: "evidence"
+    summary: "Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations."
 ---
 
 # CF evidence loop
@@ -41,8 +42,8 @@ Research, not medical advice. The records this tool returns describe public docu
 | Who does UKRI fund on this topic? | `ukri "<query>" [--limit 25]` | UKRI Gateway to Research (alias: `gtr`) |
 | What is the population denominator for a region? | `population <entity> [--variable Count_Person] [--year YYYY]` | Google Data Commons |
 | Annotate variant with CADD, ClinVar, SnpEff, gnomAD frequency | `myvariant "<variant query>" [--limit 5]` | MyVariant.info |
-| Query gnomAD aggregate allele frequencies | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access, blocked by catalog policy) |
-| What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI|ID>` | OpenAlex via OurResearch (key required) |
+| Query gnomAD aggregate allele frequencies (refused by design) | `gnomad <chrom-pos-ref-alt>` | gnomAD (manual access only; always refused by catalog policy) |
+| What does OpenAlex hold for this work (citations, retraction, OA)? | `openalex <DOI\|ID>` | OpenAlex via OurResearch (key required) |
 | Search OpenAlex works | `openalex-search "<query>" [--limit 10]` | OpenAlex via OurResearch (key required) |
 | What open-access locations and license metadata does Unpaywall index? | `unpaywall <DOI>` | Unpaywall via OurResearch |
 | What citation graph and paper metadata does Semantic Scholar hold? | `s2 <DOI>` | Semantic Scholar via Ai2 (alias: `semantic-scholar`) |
@@ -226,11 +227,11 @@ Live check, if you have network access: `python scripts/evidence_cli.py retracti
 - **Scanning a whole month of bioRxiv.** The listing is paged; the tool stops after ten pages and says so with an `out_of_scope` record. Narrow the window.
 - **Expecting ClinVar to be the CF authority.** It aggregates submitters. For CF-specific annotation, CFTR2 is the field's reference; this tool names it in its limitation text rather than fetching it, because its terms have not been read.
 - **Forgetting the limitation.** If you copy `fields` into a document, copy `limitations` too.
-- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction (`AH-12`).** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism, enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`), and log included/excluded citations via Scite MCP `report_citations` + `citation_report`.
+- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction (`AH-12`).** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism. Optionally (when using Scite or a Scite Pro MCP account), you can enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`) and log included/excluded citations via `report_citations` + `citation_report`.
 
 ## 9. Adding a provider
 
-1. Add the source to the lab's canonical catalog with tested `access`, `base_url` and a check date, then regenerate this skill's `catalog.yaml` with `sync_skill_catalog.py` (the file says not to edit it by hand). No entry, no provider.
+1. Add the source to the lab's canonical catalog with tested `access`, `base_url` and a check date, then regenerate this skill's `catalog.yaml` with `python scripts/pin_catalog.py --source ../cf-research` (the file says not to edit it by hand). No entry, no provider.
 2. Write `scripts/evidence/providers/<name>.py` with a pure `parse_*()` and a thin query function that calls `client.get` or `client.post` by `source_id`.
 3. Write the `limitations` sentence first.
 4. Save a trimmed fixture and add a parse test.

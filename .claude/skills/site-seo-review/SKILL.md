@@ -11,6 +11,7 @@ metadata:
     audience: "builders"
     level: "advanced"
     category: "web"
+    summary: "Honest search-and-sharing review for small websites, with a static-site checker and rules for health and research pages."
 ---
 
 # Site SEO review

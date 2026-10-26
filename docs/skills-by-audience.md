@@ -37,7 +37,7 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | Skill | What it does | Use it now, no install | Level | Category |
 | --- | --- | --- | --- | --- |
 | [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
-| [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. | (install route only) | advanced | evidence |
+| [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
 
 ## Builders
 
@@ -45,8 +45,8 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | --- | --- | --- | --- | --- |
 | [`cf-ai-tool-review`](../.claude/skills/cf-ai-tool-review/SKILL.md) | A step-by-step review a clinic or patient group can use before trusting an AI tool; people make the final decision. | [Use it now](../.claude/skills/cf-ai-tool-review/references/paste-ready.md) | advanced | tool-evaluation |
 | [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
-| [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Answer a research question about cystic fibrosis, sickle cell disease, or any condition the way a researcher does, one public source at a time, and return evidence records instead of answers. | (install route only) | advanced | evidence |
-| [`site-seo-review`](../.claude/skills/site-seo-review/SKILL.md) | An honest SEO and discoverability review for small static or mostly-static websites, health and research sites included: a standard-library checker for titles, descriptions, canonicals, Open Graph, sitemap and robots agreement, headings, images, link text, preloads, third-party scripts and structured data, plus a workflow for reading the pages, proposing copy, getting the wording reviewed, and verifying the live site. | (install route only) | advanced | web |
+| [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
+| [`site-seo-review`](../.claude/skills/site-seo-review/SKILL.md) | Honest search-and-sharing review for small websites, with a static-site checker and rules for health and research pages. | (install route only) | advanced | web |
 
 ## For builders: install a skill in your agent
 

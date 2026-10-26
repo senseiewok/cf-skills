@@ -196,6 +196,13 @@ def build_copy(raw_bytes: bytes) -> tuple[bytes, str, str, int]:
     except UnicodeDecodeError as exc:
         raise Refused(f"source catalog is not valid UTF-8: {exc}") from exc
     body = strip_header(text)
+    body = body.replace(
+        "# Field reference and the rules an agent must follow: sources/README.md",
+        "# Field reference and the rules an agent must follow: https://github.com/senseiewok/cf-research/blob/main/sources/README.md",
+    ).replace(
+        "# Access policy evidence (what was tested, when): landscape/registry-data-access.md",
+        "# Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md",
+    )
     count = count_sources(body)
     copy_text = HEADER + "\n" + body
     copy_bytes = copy_text.encode("utf-8")
