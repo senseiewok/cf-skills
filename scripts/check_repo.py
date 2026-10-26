@@ -173,8 +173,9 @@ def _check_skill_meta(root: Path, folder_name: str, errors: list):
         errors.append("ERROR {}: missing required field 'name' in frontmatter".format(rel_md))
     else:
         if name != folder_name:
+            hint = " (replace the template placeholder with the folder name)" if name in ("template", "template-skill") else ""
             errors.append(
-                "ERROR {}: name '{}' does not match folder name '{}'".format(rel_md, name, folder_name)
+                "ERROR {}: name '{}' does not match folder name '{}'{}".format(rel_md, name, folder_name, hint)
             )
         if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", name):
             errors.append(

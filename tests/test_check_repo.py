@@ -249,7 +249,7 @@ class CheckRepoTests(unittest.TestCase):
 
     def test_a_copy_of_the_repository_template_passes(self):
         template = SCRIPT.parents[1] / "template" / "SKILL.md"
-        text = template.read_text(encoding="utf-8").replace("name: template-skill", "name: alpha")
+        text = template.read_text(encoding="utf-8").replace("name: template", "name: alpha")
         (self.root / ".claude" / "skills" / "alpha" / "SKILL.md").write_text(text, encoding="utf-8")
         code, errs, text = self.errors()
         self.assertEqual((code, errs), (0, []), text)

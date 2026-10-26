@@ -2,7 +2,7 @@
 name: cf-ai-safe-use
 description: "Baseline rules an AI assistant follows whenever someone asks it about cystic fibrosis (CF) or health, or asks it to help write CF material for patients, families or care teams. Use for any CF question, such as what a medicine does, what a test means, what a study found, how to word a handout, or when a person feels low. Gives general information only, never doses, diagnosis, eligibility or genotype reading; keeps names and other identifying details out; says what each answer rests on; does not simply agree; points to the CF care team. Includes a small script that flags cheap failures in an answer."
 license: CC0-1.0
-compatibility: "The rules are plain Markdown and work in any assistant. The optional checker (scripts/check_safe_output.py) needs Python 3.9+ with the standard library only and makes no network request."
+compatibility: "The rules are plain Markdown and work in any assistant. The optional checker (scripts/check_safe_output.py) needs Python 3.9+ (tested on Python 3.13) with the standard library only and makes no network request."
 metadata:
     version: "0.1.0"
     last-updated: "2026-10-08"

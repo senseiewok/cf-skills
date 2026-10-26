@@ -2,7 +2,7 @@
 name: cf-plain-language-rewrite
 description: "Rewrite a CF handout, letter, leaflet or message in plain language at a chosen reading level (sixth grade by default) without adding, dropping or changing any fact. Use when a care team or family says make this easier to read, simplify this handout, rewrite this for a parent or a teenager, or check the reading level. Keeps every number, unit, name and rule; returns a draft plus a verify-before-use list of every fact to check against the original. Includes scripts that measure the reading level and compare numbers, dates and names between the original and the rewrite."
 license: CC0-1.0
-compatibility: "The steps work in any assistant. The optional scripts (scripts/readability.py and scripts/fact_diff.py) need Python 3.9+ with the standard library only and make no network request."
+compatibility: "The steps work in any assistant. The optional scripts (scripts/readability.py and scripts/fact_diff.py) need Python 3.9+ (tested on Python 3.13) with the standard library only and make no network request."
 metadata:
     version: "0.1.0"
     last-updated: "2026-10-08"
