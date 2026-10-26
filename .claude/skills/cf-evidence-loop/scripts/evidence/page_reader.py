@@ -2,8 +2,10 @@
 
 The rules enforced here (for terms pages, human review, and pre-catalog exploration):
   1. HTTPS only: non-HTTPS URLs are refused before opening any socket.
-  2. SSRF / Localhost protection: loopback, link-local, cloud metadata endpoints,
-     and RFC 1918 private subnets are strictly refused.
+  2. SSRF / Localhost protection: the host name is resolved and refused if ANY address is
+     loopback, link-local (cloud metadata), RFC 1918 private, reserved, multicast or otherwise
+     not public; `localhost`, `*.localhost`, `*.internal`, `*.local` and `*.home.arpa` are refused
+     by name. Every redirect hop is checked again.
   3. robots.txt first: checked with the lab's RFC 9309 robots_allows matcher and PROJECT_UA.
   4. Crawl-delay honoured with ceiling: parsed from robots.txt, capped at MAX_CRAWL_DELAY_S (30s).
   5. Refused or unreadable robots.txt means no fetch: 401, 403, 5xx, redirects, or network
@@ -24,7 +26,9 @@ from __future__ import annotations
 import io
 import ipaddress
 import json
+import os
 import shutil
+import socket
 import subprocess
 import tempfile
 import time
@@ -70,18 +74,67 @@ class BodyTooLargeError(PageReaderError, ValueError):
     """Response body exceeds the 5 MB ceiling."""
 
 
+FORBIDDEN_HOST_SUFFIXES = (".localhost", ".internal", ".local", ".home.arpa")
+
+
+def _resolve(host: str, port: int) -> list[str]:
+    """Every address the host resolves to. Tests replace this seam so they never touch DNS."""
+    infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    return [info[4][0] for info in infos]
+
+
+def _ip_forbidden(value: str) -> bool:
+    """True when an address is not a public unicast address (private, loopback, link-local, reserved, multicast...)."""
+    try:
+        ip = ipaddress.ip_address(value.split("%", 1)[0])
+    except ValueError:
+        return True  # an address we cannot parse is not one we can vouch for
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        ip = mapped
+    return (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_reserved
+        or ip.is_multicast
+        or ip.is_unspecified
+        or not ip.is_global
+    )
+
+
 def is_forbidden_host(host: str) -> bool:
-    """Check if host resolves to localhost, private IP, or cloud metadata."""
+    """True when the host is localhost, an internal name, or resolves to any non-public address.
+
+    The name is resolved with getaddrinfo and EVERY returned address is checked: one private address
+    among public ones is enough to refuse (cloud metadata at 169.254.169.254, RFC 1918, loopback, ...).
+    A name that does not resolve is refused too. Residual risk: requests resolves the name again when it
+    connects, so a DNS answer that changes between the two lookups (rebinding) is not caught here.
+    """
     if not host:
         return True
-    h = host.split(":")[0].strip("[]").lower()
-    if h in ("localhost", "127.0.0.1", "::1"):
+    try:
+        parsed = urlparse("//" + host)
+        h = (parsed.hostname or "").rstrip(".").lower()
+        port = parsed.port or 443
+    except ValueError:
+        return True
+    if not h:
+        return True
+    if h == "localhost" or h.endswith(FORBIDDEN_HOST_SUFFIXES):
         return True
     try:
-        ip = ipaddress.ip_address(h)
-        return ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved
+        ipaddress.ip_address(h.split("%", 1)[0])
+        return _ip_forbidden(h)
     except ValueError:
-        return False
+        pass
+    try:
+        addresses = _resolve(h, port)
+    except (OSError, UnicodeError):
+        return True
+    if not addresses:
+        return True
+    return any(_ip_forbidden(a) for a in addresses)
 
 
 class HTMLToTextParser(HTMLParser):
@@ -141,8 +194,14 @@ def html_to_clean_text(html: str) -> tuple[str, list[tuple[str, str]]]:
     return "\n".join(cleaned_lines), cleaned_links
 
 
+def pdftotext_enabled() -> bool:
+    """The pdftotext fallback runs an external program (whatever `pdftotext` is first on PATH) on
+    downloaded bytes, so it is opt-in: set EVIDENCE_ALLOW_PDFTOTEXT=1 to enable it."""
+    return os.environ.get("EVIDENCE_ALLOW_PDFTOTEXT", "") not in ("", "0", "false", "False")
+
+
 def extract_pdf_text(data: bytes) -> str:
-    """Extract text from raw PDF bytes using pypdf or pdftotext CLI."""
+    """Extract text from raw PDF bytes using pypdf, or the pdftotext CLI when explicitly enabled."""
     if not data.startswith(b"%PDF"):
         return ""
     # Try pypdf first if available
@@ -156,8 +215,8 @@ def extract_pdf_text(data: bytes) -> str:
     except Exception:
         pass
 
-    # Fallback to pdftotext CLI if installed
-    if shutil.which("pdftotext"):
+    # Fallback to pdftotext CLI, only when opted in (EVIDENCE_ALLOW_PDFTOTEXT=1) and installed
+    if pdftotext_enabled() and shutil.which("pdftotext"):
         try:
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tf:
                 tf.write(data)
@@ -442,6 +501,10 @@ class PageReader:
                             crawl_delay=delay,
                             error=f"redirect target disallowed by robots.txt: {nxt}",
                         )
+
+                    # Rule: the redirect host is resolved and checked again (narrows DNS rebinding)
+                    if is_forbidden_host(nxt_parsed.netloc):
+                        raise PrivateHostError(f"refused: redirect to private or loopback host {nxt_parsed.netloc!r}")
 
                     cur_url = nxt
                     continue

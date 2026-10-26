@@ -7,7 +7,7 @@ metadata:
     version: "1.0.0"
     last-updated: "2026-10-24"
     capabilities: "network, python, runs-code"
-    optional-capabilities: ""
+    optional-capabilities: "api-key, writes-files"
     audience: "researchers, builders"
     level: "advanced"
     category: "evidence"
@@ -117,7 +117,7 @@ The lab's rule 5: citations go through the evidence record, and one that cannot 
 
 Exit code: 3 when any lookup was unresolved, 1 when any id is `NOT FOUND`, else 0. A file with no identifier prints `no identifiers found` and exits 1: nothing checked is not a pass. More distinct ids than `--max-ids` (default 30, at most 100) is refused before any request, never truncated. With `--json` the records come first and one last object, `{"cite_check": ...}`, holds each id's verdict and the counts; `--ledger` stores the records only. It ends with: Research, not medical advice. This checks that an identifier exists and roughly matches the wording; it does not check that the source supports the sentence.
 
-Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields.
+Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields. `EVIDENCE_ALLOW_PDFTOTEXT=1` opts in to the external `pdftotext` CLI fallback in `read-page` when `pypdf` is not installed (disabled by default so no external binary on `PATH` runs on downloaded bytes without explicit opt-in). Authenticated Scite commands read `SCITE_API_KEY` or an OAuth token file path in `SCITE_MCP_OAUTH_FILE` (no default credential path) and require `SCITE_MCP_USAGE_LOG` / `SCITE_REST_USAGE_LOG` to enforce quota caps.
 
 ## 3. Network conduct, enforced
 

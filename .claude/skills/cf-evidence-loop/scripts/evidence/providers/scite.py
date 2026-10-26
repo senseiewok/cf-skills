@@ -6,9 +6,10 @@ Per https://docs.scite.ai/quickstart and https://docs.scite.ai/pricing-and-plans
      and ZERO of the 2,500 monthly MCP credits. Default for `scite <DOI>` when `--rest` is passed
      (or when unauthenticated).
   2. Tier 2 — Authenticated Scite Pro MCP (`source="scite-mcp"`, `POST https://api.scite.ai/mcp`):
-     Uses ONLY the OAuth 2.0 PKCE token (`~/.gemini/config/scite_mcp_oauth.json`, never `SCITE_API_KEY`)
-     so MCP calls only draw from the 2,500/month MCP bucket (which has no pay-as-you-go overage).
-     Hard-capped fail-closed at `SCITE_MCP_DAILY_CAP=60` and `SCITE_MCP_MONTHLY_CAP=2400` (100-call buffer).
+     Prefers the OAuth 2.0 PKCE token file named by `SCITE_MCP_OAUTH_FILE` (with no default path)
+     so MCP calls draw from the 2,500/month MCP bucket (which has no pay-as-you-go overage).
+     Hard-capped fail-closed at `SCITE_MCP_DAILY_CAP=60` and `SCITE_MCP_MONTHLY_CAP=2400` (100-call buffer);
+     requires `SCITE_MCP_USAGE_LOG` to be set so the ledger is recorded explicitly.
   3. Tier 3 — Authenticated Scite REST API (`SCITE_API_KEY`, 750 included calls/month; $0.08/call overage):
      Hard-capped fail-closed at `SCITE_REST_DAILY_CAP=20` and `SCITE_REST_MONTHLY_CAP=650` (100-call safety
      buffer below 750) so no script or agent can ever reach 750 calls or trigger pay-as-you-go billing.
@@ -18,12 +19,11 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
-
-import requests
 
 from ..http import Client, Fetch
 from ..record import Evidence, Status, clean_for_terminal
@@ -32,15 +32,14 @@ from ..shape import ShapeError, count, error_record, need
 PROVIDER = "scite/0.1"
 SOURCE = "scite-mcp"
 REST_SOURCE = "scite-api"
-TOKEN_URL = "https://api.scite.ai/mcp/oauth/token"
 DEFAULT_LIMIT = 5
 MAX_LIMIT = 20
 MAX_BATCH_CHUNK = 500
 MAX_BATCH_TOTAL = 2000
 
-DEFAULT_OAUTH_FILE = Path.home() / ".gemini" / "config" / "scite_mcp_oauth.json"
-DEFAULT_USAGE_LOG = Path.home() / ".gemini" / "config" / "scite_mcp_usage.jsonl"
-DEFAULT_REST_USAGE_LOG = Path.home() / ".gemini" / "config" / "scite_rest_usage.jsonl"
+# No default credential or ledger paths: SCITE_MCP_OAUTH_FILE, SCITE_MCP_USAGE_LOG and SCITE_REST_USAGE_LOG
+# must be set explicitly. This module reads the OAuth file and appends to the two ledgers; nothing else.
+CREDENTIALS_HELP = "set SCITE_API_KEY, or SCITE_MCP_OAUTH_FILE to an OAuth token file from your Scite MCP client"
 
 LIMITATION = (
     "[observed: Scite ML citation classification]. Scite supporting, contrasting, and mentioning "
@@ -51,47 +50,41 @@ LIMITATION = (
 )
 
 
+def _warn(message: str) -> None:
+    """Credential and ledger problems go to stderr (never the token itself), so a silent fallback is visible."""
+    print(f"scite: {message}", file=sys.stderr)
+
+
 def _resolve_bearer_token(*, allow_api_key: bool = True) -> str | None:
     """Resolve Scite bearer token.
 
-    For MCP calls, prefers the OAuth 2.0 PKCE token in ~/.gemini/config/scite_mcp_oauth.json
-    (with auto-refresh) so MCP calls draw from the 2,500/month MCP credit pool rather than the
-    750/month REST API key pool. Falls back to SCITE_API_KEY only when allow_api_key=True.
+    For MCP calls, prefers an OAuth 2.0 PKCE token file named by SCITE_MCP_OAUTH_FILE (there is no
+    default path) so MCP calls draw from the 2,500/month MCP credit pool rather than the 750/month
+    REST API key pool. The file is only read: an expired token is not refreshed here (a refresh would
+    be a network call outside the catalog-gated Client); re-authenticate with your MCP client instead.
+    Falls back to SCITE_API_KEY only when allow_api_key=True.
     """
-    oauth_path_str = os.environ.get("SCITE_MCP_OAUTH_FILE")
-    oauth_path = Path(oauth_path_str) if oauth_path_str else DEFAULT_OAUTH_FILE
-    if oauth_path.is_file():
-        try:
-            data = json.loads(oauth_path.read_text(encoding="utf-8"))
-            token = (data.get("access_token") or "").strip()
-            expires_at = float(data.get("expires_at") or 0)
-            if token and (expires_at == 0 or time.time() < expires_at - 30):
-                return token
-
-            refresh_token = (data.get("refresh_token") or "").strip()
-            client_id = (data.get("client_id") or "").strip()
-            if refresh_token and client_id and not os.environ.get("PYTEST_CURRENT_TEST"):
-                resp = requests.post(
-                    TOKEN_URL,
-                    data={
-                        "grant_type": "refresh_token",
-                        "refresh_token": refresh_token,
-                        "client_id": client_id,
-                    },
-                    timeout=15,
-                )
-                if resp.status_code == 200:
-                    tok = resp.json()
-                    new_token = (tok.get("access_token") or "").strip()
-                    if new_token:
-                        data["access_token"] = new_token
-                        if tok.get("refresh_token"):
-                            data["refresh_token"] = tok["refresh_token"]
-                        data["expires_at"] = time.time() + int(tok.get("expires_in", 3600))
-                        oauth_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-                        return new_token
-        except Exception:
-            pass
+    oauth_path_str = (os.environ.get("SCITE_MCP_OAUTH_FILE") or "").strip()
+    if oauth_path_str:
+        oauth_path = Path(oauth_path_str)
+        if oauth_path.is_file():
+            try:
+                data = json.loads(oauth_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                _warn(f"SCITE_MCP_OAUTH_FILE could not be read as JSON ({type(exc).__name__}); ignoring it")
+                data = None
+            if isinstance(data, dict):
+                token = str(data.get("access_token") or "").strip()
+                try:
+                    expires_at = float(data.get("expires_at") or 0)
+                except (TypeError, ValueError):
+                    expires_at = -1.0
+                if token and (expires_at == 0 or time.time() < expires_at - 30):
+                    return token
+                if token:
+                    _warn("the OAuth token in SCITE_MCP_OAUTH_FILE has expired; re-authenticate with your MCP client")
+        else:
+            _warn("SCITE_MCP_OAUTH_FILE names a file that does not exist")
 
     if allow_api_key:
         env_key = (os.environ.get("SCITE_API_KEY") or "").strip()
@@ -101,7 +94,11 @@ def _resolve_bearer_token(*, allow_api_key: bool = True) -> str | None:
 
 
 def _check_daily_cap(*, rest: bool = False) -> str | None:
-    """Enforce fail-closed daily AND monthly hard caps (MCP: 60/day & 2400/month; REST: 20/day & 650/month)."""
+    """Enforce fail-closed daily AND monthly hard caps (MCP: 60/day & 2400/month; REST: 20/day & 650/month).
+
+    The usage ledger path comes only from SCITE_MCP_USAGE_LOG / SCITE_REST_USAGE_LOG. Without one the caps
+    cannot be counted across processes, so authenticated calls are refused (fail-closed) until it is set.
+    """
     env_daily_name = "SCITE_REST_DAILY_CAP" if rest else "SCITE_MCP_DAILY_CAP"
     env_monthly_name = "SCITE_REST_MONTHLY_CAP" if rest else "SCITE_MCP_MONTHLY_CAP"
     default_daily = 20 if rest else 60
@@ -117,15 +114,18 @@ def _check_daily_cap(*, rest: bool = False) -> str | None:
         monthly_cap = default_monthly
 
     env_log_name = "SCITE_REST_USAGE_LOG" if rest else "SCITE_MCP_USAGE_LOG"
-    log_str = os.environ.get(env_log_name)
-    if log_str is None and os.environ.get("PYTEST_CURRENT_TEST"):
-        return None
-    log_path = Path(log_str) if log_str else (DEFAULT_REST_USAGE_LOG if rest else DEFAULT_USAGE_LOG)
+    log_str = (os.environ.get(env_log_name) or "").strip()
+    bucket = "REST" if rest else "MCP"
+    if not log_str:
+        return (
+            f"Scite {bucket} usage ledger not configured: set {env_log_name} to a file path so the "
+            f"daily and monthly caps can be enforced (fail-closed to prevent pay-as-you-go overage)"
+        )
+    log_path = Path(log_str)
     today = time.strftime("%Y-%m-%d", time.gmtime())
     month_prefix = today[:7]  # YYYY-MM
     daily_used = 0
     monthly_used = 0
-    bucket = "REST" if rest else "MCP"
 
     if log_path.is_file():
         try:
@@ -439,7 +439,7 @@ def tally(client: Client, doi: str, *, use_rest: bool = False) -> Evidence:
             provider=PROVIDER,
             fields={
                 "doi": norm_doi,
-                "error": "Scite credentials not found (set SCITE_API_KEY or authenticate ~/.gemini/config/scite_mcp_oauth.json)",
+                "error": f"Scite credentials not found ({CREDENTIALS_HELP})",
             },
             limitations=LIMITATION,
         )
@@ -503,7 +503,7 @@ def search(client: Client, query: str, limit: int = DEFAULT_LIMIT) -> list[Evide
                 provider=PROVIDER,
                 fields={
                     "query": stripped,
-                    "error": "Scite credentials not found (set SCITE_API_KEY or authenticate ~/.gemini/config/scite_mcp_oauth.json)",
+                    "error": f"Scite credentials not found ({CREDENTIALS_HELP})",
                 },
                 limitations=LIMITATION,
             )
@@ -1050,7 +1050,7 @@ def excerpts(client: Client, doi: str, query: str, limit: int = DEFAULT_LIMIT) -
             fields={
                 "doi": norm_doi,
                 "query": stripped,
-                "error": "Scite credentials not found (set SCITE_API_KEY or authenticate ~/.gemini/config/scite_mcp_oauth.json)",
+                "error": f"Scite credentials not found ({CREDENTIALS_HELP})",
             },
             limitations=LIMITATION,
         )

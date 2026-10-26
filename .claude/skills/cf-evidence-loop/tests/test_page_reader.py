@@ -383,3 +383,67 @@ def test_cli_read_page_success(monkeypatch, capsys, tmp_path):
     assert "Terms Title" in data["text"]
     assert "Our terms paragraph." in data["text"]
     assert out_file.exists()
+
+
+def test_ssrf_guard_resolves_dns_and_blocks_internal_names_and_private_ips(monkeypatch):
+    from evidence import page_reader
+    from evidence.page_reader import PrivateHostError, is_forbidden_host, pdftotext_enabled
+
+    # Internal hostnames refused by name before DNS lookup
+    called = []
+    monkeypatch.setattr(page_reader, "_resolve", lambda host, port: (called.append(host), ["1.1.1.1"])[1])
+    for name in (
+        "localhost",
+        "sub.localhost",
+        "metadata.google.internal",
+        "service.internal",
+        "printer.local",
+        "router.home.arpa",
+    ):
+        assert is_forbidden_host(name) is True
+    assert called == []
+
+    # Literal private/loopback/link-local/multicast/reserved IPs refused without DNS
+    for ip_lit in ("127.0.0.1", "[::1]", "10.0.0.1", "169.254.169.254", "192.168.1.1", "224.0.0.1", "240.0.0.1"):
+        assert is_forbidden_host(ip_lit) is True
+
+    # Hostname resolving to any non-public IP (even mixed with a public IP) is refused
+    for bad_addrs in (
+        ["127.0.0.1"],
+        ["10.0.0.5"],
+        ["169.254.169.254"],
+        ["::ffff:169.254.169.254"],
+        ["224.0.0.1"],
+        ["240.0.0.1"],
+        ["1.1.1.1", "10.0.0.1"],
+        [],
+    ):
+        monkeypatch.setattr(page_reader, "_resolve", lambda host, port, addrs=bad_addrs: addrs)
+        assert is_forbidden_host("rebind.example.org") is True
+
+    # DNS failure is refused
+    def _raise_dns(host, port):
+        raise OSError("NXDOMAIN")
+
+    monkeypatch.setattr(page_reader, "_resolve", _raise_dns)
+    assert is_forbidden_host("unresolvable.example.org") is True
+
+    # Redirect hop re-resolves and refuses when DNS flips to private IP
+    answers = [["1.1.1.1"], ["1.1.1.1"], ["169.254.169.254"]]
+    monkeypatch.setattr(page_reader, "_resolve", lambda host, port: answers.pop(0))
+    robots = "User-agent: *\nAllow: /\n"
+    session = ScriptedSession([
+        ScriptedResponse(200, text=robots, url="https://example.org/robots.txt"),
+        ScriptedResponse(302, headers={"Location": "https://example.org/step2"}, url="https://example.org/terms"),
+    ])
+    with pytest.raises(PrivateHostError, match="redirect to private or loopback host"):
+        PageReader(session=session).read_page("https://example.org/terms")
+
+    # pdftotext CLI fallback is opt-in via EVIDENCE_ALLOW_PDFTOTEXT
+    monkeypatch.delenv("EVIDENCE_ALLOW_PDFTOTEXT", raising=False)
+    assert pdftotext_enabled() is False
+    monkeypatch.setenv("EVIDENCE_ALLOW_PDFTOTEXT", "0")
+    assert pdftotext_enabled() is False
+    monkeypatch.setenv("EVIDENCE_ALLOW_PDFTOTEXT", "1")
+    assert pdftotext_enabled() is True
+
