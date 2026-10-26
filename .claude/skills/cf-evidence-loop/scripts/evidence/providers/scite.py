@@ -1,4 +1,4 @@
-"""Scite Smart Citations provider with 3-tier Zero-Overage Quota Protection (T-0047).
+"""Scite Smart Citations provider with 3-tier Zero-Overage Quota Protection.
 
 Per https://docs.scite.ai/quickstart and https://docs.scite.ai/pricing-and-plans:
   1. Tier 1 — Public Unauthenticated REST (`source="scite-api"`, `GET /tallies/{doi}` & `GET /papers/{doi}`):

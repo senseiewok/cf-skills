@@ -1,7 +1,7 @@
 """Tests for EMBL-EBI ChEMBL and Open Targets Platform v4 GraphQL providers.
 
 Covers offline fixture parsing, strict shape checks, empty result handling,
-CC BY-SA 3.0 and CC0 1.0 licence and limitation statements, T-0071 ClinGen/gnomAD
+CC BY-SA 3.0 and CC0 1.0 licence and limitation statements, ClinGen/gnomAD
 exclusion, CLI dispatch, and dry-run behaviour.
 """
 
@@ -241,7 +241,7 @@ def test_open_targets_parse_search_from_fixture():
     for r in recs:
         assert r.fields["license"] == "CC0 1.0"
         assert "CC0 1.0" in r.limitations
-        assert "T-0071" in r.limitations
+        assert "ClinGen and gnomAD excluded" in r.limitations
 
 
 def test_open_targets_direct_entity_parsers_and_not_found():
@@ -262,8 +262,8 @@ def test_open_targets_direct_entity_parsers_and_not_found():
     assert open_targets.parse_drug({"data": {"drug": None}}, "q", url, "CHEMBL0").status is Status.NOT_FOUND
 
 
-def test_open_targets_excludes_clingen_and_gnomad_t0071():
-    """Verify T-0071: GraphQL queries never request ClinGen or gnomAD variant datasources."""
+def test_open_targets_excludes_clingen_and_gnomad():
+    """Verify GraphQL queries never request ClinGen or gnomAD variant datasources."""
     for gql in (
         open_targets.TARGET_QUERY,
         open_targets.DISEASE_QUERY,
@@ -312,7 +312,7 @@ def test_open_targets_dry_run_and_cli_dispatch(monkeypatch, capsys):
 
 
 # ---------------------------------------------------------------------------
-# Scite Smart Citations provider tests (T-0047)
+# Scite Smart Citations provider tests
 # ---------------------------------------------------------------------------
 
 

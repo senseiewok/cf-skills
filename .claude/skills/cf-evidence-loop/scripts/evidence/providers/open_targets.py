@@ -5,7 +5,7 @@ antibody, PROTAC, other modalities), curated target safety liabilities, disease-
 scores, drug mechanisms of action, and FAERS post-marketing adverse event log-likelihood ratios.
 Uses polite Client with source="open-targets" under CC0 1.0 Public Domain Dedication.
 
-Per board task T-0071 and Open Targets third-party terms, ClinGen and gnomAD variant-level
+Per Open Targets third-party terms, ClinGen and gnomAD variant-level
 datasources are excluded from queries; use NCBI ClinVar (variants) for variant pathogenicity.
 """
 
@@ -31,7 +31,7 @@ CHEMBL_ID_PATTERN = re.compile(r"^CHEMBL[0-9]+$", re.IGNORECASE)
 CC0_LICENSE = "CC0 1.0"
 CC0_ATTRIBUTION = (
     "Open Targets Platform data is released under Creative Commons CC0 1.0 Universal "
-    "(Public Domain Dedication); third-party source terms apply (ClinGen and gnomAD excluded per T-0071)"
+    "(Public Domain Dedication); third-party source terms apply (ClinGen and gnomAD excluded because their third-party terms are not cleared for automated access)"
 )
 
 LIMITATION = (

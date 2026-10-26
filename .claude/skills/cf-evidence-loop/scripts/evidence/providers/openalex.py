@@ -1,8 +1,7 @@
 """OpenAlex: literature, citation graphs, institutional affiliations, and retraction surveillance.
 
 Layer 1/2 provider for scientific publications, cross-source citation counts, open-access
-availability, and author institutions. Key required per catalog.yaml (auth: api_key_required);
-see proposals/2026-10-08-source-plan-and-signups.md (board task T-0102).
+availability, and author institutions. Key required per catalog.yaml (auth: api_key_required).
 """
 
 from __future__ import annotations
