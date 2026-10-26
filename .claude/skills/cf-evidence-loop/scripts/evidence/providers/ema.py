@@ -42,11 +42,10 @@ def _fmt_ema_date(s: Any) -> str | None:
 
 def resolve_report_path(file_path: str | Path | None = None) -> Path:
     """Deterministically resolve the EMA JSON report file path:
-    1. Explicit file_path argument.
+    1. Explicit file_path argument (--file PATH).
     2. EMA_MEDICINES_JSON environment variable.
     3. <catalog_dir>/downloads/EMA_medicines_json_report_en.json (next to EVIDENCE_CATALOG if set).
     4. <CATALOG_PATH>/../downloads/EMA_medicines_json_report_en.json.
-    5. Sibling checkout cf-research/sources/downloads/EMA_medicines_json_report_en.json.
     """
     if file_path:
         return Path(file_path)
@@ -61,24 +60,7 @@ def resolve_report_path(file_path: str | Path | None = None) -> Path:
         if p.is_file():
             return p
 
-    p_cat = catalog.CATALOG_PATH.parent / "downloads" / "EMA_medicines_json_report_en.json"
-    if p_cat.is_file():
-        return p_cat
-
-    # Check ancestor directories up to 4 levels (workspace root), skipping .worktrees
-    current = Path(__file__).resolve()
-    for ancestor in list(current.parents)[:4]:
-        if ".worktrees" in ancestor.parts:
-            continue
-        cand = ancestor / "cf-research" / "sources" / "downloads" / "EMA_medicines_json_report_en.json"
-        if ".worktrees" not in cand.parts and cand.is_file():
-            return cand
-        cand_parent = ancestor.parent / "cf-research" / "sources" / "downloads" / "EMA_medicines_json_report_en.json"
-        if ".worktrees" not in cand_parent.parts and cand_parent.is_file():
-            return cand_parent
-
-    # Fallback to catalog downloads path
-    return p_cat
+    return catalog.CATALOG_PATH.parent / "downloads" / "EMA_medicines_json_report_en.json"
 
 
 def _get_file_timestamp(data: dict, file_path: Path | None = None) -> str:
@@ -299,7 +281,7 @@ def lookup(drug: str, file_path: str | Path | None = None) -> Evidence:
             fields={"drug": drug, "file_name": path.name, "error": "file not found"},
             limitations=(
                 f"Source: European Medicines Agency (EMA). Report file '{path.name}' not found; "
-                "the fetcher must place the report under sources/downloads before this offline provider can read it."
+                "pass --file PATH, set EMA_MEDICINES_JSON, or place the report under downloads/ next to catalog.yaml."
             ),
         )
 
