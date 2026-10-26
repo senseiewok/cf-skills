@@ -1,7 +1,7 @@
 """Tests for EMBL-EBI ChEMBL and Open Targets Platform v4 GraphQL providers.
 
 Covers offline fixture parsing, strict shape checks, empty result handling,
-CC BY-SA 3.0 and CC0 1.0 licence and limitation statements, T-0071 ClinGen/gnomAD
+CC BY-SA 3.0 and CC0 1.0 licence and limitation statements, ClinGen/gnomAD
 exclusion, CLI dispatch, and dry-run behaviour.
 """
 
@@ -241,7 +241,7 @@ def test_open_targets_parse_search_from_fixture():
     for r in recs:
         assert r.fields["license"] == "CC0 1.0"
         assert "CC0 1.0" in r.limitations
-        assert "T-0071" in r.limitations
+        assert "ClinGen and gnomAD excluded" in r.limitations
 
 
 def test_open_targets_direct_entity_parsers_and_not_found():
@@ -262,8 +262,8 @@ def test_open_targets_direct_entity_parsers_and_not_found():
     assert open_targets.parse_drug({"data": {"drug": None}}, "q", url, "CHEMBL0").status is Status.NOT_FOUND
 
 
-def test_open_targets_excludes_clingen_and_gnomad_t0071():
-    """Verify T-0071: GraphQL queries never request ClinGen or gnomAD variant datasources."""
+def test_open_targets_excludes_clingen_and_gnomad():
+    """Verify GraphQL queries never request ClinGen or gnomAD variant datasources."""
     for gql in (
         open_targets.TARGET_QUERY,
         open_targets.DISEASE_QUERY,
@@ -312,7 +312,7 @@ def test_open_targets_dry_run_and_cli_dispatch(monkeypatch, capsys):
 
 
 # ---------------------------------------------------------------------------
-# Scite Smart Citations provider tests (T-0047)
+# Scite Smart Citations provider tests
 # ---------------------------------------------------------------------------
 
 
@@ -570,4 +570,46 @@ def test_scite_superpowers_batch_sections_excerpts_and_recommend(monkeypatch, ca
     assert recs_rec[0].status is Status.FOUND
     assert recs_rec[0].fields["recommendation_score"] == 0.942
     assert recs_rec[0].fields["quota_bucket"] == "scite-rest-partner-650"
+
+
+def test_scite_oauth_env_only_no_refresh_and_fail_closed_ledger(monkeypatch, tmp_path, capsys):
+    import time
+
+    monkeypatch.delenv("SCITE_API_KEY", raising=False)
+    monkeypatch.delenv("SCITE_MCP_OAUTH_FILE", raising=False)
+    assert scite._resolve_bearer_token() is None
+
+    # Expired OAuth token warns on stderr, makes no network request, and falls back to SCITE_API_KEY when allowed
+    oauth_file = tmp_path / "oauth.json"
+    oauth_file.write_text(
+        json.dumps(
+            {
+                "access_token": "expired-token",
+                "refresh_token": "refresh-tok",
+                "client_id": "client-123",
+                "expires_at": time.time() - 120,
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SCITE_MCP_OAUTH_FILE", str(oauth_file))
+    assert scite._resolve_bearer_token(allow_api_key=False) is None
+    err = capsys.readouterr().err
+    assert "expired" in err
+
+    # Valid OAuth token is returned without modifying the file
+    oauth_file.write_text(
+        json.dumps({"access_token": "valid-oauth-token", "expires_at": time.time() + 3600}),
+        encoding="utf-8",
+    )
+    assert scite._resolve_bearer_token(allow_api_key=False) == "valid-oauth-token"
+
+    # Usage ledger fail-closed when SCITE_MCP_USAGE_LOG / SCITE_REST_USAGE_LOG is unset
+    monkeypatch.delenv("SCITE_MCP_USAGE_LOG", raising=False)
+    monkeypatch.delenv("SCITE_REST_USAGE_LOG", raising=False)
+    mcp_err = scite._check_daily_cap(rest=False)
+    rest_err = scite._check_daily_cap(rest=True)
+    assert mcp_err is not None and "SCITE_MCP_USAGE_LOG" in mcp_err
+    assert rest_err is not None and "SCITE_REST_USAGE_LOG" in rest_err
+
 

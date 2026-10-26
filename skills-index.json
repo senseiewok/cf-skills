@@ -93,7 +93,10 @@
         "python",
         "runs-code"
       ],
-      "optional_capabilities": [],
+      "optional_capabilities": [
+        "api-key",
+        "writes-files"
+      ],
       "audience": [
         "researchers",
         "builders"

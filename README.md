@@ -3,23 +3,23 @@
 Reusable agent skills from the Sensei Ewok Research Lab, an independent open-source lab building small tools for cystic fibrosis (CF) research. Each skill is a folder with a `SKILL.md` that an AI agent reads when your task matches, plus scripts and references it can use. The format is the open [Agent Skills](https://agentskills.io) format, so one folder works in many agents.
 
 ```text
-                         .
-                         |
-                         |
-                       _.|._
-                      /     \
-                     |       |
-                     |   .   |
-                     |  (:)  |
-                     |   '   |
-                     |       |
-                      \_____/
-                        '-'
+  /------------------------------+
+ /  . . . o o . . . . . o o . .  |
+ |  . . o . . o . . . o . . o .  |
+ |  . o . . . . o . o . . . . o  |
+ |  o . . . . . . o . . . . . .  - .
+ |  . o . . . . o . o . . . . o  |   .
+ |  . . o . . o . . . o . . o .  |
+ |  . . . o o . . . . . o o . .  |    .
+ +-------------------------------+
+                                      .
+
+                                     .
 ```
 
-*A single hanging lantern, drawn in plain line characters, hangs from a short chain in an empty field with a small flame inside.*
+*A punched card with a clipped corner, drawn in plain line characters; its holes trace a double helix across a field of unpunched dots, and a dotted thread leaves its right edge and drifts down and away.*
 
-> *Whoever lit the lamp is not the one who reads by it.*
+> *A pattern punched once can be woven by hands that never met the one who punched it.*
 
 **Seven skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own licence. Research, not medical advice.
 
@@ -146,7 +146,7 @@ Most agents load a skill by itself when your request matches its description. To
 
 ## What is in this repository
 
-```text
+```plaintext
 .claude/skills/<name>/     one folder per skill (SKILL.md, scripts/, references/, tests/): the folder Claude Code,
                            Copilot and Cursor read, so a clone of this repository works as a skills folder
 .claude/settings.json      Claude Code deny rules for a session started here: no reading .env files, keys or credentials

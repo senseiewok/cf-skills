@@ -73,7 +73,7 @@ jobs:
         run: |
           python -m pip install --no-deps --only-binary=:all: \
             pytest==8.3.4 pluggy==1.5.0 iniconfig==2.0.0 packaging==24.2 \
-            requests==2.32.3 urllib3==2.2.3 idna==3.10 certifi==2024.8.30 charset-normalizer==3.4.0 \
+            requests==2.32.4 urllib3==2.5.0 idna==3.10 certifi==2024.8.30 charset-normalizer==3.4.0 \
             PyYAML==6.0.3
           python -m pip check
       # Each skill's tests run from its own folder, as its SKILL.md says (conftest.py puts its scripts on the path).

@@ -1,4 +1,4 @@
-# Release review: `site-seo-review` (Tasks T-0083 and T-0092)
+# Release review: `site-seo-review`
 
 Date: 2026-10-16  
 Repository: `senseiewok/cf-skills`  
@@ -31,7 +31,7 @@ Status: Passed automated gates, frontier challenger review, and defect remediati
 
 ---
 
-## 3. SEO008 Defect Documentation and Fix (Task T-0092)
+## 3. SEO008 Defect Documentation and Fix
 
 - **Defect Description**:
   When `--base-url` was omitted during an audit and an absolute canonical URL was supplied in `index.html` (for example, `<link rel="canonical" href="http://example.com/foo">`), the checker previously guarded canonical equality behind `is_abs and base_url`. As a consequence, without a base URL, the checker skipped canonical mismatch verification and failed to report `SEO008`.
@@ -50,6 +50,6 @@ Status: Passed automated gates, frontier challenger review, and defect remediati
 
 ## 4. Remaining Human Deliverables
 
-Per acceptance criteria for T-0083 and T-0092:
+Remaining release steps:
 - [ ] Human maintainer reads `SKILL.md`, references, and `scripts/seo_audit.py`.
 - [ ] Human maintainer confirms the licence (CC0-1.0) and approves release.

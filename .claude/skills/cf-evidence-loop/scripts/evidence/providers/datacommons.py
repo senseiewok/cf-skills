@@ -1,8 +1,7 @@
 """Google Data Commons: population and demographic statistics for denominators.
 
 Layer 5 provider for prevalence, carrier frequency, and demographic denominators.
-Does not hold cystic fibrosis or sickle cell registry data; see admission review
-(cf-research/proposals/2026-10-04-datacommons-admission.md, board T-0048).
+Does not hold cystic fibrosis or sickle cell registry data.
 """
 
 from __future__ import annotations

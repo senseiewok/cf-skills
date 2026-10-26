@@ -274,6 +274,19 @@ class CheckRepoTests(unittest.TestCase):
         self.assertEqual(set(a), {"AUDIENCES", "LEVELS", "CATEGORIES"})
         self.assertEqual(a, b)
 
+    def test_the_agent_folder_tables_match_between_install_skill_and_make_index(self):
+        import ast
+        def eval_assign(path, var_name):
+            tree = ast.parse(Path(path).read_text(encoding="utf-8"))
+            for node in tree.body:
+                if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and node.targets[0].id == var_name:
+                    return ast.literal_eval(node.value)
+            return None
+        inst_agents = eval_assign(SCRIPT.parent / "install_skill.py", "_DEFAULT_AGENTS")
+        idx_rows = eval_assign(SCRIPT.parent / "make_index.py", "AGENTS")
+        from_idx = {name: {"project": proj, "user": user} for name, proj, user, _gh in idx_rows}
+        self.assertEqual(inst_agents, from_idx)
+
     # ---- links
     def test_a_broken_relative_link_in_a_skill_is_reported_with_its_target(self):
         self.edit(".claude/skills/alpha/SKILL.md", "references/notes.md", "references/gone.md")

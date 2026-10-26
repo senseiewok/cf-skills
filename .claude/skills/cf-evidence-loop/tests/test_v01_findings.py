@@ -1,4 +1,4 @@
-"""Findings a frontier-model review deferred in v0.1 (lab task T-0052). Each test failed before its fix.
+"""Findings a frontier-model review deferred in v0.1. Each test failed before its fix.
 
 1. A response with an unexpected shape (a JSON list, a missing result key, a non-numeric total) became a crash or a
    silent "nothing found" instead of an error record that says what was wrong.

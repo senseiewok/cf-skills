@@ -7,7 +7,7 @@ metadata:
     version: "1.0.0"
     last-updated: "2026-10-24"
     capabilities: "network, python, runs-code"
-    optional-capabilities: ""
+    optional-capabilities: "api-key, writes-files"
     audience: "researchers, builders"
     level: "advanced"
     category: "evidence"
@@ -106,7 +106,7 @@ What a brief does not do: it adds no fact of its own. Every value it prints is c
 
 ### Cite-check
 
-The lab's rule 5: citations go through the evidence record, and one that cannot be resolved is deleted or fixed from a source, never repaired from memory. `cite-check FILE` applies it to a whole note. It finds every DOI, every PubMed id written as `PMID 123`, `PMID: 123` or a `pubmed/123` URL, and every `NCT` id, removes duplicates (keeping the line of first occurrence), and looks each one up with the single-lookup code: `doi` for a DOI, a PubMed search on the `[pmid]` field for a PMID (two requests), `trial` for an NCT id. The usual client applies: catalog gate, pacing, budget, circuit breaker, accounting.
+Every citation goes through the evidence record, and one that cannot be resolved is deleted or fixed from a source, never repaired from memory. `cite-check FILE` applies it to a whole note. It finds every DOI, every PubMed id written as `PMID 123`, `PMID: 123` or a `pubmed/123` URL, and every `NCT` id, removes duplicates (keeping the line of first occurrence), and looks each one up with the single-lookup code: `doi` for a DOI, a PubMed search on the `[pmid]` field for a PMID (two requests), `trial` for an NCT id. The usual client applies: catalog gate, pacing, budget, circuit breaker, accounting.
 
 | Line | Meaning |
 | --- | --- |
@@ -118,7 +118,7 @@ The lab's rule 5: citations go through the evidence record, and one that cannot 
 
 Exit code: 3 when any lookup was unresolved, 1 when any id is `NOT FOUND`, else 0. A file with no identifier prints `no identifiers found` and exits 1: nothing checked is not a pass. More distinct ids than `--max-ids` (default 30, at most 100) is refused before any request, never truncated. With `--json` the records come first and one last object, `{"cite_check": ...}`, holds each id's verdict and the counts; `--ledger` stores the records only. It ends with: Research, not medical advice. This checks that an identifier exists and roughly matches the wording; it does not check that the source supports the sentence.
 
-Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields.
+Optional environment: `EVIDENCE_CONTACT` adds a contact address for Crossref's polite pool and NCBI's `email` parameter (never invented if unset). `EVIDENCE_CATALOG` points at a larger organisation-wide catalog with the same fields. `EVIDENCE_ALLOW_PDFTOTEXT=1` opts in to the external `pdftotext` CLI fallback in `read-page` when `pypdf` is not installed (disabled by default so no external binary on `PATH` runs on downloaded bytes without explicit opt-in). Authenticated Scite commands read `SCITE_API_KEY` or an OAuth token file path in `SCITE_MCP_OAUTH_FILE` (no default credential path) and require `SCITE_MCP_USAGE_LOG` / `SCITE_REST_USAGE_LOG` to enforce quota caps.
 
 ## 3. Network conduct, enforced
 
@@ -227,7 +227,7 @@ Live check, if you have network access: `python scripts/evidence_cli.py retracti
 - **Scanning a whole month of bioRxiv.** The listing is paged; the tool stops after ten pages and says so with an `out_of_scope` record. Narrow the window.
 - **Expecting ClinVar to be the CF authority.** It aggregates submitters. For CF-specific annotation, CFTR2 is the field's reference; this tool names it in its limitation text rather than fetching it, because its terms have not been read.
 - **Forgetting the limitation.** If you copy `fields` into a document, copy `limitations` too.
-- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction (`AH-12`).** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism. Optionally (when using Scite or a Scite Pro MCP account), you can enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`) and log included/excluded citations via `report_citations` + `citation_report`.
+- **Assuming `verdict=PASS` on a DOI proves topical relevance or non-retraction.** A 1-digit typo in a DOI can resolve `200 OK` in Crossref to a real paper in an unrelated field (e.g., a hearing-loss GWAS or podocyte study), and a retraction notice may have a title starting with `"Retraction Notice to..."` rather than `"RETRACTED:"`. Always verify the canonical title against the claimed mechanism. Optionally (when using Scite or a Scite Pro MCP account), you can enrich ledger entries with Scite Smart Citation tallies (`scite_verified: true`, `scite_tally`) and log included/excluded citations via `report_citations` + `citation_report`.
 
 ## 9. Adding a provider
 

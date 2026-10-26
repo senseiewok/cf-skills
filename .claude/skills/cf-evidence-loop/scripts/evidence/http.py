@@ -383,7 +383,7 @@ def robots_allows(body: str, path: str, agent: str = PROJECT_TOKEN) -> bool:
     groups combined instead. Within the chosen rules the longest match wins, and Allow beats Disallow on
     equal length. Consecutive User-agent lines share one group; an empty value names nobody.
 
-    In addition (T-0067 / T-0094), robots_allows checks whether any group naming one of AI_AGENT_TOKENS
+    In addition, robots_allows checks whether any group naming one of AI_AGENT_TOKENS
     (Claude, ClaudeBot, Claude-User, Claude-SearchBot, anthropic-ai, GPTBot, ChatGPT-User, CCBot,
     Google-Extended, PerplexityBot) disallows the path; if any AI agent group disallows it, the path is
     refused (returns False)."""
