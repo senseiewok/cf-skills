@@ -66,7 +66,7 @@ def _resolve_bearer_token(*, allow_api_key: bool = True) -> str | None:
     """
     oauth_path_str = (os.environ.get("SCITE_MCP_OAUTH_FILE") or "").strip()
     if oauth_path_str:
-        oauth_path = Path(oauth_path_str)
+        oauth_path = Path(oauth_path_str).expanduser()
         if oauth_path.is_file():
             try:
                 data = json.loads(oauth_path.read_text(encoding="utf-8"))
@@ -121,7 +121,7 @@ def _check_daily_cap(*, rest: bool = False) -> str | None:
             f"Scite {bucket} usage ledger not configured: set {env_log_name} to a file path so the "
             f"daily and monthly caps can be enforced (fail-closed to prevent pay-as-you-go overage)"
         )
-    log_path = Path(log_str)
+    log_path = Path(log_str).expanduser()
     today = time.strftime("%Y-%m-%d", time.gmtime())
     month_prefix = today[:7]  # YYYY-MM
     daily_used = 0
