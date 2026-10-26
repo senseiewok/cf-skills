@@ -571,3 +571,45 @@ def test_scite_superpowers_batch_sections_excerpts_and_recommend(monkeypatch, ca
     assert recs_rec[0].fields["recommendation_score"] == 0.942
     assert recs_rec[0].fields["quota_bucket"] == "scite-rest-partner-650"
 
+
+def test_scite_oauth_env_only_no_refresh_and_fail_closed_ledger(monkeypatch, tmp_path, capsys):
+    import time
+
+    monkeypatch.delenv("SCITE_API_KEY", raising=False)
+    monkeypatch.delenv("SCITE_MCP_OAUTH_FILE", raising=False)
+    assert scite._resolve_bearer_token() is None
+
+    # Expired OAuth token warns on stderr, makes no network request, and falls back to SCITE_API_KEY when allowed
+    oauth_file = tmp_path / "oauth.json"
+    oauth_file.write_text(
+        json.dumps(
+            {
+                "access_token": "expired-token",
+                "refresh_token": "refresh-tok",
+                "client_id": "client-123",
+                "expires_at": time.time() - 120,
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SCITE_MCP_OAUTH_FILE", str(oauth_file))
+    assert scite._resolve_bearer_token(allow_api_key=False) is None
+    err = capsys.readouterr().err
+    assert "expired" in err
+
+    # Valid OAuth token is returned without modifying the file
+    oauth_file.write_text(
+        json.dumps({"access_token": "valid-oauth-token", "expires_at": time.time() + 3600}),
+        encoding="utf-8",
+    )
+    assert scite._resolve_bearer_token(allow_api_key=False) == "valid-oauth-token"
+
+    # Usage ledger fail-closed when SCITE_MCP_USAGE_LOG / SCITE_REST_USAGE_LOG is unset
+    monkeypatch.delenv("SCITE_MCP_USAGE_LOG", raising=False)
+    monkeypatch.delenv("SCITE_REST_USAGE_LOG", raising=False)
+    mcp_err = scite._check_daily_cap(rest=False)
+    rest_err = scite._check_daily_cap(rest=True)
+    assert mcp_err is not None and "SCITE_MCP_USAGE_LOG" in mcp_err
+    assert rest_err is not None and "SCITE_REST_USAGE_LOG" in rest_err
+
+
