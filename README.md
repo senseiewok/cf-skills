@@ -35,7 +35,7 @@ A skill is a folder: a `SKILL.md` that an agent reads when your task matches its
 
 These skills are "in review": the maintainer has not yet confirmed every licence or read every file, and the install notes were read from vendors' pages, not tested in each client. Read a skill's `SKILL.md` and its scripts before you let an agent run them.
 
-What this is not: a medical device, a clinical tool, or a claim about treatment. An approval date is not anyone's eligibility, a label's text is a public document and not advice, and a record is a thing to check, not a conclusion.
+What this is not: a medical device, a clinical tool, or a claim about treatment. An approval date is not anyone's eligibility, a label's text is a public document and not advice, and a record is a thing to check, not a conclusion. The card at the top of this page is an emblem: its holes echo DNA, but it is not a diagram of a gene, a protein or a treatment.
 
 ## Try it
 
