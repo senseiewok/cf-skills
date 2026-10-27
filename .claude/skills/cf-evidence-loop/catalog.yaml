@@ -3307,6 +3307,354 @@ sources:
     claim_label: unverified
     notes: Official tertiary pediatric referral and university teaching hospital portal in Syria; robots.txt allow (2026-10-25), manual access, link and summary only.
 
+  - id: uhs-la-resource-pages
+    title: University of Health Sciences Laos website (uhs.edu.la)
+    publisher: University of Health Sciences, Laos
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://uhs.edu.la/
+    url: null
+    claim_label: unverified
+    notes: Official health sciences university portal in Laos; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: pasteur-mg-resource-pages
+    title: Institut Pasteur de Madagascar website (www.pasteur.mg)
+    publisher: Institut Pasteur de Madagascar
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.pasteur.mg/
+    url: null
+    claim_label: unverified
+    notes: Official biomedical research and clinical diagnostic foundation in Madagascar; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: cicm-ml-resource-pages
+    title: Centre d'Infectiologie Charles Mérieux du Mali website (www.cicm-mali.org)
+    publisher: Centre d'Infectiologie Charles Mérieux du Mali
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.cicm-mali.org/
+    url: null
+    claim_label: unverified
+    notes: Official public biomedical and clinical diagnostic center in Mali; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: centre-muraz-bf-resource-pages
+    title: Centre Muraz Institut National de Santé Publique website (www.centre-muraz.bf)
+    publisher: Centre Muraz, Institut National de Santé Publique
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://www.centre-muraz.bf/
+    url: null
+    claim_label: unverified
+    notes: Official national public health and biomedical research institute in Burkina Faso; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: inrsp-mr-resource-pages
+    title: Institut National de Recherches en Santé Publique website (inrsp.mr)
+    publisher: Institut National de Recherches en Santé Publique
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-25
+    landing_page: https://inrsp.mr/
+    url: null
+    claim_label: unverified
+    notes: Official public health institute and reference laboratory portal in Mauritania; robots.txt allow (2026-10-25), manual access, link and summary only.
+
+  - id: um2-mm-resource-pages
+    title: University of Medicine 2 Yangon website (um2ygn.edu.mm)
+    publisher: University of Medicine 2, Yangon
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://um2ygn.edu.mm/
+    url: null
+    claim_label: unverified
+    notes: Official public medical university portal in Myanmar; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: sinu-sb-resource-pages
+    title: Solomon Islands National University website (www.sinu.edu.sb)
+    publisher: Solomon Islands National University
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.sinu.edu.sb/
+    url: null
+    claim_label: unverified
+    notes: Official national university and health sciences faculty portal in Solomon Islands; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: aden-ye-resource-pages
+    title: University of Aden website (www.aden-univ.net)
+    publisher: University of Aden
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.aden-univ.net/
+    url: null
+    claim_label: unverified
+    notes: Official public university and medical faculty portal in Yemen; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: cermes-ne-resource-pages
+    title: Centre de Recherche Médicale et Sanitaire website (cermes.net)
+    publisher: Centre de Recherche Médicale et Sanitaire
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://cermes.net/
+    url: null
+    claim_label: unverified
+    notes: Official public biomedical research and Pasteur Network diagnostic institute in Niger; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: uofk-sd-resource-pages
+    title: University of Khartoum website (uofk.edu)
+    publisher: University of Khartoum
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://uofk.edu/
+    url: null
+    claim_label: unverified
+    notes: Official public university and medical faculty portal in Sudan; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: tdlu-tm-resource-pages
+    title: State Medical University of Turkmenistan website (tdlu.edu.tm)
+    publisher: State Medical University of Turkmenistan
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://tdlu.edu.tm/
+    url: null
+    claim_label: unverified
+    notes: Official state medical university portal in Turkmenistan; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: uganc-gn-resource-pages
+    title: Université Gamal Abdel Nasser de Conakry website (uganc.edu.gn)
+    publisher: Université Gamal Abdel Nasser de Conakry
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://uganc.edu.gn/
+    url: null
+    claim_label: unverified
+    notes: Official public university and medical faculty portal in Guinea; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: snu-so-resource-pages
+    title: Somali National University website (snu.edu.so)
+    publisher: Somali National University
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://snu.edu.so/
+    url: null
+    claim_label: unverified
+    notes: Official public state university and medical faculty portal in Somalia; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: un-td-resource-pages
+    title: Université de N'Djaména website (www.universite-ndjamena.td)
+    publisher: Université de N'Djaména
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.universite-ndjamena.td/
+    url: null
+    claim_label: unverified
+    notes: Official public university and health sciences faculty portal in Chad; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: nul-ls-resource-pages
+    title: National University of Lesotho website (www.nul.ls)
+    publisher: National University of Lesotho
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.nul.ls/
+    url: null
+    claim_label: unverified
+    notes: Official national university and health sciences faculty portal in Lesotho; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: uneswa-sz-resource-pages
+    title: University of Eswatini website (www.uneswa.ac.sz)
+    publisher: University of Eswatini
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.uneswa.ac.sz/
+    url: null
+    claim_label: unverified
+    notes: Official public university and health sciences faculty portal in Eswatini; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: kums-af-resource-pages
+    title: Kabul University of Medical Sciences website (kums.edu.af)
+    publisher: Kabul University of Medical Sciences (KUMS)
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://kums.edu.af/
+    url: null
+    claim_label: unverified
+    notes: Official public medical university and tertiary teaching hospital portal in Afghanistan; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: sante-dj-resource-pages
+    title: Ministère de la Santé de Djibouti website (sante.gouv.dj)
+    publisher: Ministère de la Santé de la République de Djibouti
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://sante.gouv.dj/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and clinical referral portal in Djibouti; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: mohs-sl-resource-pages
+    title: Ministry of Health and Sanitation of Sierra Leone website (mohs.gov.sl)
+    publisher: Ministry of Health and Sanitation of Sierra Leone (MoHS)
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://mohs.gov.sl/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and pediatric clinical referral portal in Sierra Leone; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: moh-ss-resource-pages
+    title: Ministry of Health Republic of South Sudan website (moh.gov.ss)
+    publisher: Ministry of Health, Republic of South Sudan
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://moh.gov.ss/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and clinical referral coordination portal in South Sudan; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: msp-cf-resource-pages
+    title: Ministère de la Santé et de la Population de la République Centrafricaine website (sante.gouv.cf)
+    publisher: Ministère de la Santé et de la Population
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://sante.gouv.cf/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and hospital clinical referral portal in the Central African Republic; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: efsth-gm-resource-pages
+    title: Edward Francis Small Teaching Hospital website (efsth.gm)
+    publisher: Edward Francis Small Teaching Hospital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://efsth.gm/
+    url: null
+    claim_label: unverified
+    notes: Official public tertiary teaching hospital and pediatric clinical referral portal in The Gambia; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: minsabs-gq-resource-pages
+    title: Ministerio de Sanidad y Bienestar Social de Guinea Ecuatorial website (guineasalud.org)
+    publisher: Ministerio de Sanidad y Bienestar Social
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://guineasalud.org/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and hospital guidance portal in Equatorial Guinea; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: minsap-gw-resource-pages
+    title: Ministério da Saúde Pública da Guiné-Bissau website (minsap.gw)
+    publisher: Ministério da Saúde Pública da Guiné-Bissau
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://minsap.gw/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and clinical referral coordination portal in Guinea-Bissau; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: saas-ad-resource-pages
+    title: Servei Andorrà d'Atenció Sanitària website (saas.ad)
+    publisher: Servei Andorrà d'Atenció Sanitària
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.saas.ad/
+    url: null
+    claim_label: unverified
+    notes: Official national public health agency and hospital clinical referral portal in Andorra; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: qeh-bb-resource-pages
+    title: Queen Elizabeth Hospital website (qehconnect.com)
+    publisher: Queen Elizabeth Hospital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.qehconnect.com/
+    url: null
+    claim_label: unverified
+    notes: Official public tertiary hospital and pediatric clinical referral portal in Barbados; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: agu-bh-resource-pages
+    title: Arabian Gulf University College of Medicine and Medical Sciences website (agu.edu.bh)
+    publisher: Arabian Gulf University College of Medicine and Medical Sciences
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.agu.edu.bh/
+    url: null
+    claim_label: unverified
+    notes: Regional medical education and tertiary pediatric clinical training portal in Bahrain; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: minsaude-cv-resource-pages
+    title: Ministério da Saúde de Cabo Verde website (minsaude.gov.cv)
+    publisher: Ministério da Saúde de Cabo Verde
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://minsaude.gov.cv/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry and hospital clinical referral portal in Cabo Verde; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: kkh-sg-resource-pages
+    title: KK Women's and Children's Hospital website (kkh.com.sg)
+    publisher: KK Women's and Children's Hospital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.kkh.com.sg/
+    url: null
+    claim_label: unverified
+    notes: Official tertiary pediatric referral hospital and specialized respiratory care portal in Singapore; robots.txt allow (2026-10-26), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
