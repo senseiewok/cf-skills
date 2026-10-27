@@ -3655,6 +3655,66 @@ sources:
     claim_label: unverified
     notes: Official tertiary pediatric referral hospital and specialized respiratory care portal in Singapore; robots.txt allow (2026-10-26), manual access, link and summary only.
 
+  - id: chpg-mc-resource-pages
+    title: Centre Hospitalier Princesse Grace website (chpg.mc)
+    publisher: Centre Hospitalier Princesse Grace
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.chpg.mc/
+    url: null
+    claim_label: unverified
+    notes: Official public hospital center and clinical referral institution in Monaco; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: dominica-gov-dm-resource-pages
+    title: Ministry of Health, Wellness and Social Services website (dominica.gov.dm)
+    publisher: Ministry of Health, Wellness and Social Services
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://dominica.gov.dm/
+    url: null
+    claim_label: unverified
+    notes: Official national public health ministry and clinical referral portal in Dominica; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: landesspital-li-resource-pages
+    title: Liechtensteinisches Landesspital website (landesspital.li)
+    publisher: Liechtensteinisches Landesspital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://landesspital.li/
+    url: null
+    claim_label: unverified
+    notes: Official national public hospital and clinical referral institution in Liechtenstein; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: health-govmu-org-resource-pages
+    title: Ministry of Health and Wellness website (health.govmu.org)
+    publisher: Ministry of Health and Wellness
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://health.govmu.org/
+    url: null
+    claim_label: unverified
+    notes: Official national public health ministry and clinical referral portal in Mauritius; robots.txt allow (2026-10-26), manual access, link and summary only.
+
+  - id: health-gov-ws-resource-pages
+    title: Ministry of Health of Samoa website (health.gov.ws)
+    publisher: Ministry of Health of Samoa
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-26
+    landing_page: https://www.health.gov.ws/
+    url: null
+    claim_label: unverified
+    notes: Official national public health ministry and clinical referral portal in Samoa; robots.txt allow (2026-10-26), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
