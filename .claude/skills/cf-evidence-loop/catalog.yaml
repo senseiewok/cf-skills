@@ -3895,6 +3895,126 @@ sources:
     claim_label: unverified
     notes: Regional university hospital center providing specialized pediatric pulmonology, clinical research, and acute care in Reunion; robots.txt allow (2026-10-28), manual access, link and summary only.
 
+  - id: gov-je-resource-pages
+    title: Government of Jersey website (www.gov.je)
+    publisher: Government of Jersey
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.je/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating public healthcare administration, hospital operations at Jersey General Hospital, and community clinical services in Jersey; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-gd-resource-pages
+    title: Government of Grenada website (gov.gd)
+    publisher: Government of Grenada
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://gov.gd/
+    url: null
+    claim_label: unverified
+    notes: National government portal administering public health programs, community clinics, General Hospital operations, and specialized pediatric consultations in Grenada; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-tc-resource-pages
+    title: Turks and Caicos Islands Government website (www.gov.tc)
+    publisher: Turks and Caicos Islands Government
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.tc/
+    url: null
+    claim_label: unverified
+    notes: Official government portal administering public health programs, clinical hospital operations, primary medical centers, and specialized pediatric referrals in Turks and Caicos; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-mo-resource-pages
+    title: Government of Macao SAR website (www.gov.mo)
+    publisher: Government of Macao SAR
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.mo/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating public health administration, Conde de Sao Januario hospital operations, and pediatric specialist consultations in Macao; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: stp-gov-st-resource-pages
+    title: Governo de São Tomé e Príncipe website (stp.gov.st)
+    publisher: Governo de São Tomé e Príncipe
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://stp.gov.st/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating national healthcare administration, public health programs, hospital care, and specialized medical referrals in Sao Tome and Principe; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-gg-resource-pages
+    title: States of Guernsey website (www.gov.gg)
+    publisher: States of Guernsey
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.gg/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating public healthcare administration, hospital operations at Princess Elizabeth Hospital, and community clinical services in Guernsey; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: govt-lc-resource-pages
+    title: Government of Saint Lucia website (www.govt.lc)
+    publisher: Government of Saint Lucia
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.govt.lc/
+    url: null
+    claim_label: unverified
+    notes: National government portal administering public health programs, Owen King EU Hospital services, community clinics, and specialized pediatric referrals in Saint Lucia; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: president-gov-ki-resource-pages
+    title: Government of Kiribati website (www.president.gov.ki)
+    publisher: Government of Kiribati
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.president.gov.ki/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating national health policy, Tungaru Central Hospital administration, community clinics, and specialized pediatric referrals in Kiribati; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: mayotte-gouv-fr-resource-pages
+    title: Préfecture de Mayotte website (www.mayotte.gouv.fr)
+    publisher: Préfecture de Mayotte
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.mayotte.gouv.fr/
+    url: null
+    claim_label: unverified
+    notes: Official state portal coordinating public healthcare administration, Centre Hospitalier de Mayotte services, community clinics, and specialized pediatric consultations in Mayotte; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-ai-resource-pages
+    title: Government of Anguilla website (gov.ai)
+    publisher: Government of Anguilla
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://gov.ai/
+    url: null
+    claim_label: unverified
+    notes: Official government portal administering public health programs, Princess Alexandra Hospital services, community clinical centers, and pediatric medical referrals in Anguilla; robots.txt allow (2026-10-28), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
