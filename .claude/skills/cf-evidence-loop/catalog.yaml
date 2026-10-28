@@ -3715,6 +3715,66 @@ sources:
     claim_label: unverified
     notes: Official national public health ministry and clinical referral portal in Samoa; robots.txt allow (2026-10-26), manual access, link and summary only.
 
+  - id: ospedalebambinogesu-it-resource-pages
+    title: Ospedale Pediatrico Bambino Gesù website (ospedalebambinogesu.it)
+    publisher: Ospedale Pediatrico Bambino Gesù
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.ospedalebambinogesu.it/
+    url: null
+    claim_label: unverified
+    notes: Official pediatric hospital of the Holy See providing specialized cystic fibrosis and pulmonary clinical care; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: health-gov-ag-resource-pages
+    title: Ministry of Health, Wellness, Social Transformation and the Environment website (health.gov.ag)
+    publisher: Ministry of Health, Wellness, Social Transformation and the Environment
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://health.gov.ag/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry coordinating public healthcare administration and clinical referrals in Antigua and Barbuda; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: health-gov-sc-resource-pages
+    title: Ministry of Health Seychelles website (health.gov.sc)
+    publisher: Ministry of Health Seychelles
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.health.gov.sc/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry directing hospital networks and public healthcare services in Seychelles; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: igmh-gov-mv-resource-pages
+    title: Indira Gandhi Memorial Hospital website (igmh.gov.mv)
+    publisher: Indira Gandhi Memorial Hospital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.igmh.gov.mv/
+    url: null
+    claim_label: unverified
+    notes: National public tertiary referral hospital in Male providing inpatient, pediatric, and respiratory clinical services across Maldives; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: health-gov-ck-resource-pages
+    title: Te Marae Ora Cook Islands Ministry of Health website (health.gov.ck)
+    publisher: Te Marae Ora Cook Islands Ministry of Health
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.health.gov.ck/
+    url: null
+    claim_label: unverified
+    notes: Official national health ministry directing hospital operations, primary care, and overseas medical referral in the Cook Islands; robots.txt allow (2026-10-27), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
