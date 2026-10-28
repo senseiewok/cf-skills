@@ -3835,6 +3835,66 @@ sources:
     claim_label: unverified
     notes: Main public hospital providing specialized pediatric and respiratory care in Aruba; robots.txt allow (2026-10-27), manual access, link and summary only.
 
+  - id: bermudahospitals-bm-resource-pages
+    title: Bermuda Hospitals Board website (bermudahospitals.bm)
+    publisher: Bermuda Hospitals Board
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://bermudahospitals.bm/
+    url: null
+    claim_label: unverified
+    notes: Principal public hospital authority operating King Edward VII Memorial Hospital and specialized pediatric services in Bermuda; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: ls-fo-resource-pages
+    title: Landssjúkrahúsið website (ls.fo)
+    publisher: Landssjúkrahúsið
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://ls.fo/
+    url: null
+    claim_label: unverified
+    notes: National referral hospital delivering acute inpatient care, specialized pediatric clinics, and diagnostic services in the Faroe Islands; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-kn-resource-pages
+    title: Government of Saint Kitts and Nevis website (www.gov.kn)
+    publisher: Government of Saint Kitts and Nevis
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.kn/
+    url: null
+    claim_label: unverified
+    notes: Official federal government portal coordinating national health administration and specialized pediatric medical referrals in Saint Kitts and Nevis; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: ha-org-hk-resource-pages
+    title: Hospital Authority website (www.ha.org.hk)
+    publisher: Hospital Authority
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.ha.org.hk/
+    url: null
+    claim_label: unverified
+    notes: Statutory public healthcare authority managing all public hospitals and specialist outpatient pediatric and respiratory clinics in Hong Kong; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: chu-reunion-fr-resource-pages
+    title: Centre Hospitalier Universitaire de La Réunion website (www.chu-reunion.fr)
+    publisher: Centre Hospitalier Universitaire de La Réunion
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.chu-reunion.fr/
+    url: null
+    claim_label: unverified
+    notes: Regional university hospital center providing specialized pediatric pulmonology, clinical research, and acute care in Reunion; robots.txt allow (2026-10-28), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
