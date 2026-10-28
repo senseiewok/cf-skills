@@ -3775,6 +3775,66 @@ sources:
     claim_label: unverified
     notes: Official national health ministry directing hospital operations, primary care, and overseas medical referral in the Cook Islands; robots.txt allow (2026-10-27), manual access, link and summary only.
 
+  - id: iss-sm-resource-pages
+    title: Istituto per la Sicurezza Sociale website (www.iss.sm)
+    publisher: Istituto per la Sicurezza Sociale
+    kind: resource_pages
+    access: manual
+    robots: unreadable
+    robots_checked: 2026-10-27
+    landing_page: https://www.iss.sm/
+    url: null
+    claim_label: unverified
+    notes: Robots.txt returned 403 on 2026-10-27; manual access (link and summary only).
+
+  - id: gov-fm-resource-pages
+    title: Department of Health and Social Affairs website (gov.fm)
+    publisher: Department of Health and Social Affairs
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://gov.fm/
+    url: null
+    claim_label: unverified
+    notes: Official national health department coordinating public healthcare and hospital referrals across the Federated States of Micronesia; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: hsa-ky-resource-pages
+    title: Cayman Islands Health Services Authority website (www.hsa.ky)
+    publisher: Cayman Islands Health Services Authority
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.hsa.ky/
+    url: null
+    claim_label: unverified
+    notes: Principal public healthcare system and hospital provider in the Cayman Islands; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: gha-gi-resource-pages
+    title: Gibraltar Health Authority website (www.gha.gi)
+    publisher: Gibraltar Health Authority
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.gha.gi/
+    url: null
+    claim_label: unverified
+    notes: Official public healthcare authority operating Saint Bernard Hospital in Gibraltar; robots.txt allow (2026-10-27), manual access, link and summary only.
+
+  - id: arubahospital-com-resource-pages
+    title: Horacio Oduber Hospital website (www.arubahospital.com)
+    publisher: Horacio Oduber Hospital
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-27
+    landing_page: https://www.arubahospital.com/
+    url: null
+    claim_label: unverified
+    notes: Main public hospital providing specialized pediatric and respiratory care in Aruba; robots.txt allow (2026-10-27), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
