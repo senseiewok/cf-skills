@@ -32,7 +32,7 @@ _BLOCK_MARKERS = (">", "|", ">-", "|-", ">+", "|+")
 # to the ones in scripts/make_index.py.
 AUDIENCES = ("patients-families", "care-teams", "researchers", "builders")
 LEVELS = ("base", "advanced")
-CATEGORIES = ("safe-ai-use", "communication", "evidence", "tool-evaluation", "web")
+CATEGORIES = ("safe-ai-use", "communication", "evidence", "math", "tool-evaluation", "web")
 
 
 # ---------------------------------------------------------------------------

@@ -23,7 +23,7 @@ Each skill also says who it is for, under `metadata`, as strings:
 
 - `audience` (required): comma-separated, one or more of `patients-families`, `care-teams`, `researchers`, `builders`;
 - `level` (required): `base` (a person can follow it with no setup, in a plain chat) or `advanced` (needs a tool, a script or care to apply);
-- `category` (required): one of `safe-ai-use`, `communication`, `evidence`, `tool-evaluation`, `web`.
+- `category` (required): one of `safe-ai-use`, `communication`, `evidence`, `math`, `tool-evaluation`, `web`.
 
 For example `audience: "researchers, builders"`, `level: "advanced"`, `category: "evidence"`. `scripts/make_index.py` carries them into `skills-index.json` and writes [docs/skills-by-audience.md](../docs/skills-by-audience.md) and the small table between the `skills-table` markers in the README; `--check` fails when any of the three is out of date.
 

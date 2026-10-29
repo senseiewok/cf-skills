@@ -36,7 +36,7 @@ AUDIENCE_LABELS = {
     "builders": "Builders",
 }
 LEVELS = ("base", "advanced")
-CATEGORIES = ("safe-ai-use", "communication", "evidence", "tool-evaluation", "web")
+CATEGORIES = ("safe-ai-use", "communication", "evidence", "math", "tool-evaluation", "web")
 
 PAGE_REL = "docs/skills-by-audience.md"
 README_START = "<!-- skills-table:start -->"

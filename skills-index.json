@@ -110,6 +110,31 @@
       }
     },
     {
+      "name": "cf-math-verify",
+      "description": "Offline mathematical and biophysical invariant verifier for scientific models and formal proof dependency graphs: checks exact rational Buckingham Pi dimensional homogeneity across SI base units, machine-precision complex-step derivatives, Lean 4 formal proof DAG acyclicity and zero-sorryAx cones, and 20 non-equilibrium statistical mechanics laws (Kramers escape, Cheeger-Fiedler spectral bounds, Jarzynski and Crooks fluctuation theorems, Landauer erasure, Barato-Seifert TUR, Shiraishi-Funo-Saito thermodynamic speed limits, Evans-Majumdar stochastic resetting, Salamon-Berry thermodynamic length, Benamou-Brenier optimal transport, and Schreiber bipartite transfer entropy). Use when verifying equations, derivatives, dimensional balance, or proof DAGs before publishing research claims.",
+      "summary": "Offline verifier for dimensional balance, complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds.",
+      "license": "CC0-1.0",
+      "version": "0.1.0",
+      "path": ".claude/skills/cf-math-verify",
+      "capabilities": [
+        "python",
+        "reads-project-files",
+        "runs-code"
+      ],
+      "optional_capabilities": [],
+      "audience": [
+        "researchers",
+        "builders"
+      ],
+      "level": "advanced",
+      "category": "math",
+      "install": {
+        "script": "python scripts/install_skill.py cf-math-verify --agent claude",
+        "gh": "gh skill install senseiewok/cf-skills .claude/skills/cf-math-verify --agent claude-code",
+        "claude_plugin": "/plugin install cf-math-verify@sensei-ewok-skills"
+      }
+    },
+    {
       "name": "cf-plain-language-rewrite",
       "description": "Rewrite a CF handout, letter, leaflet or message in plain language at a chosen reading level (sixth grade by default) without adding, dropping or changing any fact. Use when a care team or family says make this easier to read, simplify this handout, rewrite this for a parent or a teenager, or check the reading level. Keeps every number, unit, name and rule; returns a draft plus a verify-before-use list of every fact to check against the original. Includes scripts that measure the reading level and compare numbers, dates and names between the original and the rewrite.",
       "summary": "Makes a CF handout or letter easier to read without changing any number, name or warning, as a draft to check.",
