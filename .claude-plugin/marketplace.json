@@ -77,6 +77,16 @@
         "./.claude/skills/cf-ai-tool-review"
       ],
       "version": "0.1.0"
+    },
+    {
+      "name": "cf-math-verify",
+      "description": "Offline verifier for rational Buckingham Pi dimensional balance, machine-precision complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./.claude/skills/cf-math-verify"
+      ],
+      "version": "0.1.0"
     }
   ]
 }

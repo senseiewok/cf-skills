@@ -192,7 +192,7 @@ class CheckRepoTests(unittest.TestCase):
         cases = [('audience: "researchers, builders"', f'audience: "{a}"') for a in
                  ("patients-families", "care-teams", "researchers", "builders", "patients-families, care-teams, researchers, builders")]
         cases += [('level: "base"', f'level: "{v}"') for v in ("base", "advanced")]
-        cases += [('category: "evidence"', f'category: "{c}"') for c in ("safe-ai-use", "communication", "evidence", "tool-evaluation", "web")]
+        cases += [('category: "evidence"', f'category: "{c}"') for c in ("safe-ai-use", "communication", "evidence", "math", "tool-evaluation", "web")]
         for old, new in cases:
             with self.subTest(new=new):
                 self.setUp()
@@ -204,7 +204,7 @@ class CheckRepoTests(unittest.TestCase):
         cases = {
             "audience": ('    audience: "researchers, builders"\n', "patients-families, care-teams, researchers, builders"),
             "level": ('    level: "base"\n', "base, advanced"),
-            "category": ('    category: "evidence"\n', "safe-ai-use, communication, evidence, tool-evaluation, web"),
+            "category": ('    category: "evidence"\n', "safe-ai-use, communication, evidence, math, tool-evaluation, web"),
         }
         for key, (line, allowed) in cases.items():
             with self.subTest(key=key):

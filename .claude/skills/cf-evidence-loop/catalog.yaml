@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-24
+updated: 2026-10-28
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -956,6 +956,36 @@ sources:
       as /attribution.html on docs.datacommons.org; licences of the underlying statistics vary by dataset
       and are listed at datacommons.org/datasets.
 
+  - id: wolfram-alpha-api
+    title: Wolfram|Alpha Non-Commercial API (Short Answers API and LLM API)
+    publisher: Wolfram Alpha LLC (Wolfram Research)
+    kind: api
+    access: api
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://products.wolframalpha.com/api
+    base_url: https://api.wolframalpha.com/
+    terms_url: https://products.wolframalpha.com/api/termsofuse
+    auth: api_key_required
+    max_rps: 1.0
+    published_limit: >-
+      Free Non-Commercial API tier states 2,000 non-commercial API calls per month across Short Answers
+      (/v1/result), LLM API (/api/v1/llm-api), and Full Results (/v2/query); hard-capped fail-closed in
+      cf-lab/tasks/wolfram_verifier.py at WOLFRAM_DAILY_CAP=25 and WOLFRAM_MONTHLY_CAP=1800 with 1.0 req/s
+      pacing and a SHA-256 content-addressed cache in git-ignored .lab-files/wolfram-cache.json
+    claim_label: verified
+    notes: >-
+      Admitted 2026-10-28 after maintainer sign-up and license review using the lab role address (board tasks
+      T-0503, T-0504, T-0505; WOLFRAM_APP_ID stored exclusively in git-ignored cf-lab/.env). Used strictly at
+      design time to cross-check closed-form algebraic derivatives, integrals, steady-state roots, and
+      dimensional homogeneity of pure-Python CFTR biophysical models. robots.txt checked 2026-10-28:
+      api.wolframalpha.com/robots.txt answered 404 (no crawler blocks on API host); products.wolframalpha.com
+      and www.wolframalpha.com answered 200 (User-agent: * Disallow: /facebook/). Per the Non-Commercial API
+      Terms of Use, redistribute stays false: raw Wolfram|Alpha pods are never committed into MIT/CC0
+      repositories, never served to public website visitors, and never cited as Tier T2/T3 clinical evidence;
+      all API responses are quarantined inside <untrusted_page> boundaries and outbound queries are scrubbed
+      for file paths, secrets, emails, URLs, and PHI composite tokens.
+
   # ----------------------------------------- read 2026-10-04 from the connector list
 
   - id: gnomad
@@ -1601,7 +1631,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.muco.be/
     url: null
     claim_label: unverified
@@ -1631,7 +1661,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.cystischefibrose.info/
     url: null
     claim_label: unverified
@@ -1977,7 +2007,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-24
+    robots_checked: 2026-10-29
     landing_page: https://fqpanama.com/
     url: null
     claim_label: unverified
@@ -1992,7 +2022,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-24
+    robots_checked: 2026-10-29
     landing_page: https://fibrosisquisticagt.site/
     url: null
     claim_label: unverified
@@ -2189,7 +2219,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://mrds.org.my/
     url: null
     claim_label: unverified
@@ -2215,7 +2245,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://jordancysticfibrosis.com/
     url: null
     claim_label: unverified
@@ -2735,7 +2765,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.sidra.org/
     url: null
     claim_label: unverified
@@ -2942,7 +2972,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://chs.mak.ac.ug/
     url: null
     claim_label: unverified
@@ -2968,7 +2998,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://kfh.rw/
     url: null
     claim_label: unverified
@@ -3133,7 +3163,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.tspccm.org.tw/
     url: null
     claim_label: unverified
@@ -4255,6 +4285,234 @@ sources:
     claim_label: unverified
     notes: Local public administration coordinating community wellness programs, health clinic operations, and medical transport across Christmas Island; robots.txt allow (2026-10-28), manual access, link and summary only.
 
+  - id: chcc-mp-resource-pages
+    title: Commonwealth Healthcare Corporation website (www.chcc.health)
+    publisher: Commonwealth Healthcare Corporation
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.chcc.health/
+    url: null
+    claim_label: unverified
+    notes: Public healthcare system and hospital network coordinating inpatient medicine, pediatric clinics, and specialized medical referrals across the Northern Mariana Islands; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: chfdunan-pm-resource-pages
+    title: Centre Hospitalier François Dunan website (www.ch-fdunan.fr)
+    publisher: Centre Hospitalier François Dunan
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.ch-fdunan.fr/
+    url: null
+    claim_label: unverified
+    notes: Principal territorial hospital center providing inpatient care, outpatient pediatric consultations, and specialized medical evacuation coordination across Saint Pierre and Miquelon; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: comstbarth-bl-resource-pages
+    title: Collectivité de Saint-Barthélemy website (www.comstbarth.fr)
+    publisher: Collectivité de Saint-Barthélemy
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.comstbarth.fr/
+    url: null
+    claim_label: unverified
+    notes: Territorial collectivity authority overseeing public health guidance, community medical prevention, and regional hospital referral networks across Saint Barthélemy; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: com-saint-martin-mf-resource-pages
+    title: Collectivité de Saint-Martin website (www.com-saint-martin.fr)
+    publisher: Collectivité de Saint-Martin
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.com-saint-martin.fr/
+    url: null
+    claim_label: unverified
+    notes: Territorial collectivity administering public healthcare orientation, pediatric social assistance, disability support programs, and hospital partnerships across Saint Martin; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: wallis-et-futuna-wf-resource-pages
+    title: Administration supérieure des îles Wallis et Futuna website (www.wallis-et-futuna.gouv.fr)
+    publisher: Administration supérieure des îles Wallis et Futuna
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.wallis-et-futuna.gouv.fr/
+    url: null
+    claim_label: unverified
+    notes: Territorial government prefecture coordinating public hospital facilities, island dispensary networks, and specialized medical evacuation arrangements across Wallis and Futuna; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: ars-gp-resource-pages
+    title: Agence Régionale de Santé Guadeloupe website (www.guadeloupe.ars.sante.fr)
+    publisher: Agence Régionale de Santé Guadeloupe
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.guadeloupe.ars.sante.fr/
+    url: null
+    claim_label: unverified
+    notes: French regional health authority coordinating public hospital care, community medical prevention, specialized clinical networks, and patient guidance across Guadeloupe; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: beit-salam-km-resource-pages
+    title: Présidence de l'Union des Comores website (beit-salam.km)
+    publisher: Présidence de l'Union des Comores
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://beit-salam.km/
+    url: null
+    claim_label: unverified
+    notes: Official presidency portal coordinating national healthcare initiatives, public administration, island hospital infrastructure, and international medical cooperation across Comoros; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-nu-resource-pages
+    title: Government of Niue website (www.gov.nu)
+    publisher: Government of Niue
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.gov.nu/
+    url: null
+    claim_label: unverified
+    notes: National government portal coordinating public healthcare administration, Niue Foou Hospital clinical services, community wellness programs, and specialized overseas medical referrals; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: tokelau-org-nz-resource-pages
+    title: Government of Tokelau website (www.tokelau.org.nz)
+    publisher: Government of Tokelau
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.tokelau.org.nz/
+    url: null
+    claim_label: unverified
+    notes: Territorial government portal directing public healthcare administration, atoll hospital operations, community health clinics, and specialized overseas medical referral coordination across Tokelau; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: government-pn-resource-pages
+    title: Government of the Pitcairn Islands website (www.government.pn)
+    publisher: Government of the Pitcairn Islands
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.government.pn/
+    url: null
+    claim_label: unverified
+    notes: Territorial administration portal coordinating primary healthcare services, community health center operations, emergency telemedicine, and overseas medical evacuation pathways across the Pitcairn Islands; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: cmc-cw-resource-pages
+    title: Curaçao Medical Center website (www.cmc.cw)
+    publisher: Curaçao Medical Center
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.cmc.cw/
+    url: null
+    claim_label: unverified
+    notes: Hospital center coordinating inpatient clinical care, pediatric medicine, specialized surgery, and outpatient medical services across Curaçao; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: shabait-er-resource-pages
+    title: Shabait Eritrea Ministry of Information website (shabait.com)
+    publisher: Ministry of Information and Ministry of Health of Eritrea
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://shabait.com/
+    url: null
+    claim_label: unverified
+    notes: National public portal coordinating government health communications, referral hospital updates, disease prevention guidance, and community medical advisories across Eritrea; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: nauru-gov-nr-resource-pages
+    title: Government of the Republic of Nauru website (www.nauru.gov.nr)
+    publisher: Government of the Republic of Nauru
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.nauru.gov.nr/
+    url: null
+    claim_label: unverified
+    notes: National government administration portal directing public healthcare programs, community hospital operations, medical prevention initiatives, and overseas clinical referral pathways across Nauru; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: palaugov-pw-resource-pages
+    title: Republic of Palau National Government website (www.palaugov.pw)
+    publisher: Republic of Palau National Government
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.palaugov.pw/
+    url: null
+    claim_label: unverified
+    notes: National executive portal coordinating public healthcare administration, Belau National Hospital clinical operations, community health programs, and international medical cooperation across Palau; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: psc-gov-tv-resource-pages
+    title: Tuvalu Public Service Commission website (psc.gov.tv)
+    publisher: Government of Tuvalu
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://psc.gov.tv/
+    url: null
+    claim_label: unverified
+    notes: National public service portal directing public administration, Princess Margaret Hospital clinical staffing, community healthcare services, and overseas medical referral coordination across Tuvalu; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: nirc-nf-resource-pages
+    title: Norfolk Island Regional Council website (www.nirc.gov.au)
+    publisher: Norfolk Island Regional Council
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.nirc.gov.au/
+    url: null
+    claim_label: unverified
+    notes: Regional council portal coordinating municipal administration, public health services, community aged care, and emergency medical logistics across Norfolk Island; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: taaf-tf-resource-pages
+    title: Terres australes et antarctiques françaises website (taaf.fr)
+    publisher: Administration des Terres australes et antarctiques françaises
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://taaf.fr/
+    url: null
+    claim_label: unverified
+    notes: Territorial administration portal coordinating environmental preservation, polar scientific missions, emergency medical evacuation logistics, and overseas research personnel support across French Southern Territories; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-gs-resource-pages
+    title: Government of South Georgia and the South Sandwich Islands website (gov.gs)
+    publisher: Government of South Georgia and the South Sandwich Islands
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://gov.gs/
+    url: null
+    claim_label: unverified
+    notes: Overseas territorial government directing environmental conservation, sustainable fisheries management, maritime visitor safety, and search and rescue medical coordination across South Georgia; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: biot-gov-io-resource-pages
+    title: British Indian Ocean Territory Administration website (www.biot.gov.io)
+    publisher: British Indian Ocean Territory Administration
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.biot.gov.io/
+    url: null
+    claim_label: unverified
+    notes: Public administration portal directing environmental protection, maritime governance, island conservation programs, and emergency medical logistics across the British Indian Ocean Territory; robots.txt allow (2026-10-28), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
@@ -4463,3 +4721,75 @@ sources:
       partner endpoints (/api_partner/recommend-papers/{doi}) gated by SCITE_API_KEY and fail-closed monthly caps
       (board task T-0047; docs read 2026-10-24 at https://docs.scite.ai/llms-full.txt). Returned polarity counts are
       labelled as Scite ML citation classifications and verified alongside cf-evidence-loop.
+
+  - id: antarctica-gov-au-resource-pages
+    title: Australian Antarctic Division website (www.antarctica.gov.au)
+    publisher: Australian Antarctic Division
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.antarctica.gov.au/
+    url: null
+    claim_label: unverified
+    notes: Australian government division directing sub-Antarctic environmental management, scientific research expeditions, operational safety, and polar telemedicine logistics across Heard Island and McDonald Islands; robots.txt allow (2026-10-29), manual access, link and summary only.
+
+  - id: fws-gov-resource-pages
+    title: U.S. Fish and Wildlife Service website (www.fws.gov)
+    publisher: U.S. Fish and Wildlife Service
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.fws.gov/
+    url: null
+    claim_label: unverified
+    notes: Federal conservation bureau overseeing national wildlife refuges, scientific research access, maritime expedition safety, and emergency evacuation coordination across United States Minor Outlying Islands; robots.txt allow (2026-10-29), manual access, link and summary only.
+
+  - id: comnap-aq-resource-pages
+    title: Council of Managers of National Antarctic Programs website (www.comnap.aq)
+    publisher: Council of Managers of National Antarctic Programs
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.comnap.aq/
+    url: null
+    claim_label: unverified
+    notes: International council coordinating national Antarctic programs, polar operational logistics, research station safety guidelines, telemedicine networks, and medical emergency evacuations across Antarctica; robots.txt allow (2026-10-29), manual access, link and summary only.
+
+  - id: hi-no-resource-pages
+    title: Havforskningsinstituttet website (www.hi.no)
+    publisher: Havforskningsinstituttet
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.hi.no/
+    url: null
+    claim_label: unverified
+    notes: Norwegian marine institute coordinating scientific ocean research, sub-Antarctic monitoring missions, maritime expedition logistics, and field emergency medical safety for operations near Bouvet Island; robots.txt allow (2026-10-29), manual access, link and summary only.
+
+  - id: cruzroja-es-resource-pages
+    title: Cruz Roja Española website (www.cruzroja.es)
+    publisher: Cruz Roja Española
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.cruzroja.es/
+    url: null
+    claim_label: unverified
+    notes: Humanitarian relief society providing medical aid, community health support, disaster response coordination, and primary healthcare assistance for Sahrawi families and vulnerable populations; robots.txt allow (2026-10-29), manual access, link and summary only.
+
+  - id: who-int-resource-pages
+    title: World Health Organization website (www.who.int)
+    publisher: World Health Organization
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.who.int/
+    url: null
+    claim_label: unverified
+    notes: United Nations health agency providing technical guidance, essential medicines distribution, infectious and pediatric disease surveillance, and humanitarian health cooperation in North Korea; robots.txt allow (2026-10-29), manual access, link and summary only.
