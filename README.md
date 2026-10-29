@@ -21,7 +21,7 @@ Reusable agent skills from the Sensei Ewok Research Lab, an independent open-sou
 
 > *A pattern punched once can be woven by hands that never met the one who punched it.*
 
-**Seven skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own licence. Research, not medical advice.
+**Seven skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own license. Research, not medical advice.
 
 **Using AI around cystic fibrosis care?** Five skills here help patients, families and care teams use an AI chat app more safely. You need no install: [Where to paste](docs/paste-ready.md) shows how to copy one into your chat app.
 
@@ -31,9 +31,9 @@ A skill is a folder: a `SKILL.md` that an agent reads when your task matches its
 
 **`cf-evidence-loop`** is the skill the lab's website uses for its evidence records. A researcher does not begin with an answer; they walk a fixed set of questions against the public record. This skill gives an agent that walk as a command line: 47 commands (counted from `cli.py` on 2026-10-25) across published literature, retractions, drug approvals and labels, clinical trials, preprints, variant classifications, research funding, citation graphs, and what the tool may reach at all. Every answer is an evidence record with its source, the date it was read, the exact fields relied on and a limitation that the code refuses to leave empty. It never calls a language model, and it reaches only the sources its catalog permits, under network rules that are code with tests: `robots.txt` obeyed, one request at a time, a budget, a circuit breaker, one honest user agent. **`site-seo-review`** is a careful search-and-sharing review for a small website, with rules for health and research sites; it is not specific to CF.
 
-**Five skills for people who use AI in cystic fibrosis care**: `cf-ai-safe-use`, `cf-plain-language-rewrite`, `cf-visit-prep`, `cf-answer-check` and `cf-ai-tool-review`. They are for patients, families and care teams as well as builders. Each has a paste-ready version you copy into a chat assistant: no install and no scripts. If you are on a care team, use the AI tool your organisation approves. If the question is about your own or your family's health, think about who can see your chats. A work account belongs to your workplace, so check its policy, or use a personal account. [Where to paste](docs/paste-ready.md) says how, product by product, and [skills by audience](docs/skills-by-audience.md) says who each skill is for. They give general information only, never medical advice, and every rule's evidence (or the lack of it) is in the skill's `references/evidence.md`.
+**Five skills for people who use AI in cystic fibrosis care**: `cf-ai-safe-use`, `cf-plain-language-rewrite`, `cf-visit-prep`, `cf-answer-check` and `cf-ai-tool-review`. They are for patients, families and care teams as well as builders. Each has a paste-ready version you copy into a chat assistant: no install and no scripts. If you are on a care team, use the AI tool your organization approves. If the question is about your own or your family's health, think about who can see your chats. A work account belongs to your workplace, so check its policy, or use a personal account. [Where to paste](docs/paste-ready.md) says how, product by product, and [skills by audience](docs/skills-by-audience.md) says who each skill is for. They give general information only, never medical advice, and every rule's evidence (or the lack of it) is in the skill's `references/evidence.md`.
 
-These skills are "in review": the maintainer has not yet confirmed every licence or read every file, and the install notes were read from vendors' pages, not tested in each client. Read a skill's `SKILL.md` and its scripts before you let an agent run them.
+These skills are "in review": the maintainer has not yet confirmed every license or read every file, and the install notes were read from vendors' pages, not tested in each client. Read a skill's `SKILL.md` and its scripts before you let an agent run them.
 
 What this is not: a medical device, a clinical tool, or a claim about treatment. An approval date is not anyone's eligibility, a label's text is a public document and not advice, and a record is a thing to check, not a conclusion. The card at the top of this page is an emblem: its holes echo DNA, but it is not a diagram of a gene, a protein or a treatment.
 
@@ -58,7 +58,7 @@ python cf-skills/scripts/install_skill.py --how cf-evidence-loop --agent claude
 - **The evidence tool refuses before it reaches.** Its offline tests include at least one per network-conduct rule (`tests/test_conduct.py`); `tests/test_gate.py` fails any test that opens a socket, which is how it proves that forbidden, manual and unknown sources are refused before the network; `tests/test_hardening.py` holds the defects found in review, each reproduced by a failing test first; `tests/test_providers.py` runs each parser on a saved response captured 2026-10-04.
 - **A record is checkable.** The skill's [`SKILL.md`](.claude/skills/cf-evidence-loop/SKILL.md) lists the 47 commands (counted from `cli.py` on 2026-10-25), and [`references/NETWORK-RULES.md`](.claude/skills/cf-evidence-loop/references/NETWORK-RULES.md) lists the eleven network rules, each with the code that enforces it and its test. The website's [Evidence](https://senseiewok.ai/evidence/) page shows one record exactly as the tool wrote it.
 - **Tests and the maintainer decide what is kept.** The helper scripts here were drafted by a small local model against tests written first, then planned, reviewed and corrected with Claude models; the account, with its counts and limits, is linked from [How this repository was made](#how-this-repository-was-made).
-- **Before a skill is published here** it must be useful outside the lab, declare its licence and provenance, and ship runnable checks; a model's review is not a test. The list is under [Before a skill is published here](#before-a-skill-is-published-here).
+- **Before a skill is published here** it must be useful outside the lab, declare its license and provenance, and ship runnable checks; a model's review is not a test. The list is under [Before a skill is published here](#before-a-skill-is-published-here).
 
 ## Working with the other lab repositories
 
@@ -74,7 +74,7 @@ With care,
 
 Sensei Ewok
 
-This repository is modelled on [anthropics/skills](https://github.com/anthropics/skills) and adds two things that repository does not try to do: a documented install path for each major agent, with the vendor page it came from, and a prompt you can paste into any agent that points it at a skill on GitHub.
+This repository is modeled on [anthropics/skills](https://github.com/anthropics/skills) and adds two things that repository does not try to do: a documented install path for each major agent, with the vendor page it came from, and a prompt you can paste into any agent that points it at a skill on GitHub.
 
 Research, not medical advice. Nothing here is a medical device, a clinical tool or a claim about treatment.
 
@@ -86,11 +86,11 @@ Research, not medical advice. Nothing here is a medical device, a clinical tool 
 | [`site-seo-review`](.claude/skills/site-seo-review/SKILL.md) | A careful, honest search-and-sharing review of a small website: a checker script for static sites, a review workflow, rules for health and research sites, and a way to hand the mechanical parts to a small local model with a test as the judge. Not specific to CF. | draft, in review |
 | [`cf-ai-safe-use`](.claude/skills/cf-ai-safe-use/SKILL.md) | Baseline rules for an AI assistant asked about CF or health: general information only, no doses, diagnosis or eligibility, no identifying details, and a label for what each answer rests on. A small script flags cheap failures in an answer. | draft, in review |
 | [`cf-plain-language-rewrite`](.claude/skills/cf-plain-language-rewrite/SKILL.md) | Rewrites a CF handout or message in plain language without adding, dropping or changing any fact, with a verify-before-use list and scripts for reading level and fact differences. | draft, in review |
-| [`cf-visit-prep`](.claude/skills/cf-visit-prep/SKILL.md) | Helps a person with CF, a parent or a carer turn their worries into a short, ordered list of questions for the care team. It never answers the medical question. | draft, in review |
+| [`cf-visit-prep`](.claude/skills/cf-visit-prep/SKILL.md) | Helps a person with CF, a parent or a caregiver turn their worries into a short, ordered list of questions for the care team. It never answers the medical question. | draft, in review |
 | [`cf-answer-check`](.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF one claim at a time against primary sources, and marks what could not be checked as unverified. | draft, in review |
 | [`cf-ai-tool-review`](.claude/skills/cf-ai-tool-review/SKILL.md) | A structured review of an AI tool before a CF care team or patient group uses it: every answer points to a document, demo or test, and people make the decision. | draft, in review |
 
-"In review" means the maintainer has not yet confirmed the licence or read every file. Read a skill's `SKILL.md` and scripts before you let an agent run them.
+"In review" means the maintainer has not yet confirmed the license or read every file. Read a skill's `SKILL.md` and scripts before you let an agent run them.
 
 The five CF care skills also come as plain text to paste into any chat assistant, with no install: [docs/paste-ready.md](docs/paste-ready.md) says where to paste it in Claude, Gemini, Microsoft Copilot and ChatGPT.
 
@@ -136,7 +136,7 @@ Not sure which way suits your machine? `python cf-skills/scripts/install_skill.p
 | claude.ai (chat) | upload a zipped folder: see [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude) | partial: two Anthropic pages disagree on the menu path |
 | Claude API | upload through the `/v1/skills` endpoints: see the [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) | partial: only the overview was read |
 
-**Documented** means a vendor's own page says it, read on 2026-10-05 and partly through a summarising tool. Nothing was tested in a real client, and commands that name this repository were built from the documented syntax and have not been run.
+**Documented** means a vendor's own page says it, read on 2026-10-05 and partly through a summarizing tool. Nothing was tested in a real client, and commands that name this repository were built from the documented syntax and have not been run.
 
 There is no single folder that every agent reads. `.agents/skills/` is read by most of them and `.claude/skills/` by several, but Claude Code's documentation names only `.claude/skills/`, and Qwen Code names only `.qwen/skills/`. Details, quotes and the date each page was read are in [docs/install.md](docs/install.md).
 
@@ -181,7 +181,7 @@ Each skill has its own plugin entry in `.claude-plugin/marketplace.json` (each e
 
 - It must be useful outside the lab's own workspace: no private paths, machine details, keys, patient data or copied session logs.
 - A canonical `SKILL.md` with a `name` that matches its folder and a `description` that says what it does and when to use it.
-- A declared licence and where each third-party piece came from. Public availability alone is not a reuse grant.
+- A declared license and where each third-party piece came from. Public availability alone is not a reuse grant.
 - Runnable checks, and a note of what they cover. A model's review is not a test.
 - One maintained source. If a skill also lives in the lab's control repository, one of the two points to the other; there are no independently edited copies.
 
@@ -195,6 +195,6 @@ A skill is instructions plus code that an agent may run with your permissions. R
 
 The helper scripts here (`install_skill.py`, `make_index.py`, `make_paste_ready.py`, `make_tested_grid.py`, `pin_catalog.py`, `check_repo.py`) were drafted by a small local model against tests written first, and the code, the tests and the documentation were planned, reviewed and corrected with Claude models from Anthropic, working in Claude Code under the maintainer's direction. Tests and the maintainer decide what is kept. The account, with its counts and limits, is in the lab's [How the work is divided](https://github.com/senseiewok/cf-lab#how-the-work-is-divided). The lab is independent of Anthropic.
 
-## Licence
+## License
 
-[CC0 1.0](LICENSE) for the catalog (this README, the template, the docs and the scripts in `scripts/`). Each skill declares its own licence and provenance in its `SKILL.md`; the maintainer confirms them before a release. The lab's main workspace repository is [senseiewok/cf-lab](https://github.com/senseiewok/cf-lab) and the research notes and source catalog are in [senseiewok/cf-research](https://github.com/senseiewok/cf-research).
+[CC0 1.0](LICENSE) for the catalog (this README, the template, the docs and the scripts in `scripts/`). Each skill declares its own license and provenance in its `SKILL.md`; the maintainer confirms them before a release. The lab's main workspace repository is [senseiewok/cf-lab](https://github.com/senseiewok/cf-lab) and the research notes and source catalog are in [senseiewok/cf-research](https://github.com/senseiewok/cf-research).
