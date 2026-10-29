@@ -4135,6 +4135,126 @@ sources:
     claim_label: unverified
     notes: Official ministry portal administering public healthcare programs, community health centers, Majuro Hospital operations, and specialized medical referrals across the Marshall Islands; robots.txt allow (2026-10-28), manual access, link and summary only.
 
+  - id: hospice-im-resource-pages
+    title: Hospice Isle of Man website (www.hospice.org.im)
+    publisher: Hospice Isle of Man
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.hospice.org.im/
+    url: null
+    claim_label: unverified
+    notes: Palliative care and clinical support charity coordinating community medical care, respite guidance, symptom control, and family counseling across the Isle of Man; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: gov-sx-resource-pages
+    title: Government of Sint Maarten website (www.sintmaartengov.org)
+    publisher: Government of Sint Maarten
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.sintmaartengov.org/
+    url: null
+    claim_label: unverified
+    notes: Official government portal coordinating public healthcare administration, social security programs, hospital clinical services, and specialized pediatric referrals across Sint Maarten; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: doh-as-resource-pages
+    title: American Samoa Department of Health website (doh.as)
+    publisher: American Samoa Department of Health
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://doh.as/
+    url: null
+    claim_label: unverified
+    notes: Official territorial health department administering community medical clinics, pediatric health programs, chronic disease surveillance, and hospital clinical referrals across American Samoa; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: chpf-pf-resource-pages
+    title: Centre Hospitalier de Polynésie française website (www.chpf.pf)
+    publisher: Centre Hospitalier de Polynésie française
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.chpf.pf/
+    url: null
+    claim_label: unverified
+    notes: Principal territorial referral hospital coordinating inpatient clinical care, specialized pediatric medicine, diagnostic consultations, and medical evacuations across French Polynesia; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: ars-gf-resource-pages
+    title: Agence Régionale de Santé Guyane website (www.guyane.ars.sante.fr)
+    publisher: Agence Régionale de Santé Guyane
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.guyane.ars.sante.fr/
+    url: null
+    claim_label: unverified
+    notes: French regional health authority coordinating public hospital care, community medical prevention, specialized clinical networks, and patient guidance across French Guiana; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: chum-mq-resource-pages
+    title: Centre Hospitalier Universitaire de Martinique website (www.chu-martinique.fr)
+    publisher: Centre Hospitalier Universitaire de Martinique
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.chu-martinique.fr/
+    url: null
+    claim_label: unverified
+    notes: Regional university hospital center in Fort-de-France coordinating pediatric, respiratory, and cystic fibrosis reference center services across Martinique; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: bonairegov-bq-resource-pages
+    title: Openbaar Lichaam Bonaire website (bonairegov.com)
+    publisher: Openbaar Lichaam Bonaire
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://bonairegov.com/
+    url: null
+    claim_label: unverified
+    notes: Official public entity coordinating community health policy, specialized hospital referrals, preventive medicine, and resident social assistance across Bonaire; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: sysselmesteren-sj-resource-pages
+    title: Sysselmesteren på Svalbard website (www.sysselmesteren.no)
+    publisher: Sysselmesteren på Svalbard
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://www.sysselmesteren.no/
+    url: null
+    claim_label: unverified
+    notes: Governor authority coordinating territorial rescue, emergency healthcare transport, and hospital clinic access on Svalbard; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: shire-cc-resource-pages
+    title: Shire of Cocos (Keeling) Islands website (shire.cc)
+    publisher: Shire of Cocos (Keeling) Islands
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://shire.cc/
+    url: null
+    claim_label: unverified
+    notes: Local government authority coordinating island health services, community medical facilities, and emergency referral transport across the Cocos Keeling Islands; robots.txt allow (2026-10-28), manual access, link and summary only.
+
+  - id: shire-cx-resource-pages
+    title: Shire of Christmas Island website (shire.gov.cx)
+    publisher: Shire of Christmas Island
+    kind: resource_pages
+    access: manual
+    robots: allow
+    robots_checked: 2026-10-28
+    landing_page: https://shire.gov.cx/
+    url: null
+    claim_label: unverified
+    notes: Local public administration coordinating community wellness programs, health clinic operations, and medical transport across Christmas Island; robots.txt allow (2026-10-28), manual access, link and summary only.
+
   - id: ncbi-variation
     title: NCBI Variation Services (SPDI and HGVS APIs)
     publisher: National Center for Biotechnology Information
