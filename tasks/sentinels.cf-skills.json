@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "repository": "senseiewok/cf-skills",
+  "mission": "Public open-source AI agent skills, deterministic evidence verification (cf-evidence-loop), symbolic/dimensional math verification (cf-math-verify), and SEO/accessibility auditing in service of Cystic Fibrosis research.",
+  "timezone": "America/Los_Angeles",
+  "sentinels": {
+    "cf-skills-verification-sentinel": {
+      "canonical_lab_sentinel": "cf-skills-verification-sentinel",
+      "cron": "35 * * * *",
+      "display_name": "CF-Skills Open-Source Verification & Evidence Tooling Schedule",
+      "description": "Hourly at :35 past the hour. Audits and evolves public agent skills under .claude/skills/ (cf-evidence-loop, cf-math-verify, site-seo-review), verifies catalog synchronization with cf-research/sources/catalog.yaml, and runs cross-platform skill frontmatter and unit test suites.",
+      "watch_paths": [
+        ".claude/skills",
+        "docs",
+        "tests"
+      ],
+      "verification_commands": [
+        "python -m unittest discover -s .claude/skills/cf-math-verify/scripts -p \"test_*.py\"",
+        "python -m unittest discover -s .claude/skills/site-seo-review/scripts -p \"test_*.py\""
+      ]
+    }
+  }
+}
