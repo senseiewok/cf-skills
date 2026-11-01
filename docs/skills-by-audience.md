@@ -39,6 +39,7 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
 | [`cf-math-verify`](../.claude/skills/cf-math-verify/SKILL.md) | Offline verifier for dimensional balance, complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds. | (install route only) | advanced | math |
+| [`complex-systems-monograph`](../.claude/skills/complex-systems-monograph/SKILL.md) | Structures complex scientific and mathematical systems into interactive Living Executable Monographs with portable SKILL.md companions. | (install route only) | advanced | communication |
 
 ## Builders
 
@@ -48,6 +49,7 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
 | [`cf-math-verify`](../.claude/skills/cf-math-verify/SKILL.md) | Offline verifier for dimensional balance, complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds. | (install route only) | advanced | math |
+| [`complex-systems-monograph`](../.claude/skills/complex-systems-monograph/SKILL.md) | Structures complex scientific and mathematical systems into interactive Living Executable Monographs with portable SKILL.md companions. | (install route only) | advanced | communication |
 | [`site-seo-review`](../.claude/skills/site-seo-review/SKILL.md) | Honest search-and-sharing review for small websites, with a static-site checker and rules for health and research pages. | (install route only) | advanced | web |
 
 ## For builders: install a skill in your agent

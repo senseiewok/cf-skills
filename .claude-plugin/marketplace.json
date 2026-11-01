@@ -87,6 +87,16 @@
         "./.claude/skills/cf-math-verify"
       ],
       "version": "0.1.0"
+    },
+    {
+      "name": "complex-systems-monograph",
+      "description": "Structures complex scientific and mathematical systems into interactive Living Executable Monographs with portable SKILL.md companions.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./.claude/skills/complex-systems-monograph"
+      ],
+      "version": "0.1.0"
     }
   ]
 }
