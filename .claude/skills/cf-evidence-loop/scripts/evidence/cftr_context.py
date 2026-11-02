@@ -378,6 +378,24 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "Cryo-EM",
         "reference": "Liu et al., Cell 2017 (DOI: 10.1016/j.cell.2017.02.024)",
     },
+    "6O2P": {
+        "pdb_id": "6O2P",
+        "title": "Cryo-EM structure of human CFTR in ATP-bound conformation",
+        "conformation": "Phosphorylated, ATP-bound active channel state",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.3,
+        "method": "Cryo-EM",
+        "reference": "Zhang et al., Cell 2018 (DOI: 10.1016/j.cell.2018.02.049)",
+    },
+    "7SVD": {
+        "pdb_id": "7SVD",
+        "title": "Cryo-EM structure of human CFTR G551D mutant channel in complex with ATP",
+        "conformation": "G551D gating-defective catalytic site uncoupled conformation",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.4,
+        "method": "Cryo-EM",
+        "reference": "Zhang & Chen, Cell 2021 (DOI: 10.1016/j.cell.2021.11.014)",
+    },
     "8EIQ": {
         "pdb_id": "8EIQ",
         "title": "Human CFTR complex with elexacaftor (VX-445), tezacaftor (VX-661), and ivacaftor (VX-770)",
@@ -701,13 +719,13 @@ def self_check() -> dict[str, Any]:
     })
 
     # 10. Cryo-EM PDB structures lookup positive and negative controls
-    pdb_pos_cases = ["6MSM", "5UAK", "8EIQ", "8EJ1"]
+    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "8EIQ", "8EJ1"]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
     checks.append({
         "name": "pdb_structures_positive_and_negative",
         "ok": pdb_ok and pdb_neg_ok,
-        "detail": "4 canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
+        "detail": "6 canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
     })
 
     all_passed = all(c["ok"] for c in checks)

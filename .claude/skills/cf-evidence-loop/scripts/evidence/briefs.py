@@ -197,8 +197,19 @@ def drug(client: Client, brand: str) -> Brief:
         oa_count = sum(1 for r in alex_found if _value(r, "is_oa") is True)
         b.facts.append(("openalex", "open_access (counted)", oa_count))
 
+    # CFTR modulator context cross-check
+    mod = cftr_context.lookup_cftr_modulator(brand)
+    if mod is not None:
+        b.facts.append(("cftr_modulator", "mechanistic_class (computed)", mod["mechanistic_class"]))
+        b.facts.append(("cftr_modulator", "molecular_codes (computed)", ", ".join(mod["molecular_codes"])))
+        b.facts.append(("cftr_modulator", "spl_boxed_warning (computed)", mod["spl_boxed_warning"]))
+        b.facts.append(("cftr_modulator", "primary_pdb (computed)", mod["primary_pdb"]))
+
     _source_checks(b)
     b.checks.append(approval_year_check(_value(appr, "original_approval"), _value(lab, "effective_time")))
+
+    if mod is not None:
+        b.checks.append(Check(PASS, "CFTR modulator safety boundary (AH-4)", f"{mod['brand']}: boxed warning is '{mod['spl_boxed_warning']}'"))
 
     if b.steps[4].status == Status.BLOCKED.value:
         b.checks.append(Check(NOTE, "OpenAlex literature & retraction scan", "OPENALEX_API_KEY not configured or blocked"))

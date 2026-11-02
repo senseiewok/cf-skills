@@ -192,6 +192,10 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("cftr-modulator", help="look up CFTR modulator brand, active ingredient, molecular code, NDA, and openFDA SPL boxed warning context")
     p.add_argument("term", help="CFTR modulator brand, API, molecular code, or abbreviation (e.g. Trikafta, ivacaftor, VX-770, Alyftrek, VX-121, ETI)")
 
+    p = sub.add_parser("cftr-structure", aliases=["cftr-pdb"], help="look up canonical CFTR Cryo-EM structure metadata (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 8EIQ, 8EJ1)")
+    p.add_argument("pdb_id", nargs="?", help="4-character PDB accession (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 8EIQ, 8EJ1)")
+    p.add_argument("--list", action="store_true", help="list all canonical CFTR Cryo-EM structures")
+
     a = ap.parse_args(argv)
     if a.cmd == "sources":
         for sid, e in sorted(catalog.load().items()):
@@ -240,6 +244,32 @@ def main(argv: list[str] | None = None) -> int:
                 print(json.dumps({"error": f"CFTR modulator context not found for '{a.term}'"}))
             else:
                 print(f"not found: CFTR modulator context for '{a.term}'", file=sys.stderr)
+            return 1
+
+    if a.cmd in ("cftr-structure", "cftr-pdb"):
+        from . import cftr_context
+        if getattr(a, "list", False) or not a.pdb_id:
+            if a.json:
+                print(json.dumps(cftr_context.CANONICAL_PDB_STRUCTURES, indent=2 if not a.ledger else None))
+            else:
+                print(f"Canonical CFTR Cryo-EM Structures ({len(cftr_context.CANONICAL_PDB_STRUCTURES)} structures indexed):")
+                for k, s in sorted(cftr_context.CANONICAL_PDB_STRUCTURES.items()):
+                    print(f"  {s['pdb_id']:<6} {s['resolution_angstrom']} A  {s['conformation']}")
+            return 0
+        struct = cftr_context.lookup_pdb_structure(a.pdb_id)
+        if struct is not None:
+            if a.json:
+                print(json.dumps(struct, indent=2 if not a.ledger else None))
+            else:
+                print(f"PDB {struct['pdb_id']}: {struct['title']} ({struct['resolution_angstrom']} A Cryo-EM)")
+                print(f"  Conformation: {struct['conformation']}")
+                print(f"  Reference: {struct['reference']}")
+            return 0
+        else:
+            if a.json:
+                print(json.dumps({"error": f"CFTR Cryo-EM structure not found for '{a.pdb_id}'"}))
+            else:
+                print(f"not found: CFTR Cryo-EM structure for '{a.pdb_id}'", file=sys.stderr)
             return 1
 
     blank_err = _check_blank_query(a)
