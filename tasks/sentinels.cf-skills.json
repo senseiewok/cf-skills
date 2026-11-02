@@ -15,8 +15,13 @@
         "tests"
       ],
       "verification_commands": [
-        "python -m unittest discover -s .claude/skills/cf-math-verify/scripts -p \"test_*.py\"",
-        "python -m unittest discover -s .claude/skills/site-seo-review/scripts -p \"test_*.py\""
+        "python scripts/check_repo.py",
+        "python scripts/make_index.py --check",
+        "python scripts/make_tested_grid.py --check",
+        "python scripts/pin_catalog.py --check",
+        "python -m unittest discover -s tests -p \"test_*.py\"",
+        "python -m unittest discover -s .claude/skills/cf-math-verify/tests -p \"test_*.py\"",
+        "python -m unittest discover -s .claude/skills/site-seo-review/tests -p \"test_*.py\""
       ]
     }
   }

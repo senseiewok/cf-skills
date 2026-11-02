@@ -52,6 +52,9 @@ jobs:
       - name: site-seo-review checker tests
         working-directory: .claude/skills/site-seo-review
         run: python -m unittest discover -s tests
+      - name: cf-math-verify checker tests
+        working-directory: .claude/skills/cf-math-verify
+        run: python -m unittest discover -s tests
 
   skill-tests:
     name: skill tests (pytest)
