@@ -20,6 +20,7 @@
         "python scripts/make_tested_grid.py --check",
         "python scripts/pin_catalog.py --check",
         "python -m unittest discover -s tests -p \"test_*.py\"",
+        "python -m unittest discover -s .claude/skills/cf-evidence-loop/tests -p \"test_cftr_context.py\"",
         "python -m unittest discover -s .claude/skills/cf-math-verify/tests -p \"test_*.py\"",
         "python -m unittest discover -s .claude/skills/complex-systems-monograph/tests -p \"test_*.py\"",
         "python -m unittest discover -s .claude/skills/site-seo-review/tests -p \"test_*.py\""

@@ -186,12 +186,37 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", help="save extracted output to this file (JSON or text depending on --json)")
     p.add_argument("--max-chars", type=int, default=20000, help="maximum characters to display (default: 20000)")
 
+    p = sub.add_parser("cftr-context", help="look up CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain context")
+    p.add_argument("term", help="CFTR allele name, HGVS cDNA/protein notation, or codon (e.g. F508del, c.1652G>A, G551D, 508)")
+
     a = ap.parse_args(argv)
     if a.cmd == "sources":
         for sid, e in sorted(catalog.load().items()):
             if e.get("access") in catalog.AUTOMATABLE and e.get("base_url"):
                 print(f"{sid:24} {e['base_url']}")
         return 0
+
+    if a.cmd == "cftr-context":
+        from . import cftr_context
+        ctx = cftr_context.lookup_cftr_context(a.term)
+        if ctx is not None:
+            if a.json:
+                print(json.dumps(ctx, indent=2 if not a.ledger else None))
+            else:
+                exon_str = f"Exon {ctx['exon']}" if ctx["exon"] is not None else "Intronic"
+                summary_str = (
+                    f"{ctx['allele']} ({ctx['hgvs_c']}, {ctx['hgvs_p']}): "
+                    f"{exon_str} ({ctx['transcript']}), Domain: {ctx['domain']} (UniProt {ctx['uniprot']}), "
+                    f"Class: {ctx['cftr_class']}"
+                )
+                print(summary_str)
+            return 0
+        else:
+            if a.json:
+                print(json.dumps({"error": f"CFTR context not found for '{a.term}'"}))
+            else:
+                print(f"not found: CFTR context for '{a.term}'", file=sys.stderr)
+            return 1
 
     blank_err = _check_blank_query(a)
     if blank_err:
@@ -341,6 +366,7 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "brief": ("subject",),
     "read-page": ("url",),
     "cite-check": ("file",),
+    "cftr-context": ("term",),
 }
 
 
