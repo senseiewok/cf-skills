@@ -180,13 +180,15 @@
     },
     {
       "name": "complex-systems-monograph",
-      "description": "AI-agnostic methodology for helping humans understand complex scientific, mathematical, architectural, and biomedical systems through interactive Living Executable Monographs and portable SKILL.md companions.",
-      "summary": "Structures complex scientific and mathematical systems into interactive Living Executable Monographs with portable SKILL.md companions.",
+      "description": "AI-agnostic methodology and offline verification tooling for structuring complex scientific, mathematical, architectural, and biomedical systems into interactive Living Executable Monographs with portable SKILL.md companions. Enforces the 4-Act pedagogical narrative structure, 4-Seat Frontier Council peer review, zero-build web accessibility, and offline deterministic falsification.",
+      "summary": "Structures and verifies interactive Living Executable Monographs with 4-Act narrative architectures, 4-Seat Council review, and portable SKILL.md companions.",
       "license": "CC0-1.0",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "path": ".claude/skills/complex-systems-monograph",
       "capabilities": [
-        "reads-project-files"
+        "python",
+        "reads-project-files",
+        "runs-code"
       ],
       "optional_capabilities": [],
       "audience": [

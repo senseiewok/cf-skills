@@ -55,6 +55,9 @@ jobs:
       - name: cf-math-verify checker tests
         working-directory: .claude/skills/cf-math-verify
         run: python -m unittest discover -s tests
+      - name: complex-systems-monograph checker tests
+        working-directory: .claude/skills/complex-systems-monograph
+        run: python -m unittest discover -s tests
 
   skill-tests:
     name: skill tests (pytest)
