@@ -104,6 +104,64 @@ class MathVerifyTests(unittest.TestCase):
             self.assertTrue(payload["passed"])
             self.assertEqual(len(payload["presets"]), 8)
 
+    def test_buckingham_cli(self):
+        spec_obj = {
+            "name": "CLI test",
+            "variables": {"v": {"L": 1, "T": -1}, "t": {"T": 1}, "x": {"L": 1}},
+            "terms": [
+                {"label": "lhs", "exponents": {"x": 1}},
+                {"label": "rhs", "exponents": {"v": 1, "t": 1}},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            spec_file = Path(tmp) / "spec.json"
+            spec_file.write_text(json.dumps(spec_obj), encoding="utf-8")
+            out_file = Path(tmp) / "out.json"
+            code = math_verify.main(["buckingham", "--spec", str(spec_file), "--json", "--json-out", str(out_file)])
+            self.assertEqual(code, 0)
+            payload = json.loads(out_file.read_text(encoding="utf-8"))
+            self.assertTrue(payload["passed"])
+
+    def test_complex_step_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_file = Path(tmp) / "out.json"
+            code = math_verify.main([
+                "complex-step",
+                "--expr", "x ** 2",
+                "--deriv", "2 * x",
+                "--var", "x",
+                "--at", "3.0",
+                "--json",
+                "--json-out", str(out_file),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(out_file.read_text(encoding="utf-8"))
+            self.assertTrue(payload["passed"])
+
+    def test_proof_dag_cli(self):
+        dag = {
+            "name": "CLI DAG Test",
+            "nodes": [
+                {"id": "a", "role": "source"},
+                {"id": "b", "role": "qed"},
+            ],
+            "edges": [
+                {"source": "a", "target": "b", "flux": 1.0},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            dag_file = Path(tmp) / "dag.json"
+            dag_file.write_text(json.dumps(dag), encoding="utf-8")
+            out_file = Path(tmp) / "out.json"
+            code = math_verify.main(["proof-dag", "--dag", str(dag_file), "--json", "--json-out", str(out_file)])
+            self.assertEqual(code, 0)
+            payload = json.loads(out_file.read_text(encoding="utf-8"))
+            self.assertTrue(payload["passed"])
+
+    def test_cli_no_subcommand_returns_2(self):
+        code = math_verify.main([])
+        self.assertEqual(code, 2)
+
     def test_zero_network_and_zero_subprocess_audit_hook(self):
         events = []
 
