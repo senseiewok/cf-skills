@@ -70,6 +70,7 @@ Research, not medical advice. The records this tool returns describe public docu
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
 | Deterministically look up CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain context | `cftr-context <variant|codon>` | Zero-network deterministic CFTR structural context (UniProt P13569, RefSeq NM_000492.4, CFTR2) |
 | Deterministically look up CFTR modulator brand, API, molecular code, NDA, and openFDA SPL boxed warning safety context | `cftr-modulator <brand|code|API>` | Zero-network deterministic CFTR modulator and regulatory safety context (Drugs@FDA, openFDA SPL AH-4, Cryo-EM PDB) |
+| Deterministically look up CFTR Cryo-EM coordinate structure metadata | `cftr-structure <pdb_id> [--list]` | Zero-network deterministic CFTR Cryo-EM structural resolution, ligands, conformation, and reference (alias: `cftr-pdb`) |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 | Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30] [--scite-bulk]` | Crossref, PubMed, ClinicalTrials.gov, plus optional zero-quota Scite bulk pre-flight (see Cite-check) |
@@ -88,6 +89,9 @@ python scripts/evidence_cli.py cftr-context "F508del"
 python scripts/evidence_cli.py cftr-context "621+1G->T" --json
 python scripts/evidence_cli.py cftr-modulator "Trikafta"
 python scripts/evidence_cli.py cftr-modulator "VX-121" --json
+python scripts/evidence_cli.py cftr-structure "8EIQ"
+python scripts/evidence_cli.py cftr-structure "6O2P"
+python scripts/evidence_cli.py cftr-pdb --list
 ```
 
 Flags on every command: `--json` for one JSON object per record, `--ledger PATH` to append records to a JSONL evidence ledger. Exit code 0 when every record is `found` or `not_found`; 3 when any is `blocked`, `rate_limited` or `error`.
@@ -98,7 +102,7 @@ A brief asks one question of several sources through the same client, so the cat
 
 | Recipe | Runs | Cross-checks |
 | --- | --- | --- |
-| `brief drug TRIKAFTA` | `approval`, `label`, `trials` by term (5), `pubmed` for the brand (5) | each source's status; that the label's effective-date year is not earlier than the Drugs@FDA first-approval year |
+| `brief drug TRIKAFTA` | `approval`, `label`, `trials` by term (5), `pubmed` for the brand (5) | each source's status; that the label's effective-date year is not earlier than the Drugs@FDA first-approval year; OpenAlex literature and retraction scan; CFTR modulator safety boundary (AH-4) and primary PDB cross-check |
 | `brief variant "CFTR[gene] AND F508del"` | `variants`, `pubmed` for the same term (5) | each source's status; how many ClinVar records matched, with classification and review status for every one |
 | `brief trial NCT05033080` | `trial`, `pubmed` for the NCT id (5) | each source's status; the registry record's id; which returned papers name the trial in their title |
 

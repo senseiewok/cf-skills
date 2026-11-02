@@ -286,7 +286,7 @@ def test_every_printed_field_value_comes_from_a_record(monkeypatch, no_sleep):
     b = briefs.drug(make_client(monkeypatch, drug_script()), "TRIKAFTA")
     values = {json.dumps(v, sort_keys=True) for r in b.records for v in [*r.fields.values(), r.publisher_date]}
     for step, key, value in b.facts:
-        if value == briefs.NOT_STATED or key.endswith("(counted)"):
+        if value == briefs.NOT_STATED or key.endswith("(counted)") or key.endswith("(computed)"):
             continue
         assert json.dumps(value, sort_keys=True) in values, (step, key, value)
 
@@ -354,3 +354,21 @@ def test_variant_brief_includes_cftr_structural_context(monkeypatch, no_sleep):
     c = [chk for chk in b.checks if chk.what == "CFTR structural domain & exon map"][0]
     assert c.verdict == briefs.PASS
     assert "Class II" in c.detail
+
+
+def test_drug_brief_includes_cftr_modulator_context(monkeypatch, no_sleep):
+    b = briefs.drug(make_client(monkeypatch, drug_script()), "TRIKAFTA")
+    text = b.text()
+    assert "cftr_modulator mechanistic_class (computed):" in text
+    assert "cftr_modulator spl_boxed_warning (computed): drug-induced liver injury" in text
+    assert "cftr_modulator primary_pdb (computed): 8EIQ" in text
+    c = [chk for chk in b.checks if chk.what == "CFTR modulator safety boundary (AH-4)"][0]
+    assert c.verdict == briefs.PASS
+    assert "drug-induced liver injury" in c.detail
+
+
+def test_drug_brief_non_modulator_has_no_modulator_context(monkeypatch, no_sleep):
+    b = briefs.drug(make_client(monkeypatch, drug_script()), "ASPIRIN")
+    text = b.text()
+    assert "cftr_modulator" not in text
+    assert not any(chk.what == "CFTR modulator safety boundary (AH-4)" for chk in b.checks)

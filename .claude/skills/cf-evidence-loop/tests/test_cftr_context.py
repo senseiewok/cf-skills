@@ -15,6 +15,9 @@ import unittest
 from pathlib import Path
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = str(SKILL_ROOT / "scripts")
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
 MODULE_PATH = SKILL_ROOT / "scripts" / "evidence" / "cftr_context.py"
 
 spec = importlib.util.spec_from_file_location("cftr_context", MODULE_PATH)
@@ -251,8 +254,8 @@ class CftrContextTests(unittest.TestCase):
         self.assertEqual(symdeko["fda_nda"], "NDA 210491")
 
     def test_cryoem_structures_catalog_integrity(self):
-        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 8EIQ, and 8EJ1."""
-        pdbs = ["6MSM", "5UAK", "8EIQ", "8EJ1"]
+        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 8EIQ, and 8EJ1."""
+        pdbs = ["6MSM", "5UAK", "6O2P", "7SVD", "8EIQ", "8EJ1"]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
             self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
@@ -341,6 +344,48 @@ class CftrContextTests(unittest.TestCase):
         # No arguments returns 2
         code = cftr_context.main([])
         self.assertEqual(code, 2)
+
+    def test_cli_cftr_structure_subcommand(self):
+        """Verify cftr-structure and cftr-pdb subcommands via evidence.cli."""
+        from evidence import cli
+
+        # Direct accession lookup
+        old_stdout = sys.stdout
+        sys.stdout = io.StringIO()
+        try:
+            rc = cli.main(["cftr-structure", "8EIQ"])
+            self.assertEqual(rc, 0)
+            val = sys.stdout.getvalue()
+            self.assertIn("PDB 8EIQ", val)
+            self.assertIn("Fiedorczuk & Chen", val)
+        finally:
+            sys.stdout = old_stdout
+
+        # Direct lookup with JSON
+        sys.stdout = io.StringIO()
+        try:
+            rc = cli.main(["cftr-structure", "6O2P", "--json"])
+            self.assertEqual(rc, 0)
+            data = json.loads(sys.stdout.getvalue())
+            self.assertEqual(data["pdb_id"], "6O2P")
+            self.assertEqual(data["resolution_angstrom"], 3.3)
+        finally:
+            sys.stdout = old_stdout
+
+        # Alias cftr-pdb --list
+        sys.stdout = io.StringIO()
+        try:
+            rc = cli.main(["cftr-pdb", "--list"])
+            self.assertEqual(rc, 0)
+            val = sys.stdout.getvalue()
+            self.assertIn("Canonical CFTR Cryo-EM Structures (6 structures indexed)", val)
+            self.assertIn("7SVD", val)
+        finally:
+            sys.stdout = old_stdout
+
+        # Negative control
+        rc_neg = cli.main(["cftr-structure", "0000"])
+        self.assertEqual(rc_neg, 1)
 
     def test_audit_hook_zero_network_zero_subprocess(self):
         """Verify that looking up CFTR context triggers zero network sockets or subprocess calls."""
