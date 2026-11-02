@@ -5,7 +5,9 @@ The drug recipe makes five requests in this order: Drugs@FDA, label, ClinicalTri
 
 from __future__ import annotations
 
+import io
 import json
+import sys
 import urllib.parse
 from pathlib import Path
 
@@ -372,3 +374,40 @@ def test_drug_brief_non_modulator_has_no_modulator_context(monkeypatch, no_sleep
     text = b.text()
     assert "cftr_modulator" not in text
     assert not any(chk.what == "CFTR modulator safety boundary (AH-4)" for chk in b.checks)
+
+
+def test_cli_cftr_structure_subcommand():
+    """Verify cftr-structure and cftr-pdb subcommands via evidence.cli."""
+    old_stdout = sys.stdout
+    sys.stdout = io.StringIO()
+    try:
+        rc = cli.main(["cftr-structure", "8EIQ"])
+        assert rc == 0
+        val = sys.stdout.getvalue()
+        assert "PDB 8EIQ" in val
+        assert "Fiedorczuk & Chen" in val
+    finally:
+        sys.stdout = old_stdout
+
+    sys.stdout = io.StringIO()
+    try:
+        rc = cli.main(["cftr-structure", "6O2P", "--json"])
+        assert rc == 0
+        data = json.loads(sys.stdout.getvalue())
+        assert data["pdb_id"] == "6O2P"
+        assert data["resolution_angstrom"] == 3.3
+    finally:
+        sys.stdout = old_stdout
+
+    sys.stdout = io.StringIO()
+    try:
+        rc = cli.main(["cftr-pdb", "--list"])
+        assert rc == 0
+        val = sys.stdout.getvalue()
+        assert "Canonical CFTR Cryo-EM Structures (6 structures indexed)" in val
+        assert "7SVD" in val
+    finally:
+        sys.stdout = old_stdout
+
+    rc_neg = cli.main(["cftr-structure", "0000"])
+    assert rc_neg == 1
