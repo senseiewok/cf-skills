@@ -173,11 +173,109 @@ class CftrContextTests(unittest.TestCase):
             res = cftr_context.lookup_cftr_context(query)
             self.assertIsNone(res, f"Negative control query '{query}' did not return None")
 
+    def test_canonical_modulators_catalog_integrity(self):
+        """Verify that canonical modulators catalog contains at least 5 approved/pipeline regimens with complete metadata."""
+        mods = cftr_context.CANONICAL_MODULATORS
+        self.assertGreaterEqual(len(mods), 5)
+        for key, info in mods.items():
+            self.assertTrue(key.isupper())
+            self.assertIn("brand", info)
+            self.assertIn("active_ingredients", info)
+            self.assertIn("molecular_codes", info)
+            self.assertIn("mechanistic_class", info)
+            self.assertIn("fda_nda", info)
+            self.assertIn("sponsor", info)
+            self.assertIn("approval_year", info)
+            self.assertIn("spl_boxed_warning", info)
+            self.assertIn("primary_pdb", info)
+            self.assertIn("target_mechanism", info)
+            self.assertIn("aliases", info)
+
+    def test_modulator_lookups_and_aliases(self):
+        """Verify resolution across brand names, international trademarks, APIs, and molecular codes."""
+        test_cases = [
+            ("Trikafta", "Trikafta", ["VX-445", "VX-661", "VX-770"]),
+            ("KAFTRIO", "Trikafta", ["VX-445", "VX-661", "VX-770"]),
+            ("ETI", "Trikafta", ["VX-445", "VX-661", "VX-770"]),
+            ("elexacaftor", "Trikafta", ["VX-445", "VX-661", "VX-770"]),
+            ("VX-445", "Trikafta", ["VX-445", "VX-661", "VX-770"]),
+            ("Kalydeco", "Kalydeco", ["VX-770"]),
+            ("ivacaftor", "Kalydeco", ["VX-770"]),
+            ("VX-770", "Kalydeco", ["VX-770"]),
+            ("Orkambi", "Orkambi", ["VX-809", "VX-770"]),
+            ("lumacaftor", "Orkambi", ["VX-809", "VX-770"]),
+            ("VX-809", "Orkambi", ["VX-809", "VX-770"]),
+            ("Symdeko", "Symdeko", ["VX-661", "VX-770"]),
+            ("SYMKEVI", "Symdeko", ["VX-661", "VX-770"]),
+            ("tezacaftor", "Symdeko", ["VX-661", "VX-770"]),
+            ("VX-661", "Symdeko", ["VX-661", "VX-770"]),
+            ("Alyftrek", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+            ("vanzacaftor", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+            ("VX-121", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+            ("deutivacaftor", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+            ("VX-561", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+        ]
+        for query, expected_brand, expected_codes in test_cases:
+            res = cftr_context.lookup_cftr_modulator(query)
+            self.assertIsNotNone(res, f"Modulator lookup failed for query '{query}'")
+            self.assertEqual(res["brand"], expected_brand)
+            self.assertEqual(res["molecular_codes"], expected_codes)
+
+    def test_modulator_boxed_warning_boundaries_ah4(self):
+        """Verify strict openFDA SPL boxed warning vs not stated boundary per AH-4."""
+        # TRIKAFTA and ALYFTREK carry verified DILI Boxed Warning
+        trikafta = cftr_context.lookup_cftr_modulator("Trikafta")
+        self.assertIsNotNone(trikafta)
+        self.assertIn("drug-induced liver injury", trikafta["spl_boxed_warning"])
+        self.assertEqual(trikafta["fda_nda"], "NDA 212273")
+
+        alyftrek = cftr_context.lookup_cftr_modulator("Alyftrek")
+        self.assertIsNotNone(alyftrek)
+        self.assertIn("drug-induced liver injury", alyftrek["spl_boxed_warning"])
+        self.assertEqual(alyftrek["fda_nda"], "NDA 218730")
+
+        # KALYDECO, ORKAMBI, SYMDEKO have NO boxed warning (must be labeled 'not stated')
+        kalydeco = cftr_context.lookup_cftr_modulator("Kalydeco")
+        self.assertIsNotNone(kalydeco)
+        self.assertTrue(kalydeco["spl_boxed_warning"].startswith("not stated"))
+        self.assertEqual(kalydeco["fda_nda"], "NDA 203188")
+
+        orkambi = cftr_context.lookup_cftr_modulator("Orkambi")
+        self.assertIsNotNone(orkambi)
+        self.assertTrue(orkambi["spl_boxed_warning"].startswith("not stated"))
+        self.assertEqual(orkambi["fda_nda"], "NDA 206038")
+
+        symdeko = cftr_context.lookup_cftr_modulator("Symdeko")
+        self.assertIsNotNone(symdeko)
+        self.assertTrue(symdeko["spl_boxed_warning"].startswith("not stated"))
+        self.assertEqual(symdeko["fda_nda"], "NDA 210491")
+
+    def test_cryoem_structures_catalog_integrity(self):
+        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 8EIQ, and 8EJ1."""
+        pdbs = ["6MSM", "5UAK", "8EIQ", "8EJ1"]
+        for p in pdbs:
+            res = cftr_context.lookup_pdb_structure(p)
+            self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
+            self.assertEqual(res["pdb_id"], p)
+            self.assertEqual(res["method"], "Cryo-EM")
+            self.assertIsInstance(res["resolution_angstrom"], float)
+            self.assertIn("reference", res)
+
+        # Negative controls
+        self.assertIsNone(cftr_context.lookup_pdb_structure("0000"))
+        self.assertIsNone(cftr_context.lookup_pdb_structure("invalid_pdb"))
+
+    def test_modulator_negative_controls(self):
+        """Verify non-CFTR drugs and invalid queries return None."""
+        neg_queries = ["", "   ", "aspirin", "amoxicillin", "atorvastatin", "unknown_modulator_xyz"]
+        for q in neg_queries:
+            self.assertIsNone(cftr_context.lookup_cftr_modulator(q))
+
     def test_self_check_engine(self):
         """Verify the built-in self_check() function passes completely."""
         res = cftr_context.self_check()
         self.assertTrue(res["passed"], f"self_check() failed: {res}")
-        self.assertEqual(res["total_checks"], 5)
+        self.assertEqual(res["total_checks"], 10)
         self.assertTrue(all(c["ok"] for c in res["checks"]))
 
     def test_cli_standalone(self):
@@ -206,7 +304,33 @@ class CftrContextTests(unittest.TestCase):
         finally:
             sys.stdout = old_stdout
 
-        # Term lookup
+        # --modulators
+        sys.stdout = io.StringIO()
+        try:
+            code = cftr_context.main(["--modulators"])
+            self.assertEqual(code, 0)
+            self.assertIn("Trikafta", sys.stdout.getvalue())
+        finally:
+            sys.stdout = old_stdout
+
+        # --structures
+        sys.stdout = io.StringIO()
+        try:
+            code = cftr_context.main(["--structures"])
+            self.assertEqual(code, 0)
+            self.assertIn("6MSM", sys.stdout.getvalue())
+        finally:
+            sys.stdout = old_stdout
+
+        # Modulator term lookup
+        code = cftr_context.main(["Trikafta"])
+        self.assertEqual(code, 0)
+
+        # PDB structure lookup
+        code = cftr_context.main(["6MSM"])
+        self.assertEqual(code, 0)
+
+        # Allele lookup
         code = cftr_context.main(["F508del"])
         self.assertEqual(code, 0)
 

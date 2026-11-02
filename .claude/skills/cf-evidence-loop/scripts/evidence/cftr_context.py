@@ -1,4 +1,4 @@
-"""Deterministic CFTR RefSeq (NM_000492.4) exon & UniProt (P13569) structural domain context.
+"""Deterministic CFTR RefSeq (NM_000492.4) exon, UniProt (P13569) domain, modulator & Cryo-EM context.
 
 Provides a zero-network, standard-library structural lookup for canonical CFTR variants and codons
 so `brief variant` and the `cftr-context` command can annotate protein domain boundaries, exon numbers,
@@ -289,6 +289,116 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
     },
 }
 
+# Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
+CANONICAL_MODULATORS: dict[str, dict[str, Any]] = {
+    "KALYDECO": {
+        "brand": "Kalydeco",
+        "active_ingredients": ["ivacaftor"],
+        "molecular_codes": ["VX-770"],
+        "mechanistic_class": "CFTR Potentiator (increases channel open probability Po at cell surface)",
+        "fda_nda": "NDA 203188",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": 2012,
+        "spl_boxed_warning": "not stated (transaminase monitoring in Section 5 Warnings and Precautions)",
+        "primary_pdb": "6MSM",
+        "target_mechanism": "Binds transmembrane helices TM8/TM9/TM10/TM11 to stabilize open channel pore",
+        "aliases": ["KALYDECO", "IVACAFTOR", "VX-770", "VX770", "IVA"],
+    },
+    "ORKAMBI": {
+        "brand": "Orkambi",
+        "active_ingredients": ["lumacaftor", "ivacaftor"],
+        "molecular_codes": ["VX-809", "VX-770"],
+        "mechanistic_class": "Type I CFTR Corrector + Potentiator (MSD1/NBD1 chaperone + gating)",
+        "fda_nda": "NDA 206038",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": 2015,
+        "spl_boxed_warning": "not stated (respiratory events and transaminase monitoring in Section 5)",
+        "primary_pdb": "5UAK",
+        "target_mechanism": "Stabilizes MSD1 and ICL1 pocket to rescue F508del trafficking; potentiated by ivacaftor",
+        "aliases": ["ORKAMBI", "LUMACAFTOR", "VX-809", "VX809", "LUMACAFTOR/IVACAFTOR", "LUM/IVA"],
+    },
+    "SYMDEKO": {
+        "brand": "Symdeko",
+        "active_ingredients": ["tezacaftor", "ivacaftor"],
+        "molecular_codes": ["VX-661", "VX-770"],
+        "mechanistic_class": "Type I CFTR Corrector + Potentiator (second-generation NBD1-MSD chaperone + gating)",
+        "fda_nda": "NDA 210491",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": 2018,
+        "spl_boxed_warning": "not stated (transaminase monitoring in Section 5 Warnings and Precautions)",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "Binds TMD1 pocket stabilizing NBD1-ICL1/ICL4 interface without CYP3A induction",
+        "aliases": ["SYMDEKO", "SYMKEVI", "TEZACAFTOR", "VX-661", "VX661", "TEZACAFTOR/IVACAFTOR", "TEZ/IVA"],
+    },
+    "TRIKAFTA": {
+        "brand": "Trikafta",
+        "active_ingredients": ["elexacaftor", "tezacaftor", "ivacaftor"],
+        "molecular_codes": ["VX-445", "VX-661", "VX-770"],
+        "mechanistic_class": "Next-Generation Type II Corrector + Type I Corrector + Potentiator (cooperative dual-corrector chaperone + gating)",
+        "fda_nda": "NDA 212273",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": 2019,
+        "spl_boxed_warning": "drug-induced liver injury (DILI) and acute hepatic failure (baseline and periodic ALT/AST and bilirubin monitoring required)",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "Elexacaftor binds TM2/TM3/TM4/TM10/TM11 while tezacaftor binds TM1/TM2/TM3/TM6, providing cooperative allosteric rescue of F508del",
+        "aliases": ["TRIKAFTA", "KAFTRIO", "ELEXACAFTOR", "VX-445", "VX445", "ETI", "ELEXACAFTOR/TEZACAFTOR/IVACAFTOR", "ELX/TEZ/IVA"],
+    },
+    "ALYFTREK": {
+        "brand": "Alyftrek",
+        "active_ingredients": ["vanzacaftor", "tezacaftor", "deutivacaftor"],
+        "molecular_codes": ["VX-121", "VX-661", "VX-561"],
+        "mechanistic_class": "Once-Daily Next-Generation Corrector + Type I Corrector + Deuterated Potentiator",
+        "fda_nda": "NDA 218730",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": 2025,
+        "spl_boxed_warning": "drug-induced liver injury (DILI) and acute hepatic failure",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "High-potency next-generation corrector vanzacaftor with deuterated potentiator deutivacaftor for once-daily dosing",
+        "aliases": ["ALYFTREK", "VANZACAFTOR", "VX-121", "VX121", "DEUTIVACAFTOR", "VX-561", "VX561", "VTD", "VANZACAFTOR/TEZACAFTOR/DEUTIVACAFTOR", "VNZ/TEZ/D-IVA"],
+    },
+}
+
+# Curated benchmark Cryo-EM coordinate structures for human CFTR
+CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
+    "6MSM": {
+        "pdb_id": "6MSM",
+        "title": "Structure of human CFTR phosphorylated and ATP-bound with potentiator VX-770 (ivacaftor)",
+        "conformation": "Phosphorylated, ATP-bound active channel open state",
+        "ligands": ["VX-770 (ivacaftor)", "ATP", "Mg2+"],
+        "resolution_angstrom": 3.2,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Science 2019 (DOI: 10.1126/science.aaw7611)",
+    },
+    "5UAK": {
+        "pdb_id": "5UAK",
+        "title": "Cryo-EM structure of human dephosphorylated, ATP-free CFTR",
+        "conformation": "Dephosphorylated, ATP-free inward-facing quiescent/inactive state",
+        "ligands": [],
+        "resolution_angstrom": 3.9,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Cell 2017 (DOI: 10.1016/j.cell.2017.02.024)",
+    },
+    "8EIQ": {
+        "pdb_id": "8EIQ",
+        "title": "Human CFTR complex with elexacaftor (VX-445), tezacaftor (VX-661), and ivacaftor (VX-770)",
+        "conformation": "Trikafta (ETI)-bound ternary cooperative conformation",
+        "ligands": ["VX-445 (elexacaftor)", "VX-661 (tezacaftor)", "VX-770 (ivacaftor)", "ATP"],
+        "resolution_angstrom": 2.9,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.abq7985)",
+    },
+    "8EJ1": {
+        "pdb_id": "8EJ1",
+        "title": "Structure of uncorrected human F508del CFTR showing NBD1-ICL4 interface collapse",
+        "conformation": "Uncorrected F508del apo conformation",
+        "ligands": [],
+        "resolution_angstrom": 3.4,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.abq7985)",
+    },
+}
+
+
 _CODON_RE = re.compile(
     r"\b(?:p\.[A-Z][a-z]{2}|[ACDEFGHIKLMNPQRSTVWY])(\d{1,4})(?:del|dup|ins|fs|Ter|X|[A-Z][a-z]{2}|[ACDEFGHIKLMNPQRSTVWY*])\b"
 )
@@ -323,6 +433,53 @@ def normalize_query(term: str) -> str:
     # Normalize legacy delta/del prefix notation (e.g. ΔF508, deltaF508, delF508 -> F508del)
     q = re.sub(r"(?:Δ|\u0394|[Dd]el(?:ta)?)\s*([Ff]508|[Ii]507)", r"\1del", q)
     return q
+
+
+
+def lookup_cftr_modulator(term: str) -> dict[str, Any] | None:
+    """Resolve a CFTR modulator query (brand, API, molecular code, or abbreviation) to canonical metadata."""
+    if not isinstance(term, str) or not term.strip():
+        return None
+
+    clean = term.strip().strip("\"' ")
+    upper = clean.upper()
+    upper_nodash = upper.replace("-", "").replace("/", " ").replace("_", " ")
+
+    # Direct brand or key match
+    for key, mod in CANONICAL_MODULATORS.items():
+        if key == upper or key == upper_nodash:
+            return dict(mod)
+
+    # Check aliases, active ingredients, and molecular codes with word boundaries
+    for mod in CANONICAL_MODULATORS.values():
+        for alias in mod.get("aliases", []):
+            alias_upper = alias.upper()
+            if alias_upper == upper or alias_upper.replace("-", "") == upper_nodash:
+                return dict(mod)
+            if re.search(r"\b" + re.escape(alias_upper) + r"\b", upper):
+                return dict(mod)
+        for api in mod.get("active_ingredients", []):
+            api_upper = api.upper()
+            if api_upper == upper or re.search(r"\b" + re.escape(api_upper) + r"\b", upper):
+                return dict(mod)
+        for code in mod.get("molecular_codes", []):
+            code_upper = code.upper()
+            if code_upper == upper or code_upper.replace("-", "") == upper_nodash:
+                return dict(mod)
+            if re.search(r"\b" + re.escape(code_upper) + r"\b", upper):
+                return dict(mod)
+
+    return None
+
+
+def lookup_pdb_structure(pdb_id: str) -> dict[str, Any] | None:
+    """Resolve a 4-character PDB accession to curated Cryo-EM CFTR structure metadata."""
+    if not isinstance(pdb_id, str) or not pdb_id.strip():
+        return None
+    code = pdb_id.strip().upper()
+    if code in CANONICAL_PDB_STRUCTURES:
+        return dict(CANONICAL_PDB_STRUCTURES[code])
+    return None
 
 
 def lookup_cftr_context(term: str) -> dict[str, Any] | None:
@@ -478,6 +635,81 @@ def self_check() -> dict[str, Any]:
         "detail": f"{len(negative_cases)} negative control cases returned None",
     })
 
+    # 6. Canonical modulators count check
+    mod_count_ok = len(CANONICAL_MODULATORS) >= 5
+    checks.append({
+        "name": "canonical_modulators_count",
+        "ok": mod_count_ok,
+        "detail": f"{len(CANONICAL_MODULATORS)} canonical modulators indexed",
+    })
+
+    # 7. Modulator positive lookups (brand, code, API, abbreviation)
+    mod_test_cases = [
+        ("Trikafta", "Trikafta"),
+        ("KAFTRIO", "Trikafta"),
+        ("VX-770", "Kalydeco"),
+        ("ivacaftor", "Kalydeco"),
+        ("vanzacaftor", "Alyftrek"),
+        ("VX-121", "Alyftrek"),
+        ("ETI", "Trikafta"),
+        ("Symdeko", "Symdeko"),
+        ("Orkambi", "Orkambi"),
+    ]
+    mod_pos_ok = True
+    for q, expected_brand in mod_test_cases:
+        res_m = lookup_cftr_modulator(q)
+        if not res_m or res_m["brand"] != expected_brand:
+            mod_pos_ok = False
+            break
+    checks.append({
+        "name": "modulator_positive_lookups",
+        "ok": mod_pos_ok,
+        "detail": f"{len(mod_test_cases)} modulator positive cases resolved with canonical brand",
+    })
+
+    # 8. Modulator AH-4 boxed warning boundaries (Trikafta/Alyftrek DILI vs Kalydeco/Orkambi/Symdeko not stated)
+    bw_trikafta = lookup_cftr_modulator("Trikafta")
+    bw_alyftrek = lookup_cftr_modulator("Alyftrek")
+    bw_kalydeco = lookup_cftr_modulator("Kalydeco")
+    bw_orkambi = lookup_cftr_modulator("Orkambi")
+    bw_symdeko = lookup_cftr_modulator("Symdeko")
+
+    bw_ok = (
+        bw_trikafta is not None and "drug-induced liver injury" in bw_trikafta["spl_boxed_warning"]
+        and bw_alyftrek is not None and "drug-induced liver injury" in bw_alyftrek["spl_boxed_warning"]
+        and bw_kalydeco is not None and bw_kalydeco["spl_boxed_warning"].startswith("not stated")
+        and bw_orkambi is not None and bw_orkambi["spl_boxed_warning"].startswith("not stated")
+        and bw_symdeko is not None and bw_symdeko["spl_boxed_warning"].startswith("not stated")
+    )
+    checks.append({
+        "name": "modulator_boxed_warning_boundaries",
+        "ok": bw_ok,
+        "detail": "Trikafta/Alyftrek DILI boxed warning vs Kalydeco/Orkambi/Symdeko not stated verified (AH-4)",
+    })
+
+    # 9. Modulator negative controls rejected
+    mod_neg_cases = ["", "   ", "completely_unknown_chemical_xyz", "aspirin", "ibuprofen"]
+    mod_neg_ok = True
+    for q in mod_neg_cases:
+        if lookup_cftr_modulator(q) is not None:
+            mod_neg_ok = False
+            break
+    checks.append({
+        "name": "modulator_negative_controls_rejected",
+        "ok": mod_neg_ok,
+        "detail": f"{len(mod_neg_cases)} non-CFTR modulator queries rejected",
+    })
+
+    # 10. Cryo-EM PDB structures lookup positive and negative controls
+    pdb_pos_cases = ["6MSM", "5UAK", "8EIQ", "8EJ1"]
+    pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
+    pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
+    checks.append({
+        "name": "pdb_structures_positive_and_negative",
+        "ok": pdb_ok and pdb_neg_ok,
+        "detail": "4 canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
+    })
+
     all_passed = all(c["ok"] for c in checks)
     return {
         "check": "self-check",
@@ -490,11 +722,13 @@ def self_check() -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="cftr_context",
-        description="Deterministic CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain lookup (zero network).",
+        description="Deterministic CFTR RefSeq NM_000492.4 exon, UniProt P13569 domain, modulator & Cryo-EM lookup (zero network).",
     )
-    parser.add_argument("term", nargs="?", help="CFTR allele name, HGVS cDNA/protein notation, or codon")
+    parser.add_argument("term", nargs="?", help="CFTR allele name, codon, modulator brand/code/API, or PDB accession")
     parser.add_argument("--self-check", action="store_true", help="run deterministic positive and negative-control self-tests")
     parser.add_argument("--list", action="store_true", help="list all canonical alleles")
+    parser.add_argument("--modulators", action="store_true", help="list all canonical CFTR modulators and NDAs")
+    parser.add_argument("--structures", action="store_true", help="list canonical CFTR Cryo-EM PDB structures")
     parser.add_argument("--json", action="store_true", help="output JSON")
 
     args = parser.parse_args(argv)
@@ -521,10 +755,53 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  {info['allele']:<15} {info['hgvs_c']:<20} {exon_str:<10} {info['cftr_class']}")
         return 0
 
+    if args.modulators:
+        if args.json:
+            print(json.dumps(CANONICAL_MODULATORS, indent=2))
+        else:
+            print(f"Canonical CFTR Modulators ({len(CANONICAL_MODULATORS)} modulators indexed):")
+            for k, mod in sorted(CANONICAL_MODULATORS.items()):
+                print(f"  {mod['brand']:<12} {mod['fda_nda']:<12} {mod['primary_pdb']:<6} {mod['mechanistic_class']}")
+        return 0
+
+    if args.structures:
+        if args.json:
+            print(json.dumps(CANONICAL_PDB_STRUCTURES, indent=2))
+        else:
+            print(f"Canonical CFTR Cryo-EM Structures ({len(CANONICAL_PDB_STRUCTURES)} structures indexed):")
+            for k, s in sorted(CANONICAL_PDB_STRUCTURES.items()):
+                print(f"  {s['pdb_id']:<6} {s['resolution_angstrom']} A  {s['conformation']}")
+        return 0
+
     if not args.term:
         parser.print_help(sys.stderr)
         return 2
 
+    # Check modulator lookup first if query matches a modulator
+    res_mod = lookup_cftr_modulator(args.term)
+    if res_mod is not None:
+        if args.json:
+            print(json.dumps(res_mod, indent=2))
+        else:
+            print(
+                f"{res_mod['brand']} ({', '.join(res_mod['active_ingredients'])}; {', '.join(res_mod['molecular_codes'])}): "
+                f"{res_mod['mechanistic_class']} [{res_mod['fda_nda']}, approved {res_mod['approval_year']}]. "
+                f"SPL Boxed Warning: {res_mod['spl_boxed_warning']}. Primary PDB: {res_mod['primary_pdb']}."
+            )
+        return 0
+
+    # Check PDB structure
+    res_pdb = lookup_pdb_structure(args.term)
+    if res_pdb is not None:
+        if args.json:
+            print(json.dumps(res_pdb, indent=2))
+        else:
+            print(f"PDB {res_pdb['pdb_id']}: {res_pdb['title']} ({res_pdb['resolution_angstrom']} A Cryo-EM)")
+            print(f"  Conformation: {res_pdb['conformation']}")
+            print(f"  Reference: {res_pdb['reference']}")
+        return 0
+
+    # Otherwise fallback to allele / codon lookup
     res = lookup_cftr_context(args.term)
     if res is not None:
         if args.json:
