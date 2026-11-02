@@ -100,6 +100,16 @@ class CftrContextTests(unittest.TestCase):
             ("3849+10kbC>T", "3849+10kbC>T", 22, "Class V"),
             ("2789+5G>A", "2789+5G>A", 15, "Class V"),
             ("A455E", "A455E", 10, "Class V"),
+            # Class VI: Accelerated Surface Turnover / C-Terminal Truncation
+            ("Q1412X", "Q1412X", 26, "Class VI"),
+            # Additional High-Frequency Curated Alleles
+            ("R560T", "R560T", 13, "Class II"),
+            ("L206W", "L206W", 6, "Class II"),
+            ("1898+1G>A", "1898+1G>A", 13, "Class I"),
+            ("S1251N", "S1251N", 23, "Class III"),
+            ("G1244E", "G1244E", 23, "Class III"),
+            ("G178R", "G178R", 5, "Class III"),
+            ("S549R", "S549R", 12, "Class III"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
