@@ -189,6 +189,9 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("cftr-context", help="look up CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain context")
     p.add_argument("term", help="CFTR allele name, HGVS cDNA/protein notation, or codon (e.g. F508del, c.1652G>A, G551D, 508)")
 
+    p = sub.add_parser("cftr-modulator", help="look up CFTR modulator brand, active ingredient, molecular code, NDA, and openFDA SPL boxed warning context")
+    p.add_argument("term", help="CFTR modulator brand, API, molecular code, or abbreviation (e.g. Trikafta, ivacaftor, VX-770, Alyftrek, VX-121, ETI)")
+
     a = ap.parse_args(argv)
     if a.cmd == "sources":
         for sid, e in sorted(catalog.load().items()):
@@ -216,6 +219,27 @@ def main(argv: list[str] | None = None) -> int:
                 print(json.dumps({"error": f"CFTR context not found for '{a.term}'"}))
             else:
                 print(f"not found: CFTR context for '{a.term}'", file=sys.stderr)
+            return 1
+
+    if a.cmd == "cftr-modulator":
+        from . import cftr_context
+        mod = cftr_context.lookup_cftr_modulator(a.term)
+        if mod is not None:
+            if a.json:
+                print(json.dumps(mod, indent=2 if not a.ledger else None))
+            else:
+                summary_str = (
+                    f"{mod['brand']} ({', '.join(mod['active_ingredients'])}; {', '.join(mod['molecular_codes'])}): "
+                    f"{mod['mechanistic_class']} [{mod['fda_nda']}, approved {mod['approval_year']}]. "
+                    f"SPL Boxed Warning: {mod['spl_boxed_warning']}. Primary PDB: {mod['primary_pdb']}."
+                )
+                print(summary_str)
+            return 0
+        else:
+            if a.json:
+                print(json.dumps({"error": f"CFTR modulator context not found for '{a.term}'"}))
+            else:
+                print(f"not found: CFTR modulator context for '{a.term}'", file=sys.stderr)
             return 1
 
     blank_err = _check_blank_query(a)
@@ -367,6 +391,7 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "read-page": ("url",),
     "cite-check": ("file",),
     "cftr-context": ("term",),
+    "cftr-modulator": ("term",),
 }
 
 
