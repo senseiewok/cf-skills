@@ -68,6 +68,7 @@ Research, not medical advice. The records this tool returns describe public docu
 | Look up Ensembl genomic coordinates, canonical transcripts, or rsID consequences | `ensembl <rsID\|ENSG\|symbol>` | Ensembl REST API (`ensembl-rest`, CC BY 4.0 / Apache 2.0) |
 | Search NLM DailyMed Structured Product Labels (SPL) by drug name | `dailymed <DRUG> [--limit 5]` | DailyMed RESTful web services v2 (`dailymed-web-services`) |
 | Read terms or legal page before catalog entry | `read-page <HTTPS_URL> [--out FILE] [--max-chars N]` | Human-started reading of terms/policy pages or PDFs under lab conduct rules |
+| Deterministically look up CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain context | `cftr-context <variant|codon>` | Zero-network deterministic CFTR structural context (UniProt P13569, RefSeq NM_000492.4, CFTR2) |
 | What may this tool reach at all? | `sources` | the catalog |
 | What do several sources say about one drug, variant or trial? | `brief drug <BRAND>`, `brief variant "<ClinVar query>"`, `brief trial <NCTId>` | the sources above, cross-checked (see Briefs) |
 | Does every DOI, PMID and trial id in this note exist? | `cite-check <FILE> [--max-ids 30] [--scite-bulk]` | Crossref, PubMed, ClinicalTrials.gov, plus optional zero-quota Scite bulk pre-flight (see Cite-check) |
@@ -82,6 +83,8 @@ python scripts/evidence_cli.py retractions 10.1038/ng.2745
 python scripts/evidence_cli.py approval TRIKAFTA
 python scripts/evidence_cli.py variants "CFTR[gene] AND F508del" --limit 5
 python scripts/evidence_cli.py population country/USA
+python scripts/evidence_cli.py cftr-context "F508del"
+python scripts/evidence_cli.py cftr-context "621+1G->T" --json
 ```
 
 Flags on every command: `--json` for one JSON object per record, `--ledger PATH` to append records to a JSONL evidence ledger. Exit code 0 when every record is `found` or `not_found`; 3 when any is `blocked`, `rate_limited` or `error`.

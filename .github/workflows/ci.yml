@@ -58,6 +58,8 @@ jobs:
       - name: complex-systems-monograph checker tests
         working-directory: .claude/skills/complex-systems-monograph
         run: python -m unittest discover -s tests
+      - name: cf-evidence-loop cftr-context offline tests
+        run: python -m unittest discover -s .claude/skills/cf-evidence-loop/tests -p "test_cftr_context.py"
 
   skill-tests:
     name: skill tests (pytest)

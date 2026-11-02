@@ -1,13 +1,16 @@
 """Deterministic CFTR RefSeq (NM_000492.4) exon & UniProt (P13569) structural domain context.
 
 Provides a zero-network, standard-library structural lookup for canonical CFTR variants and codons
-so `brief variant` can annotate protein domain boundaries, exon numbers, and mutation class context
-with explicit primary source provenance (UniProt P13569, RefSeq NM_000492.4, CFTR2).
+so `brief variant` and the `cftr-context` command can annotate protein domain boundaries, exon numbers,
+and mutation class context with explicit primary source provenance (UniProt P13569, RefSeq NM_000492.4, CFTR2).
 """
 
 from __future__ import annotations
 
+import argparse
+import json
 import re
+import sys
 from typing import Any
 
 UNIPROT_ACCESSION = "P13569"
@@ -57,7 +60,7 @@ CFTR_EXON_SPANS: tuple[tuple[int, int, int], ...] = (
     (27, 1420, 1480),
 )
 
-# Curated high-frequency CFTR alleles with exact HGVS, exon, domain, and mechanistic class
+# Curated high-frequency CFTR alleles with exact HGVS, exon, domain, and mechanistic class (CFTR2 / CFFPR)
 CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
     "F508DEL": {
         "allele": "F508del",
@@ -131,11 +134,166 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "Intron 22 (84-bp pseudoexon inclusion between exons 22 and 23)",
         "cftr_class": "Class V (cryptic splice site reducing canonical transcript)",
     },
+    "621+1G>T": {
+        "allele": "621+1G>T",
+        "hgvs_c": "c.489+1G>T",
+        "hgvs_p": "canonical splice donor disruption (exon 4 skipping)",
+        "codon": None,
+        "exon": 4,
+        "domain": "Intron 4 (canonical 5' donor splice site)",
+        "cftr_class": "Class I (splice donor site disruption / loss of full-length protein)",
+    },
+    "1717-1G>A": {
+        "allele": "1717-1G>A",
+        "hgvs_c": "c.1585-1G>A",
+        "hgvs_p": "canonical splice acceptor disruption (exon 12 skipping)",
+        "codon": None,
+        "exon": 12,
+        "domain": "Intron 11 (canonical 3' acceptor splice site)",
+        "cftr_class": "Class I (splice acceptor site disruption / out-of-frame exon 12 skip)",
+    },
+    "2789+5G>A": {
+        "allele": "2789+5G>A",
+        "hgvs_c": "c.2657+5G>A",
+        "hgvs_p": "alternative splice donor efficiency reduction",
+        "codon": None,
+        "exon": 15,
+        "domain": "Intron 15 (5' donor splice region)",
+        "cftr_class": "Class V (reduced normal splicing efficiency / partial WT CFTR)",
+    },
+    "3120+1G>A": {
+        "allele": "3120+1G>A",
+        "hgvs_c": "c.2988+1G>A",
+        "hgvs_p": "canonical splice donor disruption (exon 18 skipping)",
+        "codon": None,
+        "exon": 18,
+        "domain": "Intron 18 (canonical 5' donor splice site)",
+        "cftr_class": "Class I (splice donor site disruption)",
+    },
+    "I507DEL": {
+        "allele": "I507del",
+        "hgvs_c": "c.1519_1521delATC",
+        "hgvs_p": "p.Ile507del",
+        "codon": 507,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (NBD1 folding and processing defect)",
+    },
+    "A455E": {
+        "allele": "A455E",
+        "hgvs_c": "c.1364C>A",
+        "hgvs_p": "p.Ala455Glu",
+        "codon": 455,
+        "exon": 10,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class V (reduced mature protein synthesis / partial processing)",
+    },
+    "S549N": {
+        "allele": "S549N",
+        "hgvs_c": "c.1646G>A",
+        "hgvs_p": "p.Ser549Asn",
+        "codon": 549,
+        "exon": 12,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class III (ATP signature motif gating defect)",
+    },
+    "V520F": {
+        "allele": "V520F",
+        "hgvs_c": "c.1558G>T",
+        "hgvs_p": "p.Val520Phe",
+        "codon": 520,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (NBD1-ICL4 interface trafficking defect)",
+    },
+    "R334W": {
+        "allele": "R334W",
+        "hgvs_c": "c.1000C>T",
+        "hgvs_p": "p.Arg334Trp",
+        "codon": 334,
+        "exon": 8,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class IV (pore architecture / reduced single-channel conductance)",
+    },
+    "R347P": {
+        "allele": "R347P",
+        "hgvs_c": "c.1040G>C",
+        "hgvs_p": "p.Arg347Pro",
+        "codon": 347,
+        "exon": 8,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class IV (TM6 pore helix selectivity / reduced conductance)",
+    },
+    "R1162X": {
+        "allele": "R1162X",
+        "hgvs_c": "c.3484C>T",
+        "hgvs_p": "p.Arg1162Ter",
+        "codon": 1162,
+        "exon": 21,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class I (premature termination codon in cytoplasmic linker)",
+    },
+    "2184DELA": {
+        "allele": "2184delA",
+        "hgvs_c": "c.2052delA",
+        "hgvs_p": "p.Lys684fs",
+        "codon": 684,
+        "exon": 14,
+        "domain": "R-domain (Regulatory Domain)",
+        "cftr_class": "Class I (frameshift leading to premature stop)",
+    },
+    "3659DELC": {
+        "allele": "3659delC",
+        "hgvs_c": "c.3527delC",
+        "hgvs_p": "p.Thr1176fs",
+        "codon": 1176,
+        "exon": 22,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class I (frameshift truncating NBD2 catalytic domain)",
+    },
+    "G85E": {
+        "allele": "G85E",
+        "hgvs_c": "c.254G>A",
+        "hgvs_p": "p.Gly85Glu",
+        "codon": 85,
+        "exon": 3,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class II (severe TM1 misfolding and trafficking defect)",
+    },
+    "D1152H": {
+        "allele": "D1152H",
+        "hgvs_c": "c.3454G>C",
+        "hgvs_p": "p.Asp1152His",
+        "codon": 1152,
+        "exon": 21,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class IV (reduced channel conductance and altered gating)",
+    },
+    "Y1092X": {
+        "allele": "Y1092X",
+        "hgvs_c": "c.3276C>A",
+        "hgvs_p": "p.Tyr1092Ter",
+        "codon": 1092,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class I (premature termination codon in TM12)",
+    },
+    "M1101K": {
+        "allele": "M1101K",
+        "hgvs_c": "c.3302T>A",
+        "hgvs_p": "p.Met1101Lys",
+        "codon": 1101,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class II (misfolding defect in TMD2)",
+    },
 }
 
 _CODON_RE = re.compile(
     r"\b(?:p\.[A-Z][a-z]{2}|[ACDEFGHIKLMNPQRSTVWY])(\d{1,4})(?:del|dup|ins|fs|Ter|X|[A-Z][a-z]{2}|[ACDEFGHIKLMNPQRSTVWY*])\b"
 )
+_STANDALONE_CODON_RE = re.compile(r"(?<![-\w])(?:codon\s+)?(\d{1,4})\b", re.IGNORECASE)
+_NEGATIVE_CODON_RE = re.compile(r"(?:codon\s*-\s*\d+|^-\s*\d+)", re.IGNORECASE)
 
 
 def domain_for_codon(codon: int) -> str:
@@ -154,11 +312,32 @@ def exon_for_codon(codon: int) -> int | None:
     return None
 
 
+def normalize_query(term: str) -> str:
+    """Normalize user queries by expanding arrow notation, legacy delta symbols, and stripping quotes."""
+    if not isinstance(term, str):
+        return ""
+    q = term.strip()
+    q = q.strip("\"' ")
+    # Normalize arrow representations to standard '>'
+    q = q.replace("->", ">").replace("→", ">")
+    # Normalize legacy delta/del prefix notation (e.g. ΔF508, deltaF508, delF508 -> F508del)
+    q = re.sub(r"(?:Δ|\u0394|[Dd]el(?:ta)?)\s*([Ff]508|[Ii]507)", r"\1del", q)
+    return q
+
+
 def lookup_cftr_context(term: str) -> dict[str, Any] | None:
     """Resolve a query term (e.g. 'CFTR[gene] AND F508del', 'G551D', 'p.Arg117His') to CFTR structural metadata."""
     if not isinstance(term, str) or not term.strip():
         return None
-    upper = term.upper()
+
+    normalized = normalize_query(term)
+    upper = normalized.upper()
+
+    # Reject obvious negative numbers in codon queries (e.g. 'codon -10')
+    if _NEGATIVE_CODON_RE.search(normalized):
+        return None
+
+    # 1. Direct canonical allele key match
     for key, info in CANONICAL_ALLELES.items():
         if key in upper:
             return {
@@ -167,18 +346,20 @@ def lookup_cftr_context(term: str) -> dict[str, Any] | None:
                 "uniprot": UNIPROT_ACCESSION,
             }
 
-    # Check protein HGVS aliases for canonical alleles
+    # 2. Check protein and cDNA HGVS aliases
     for info in CANONICAL_ALLELES.values():
-        if info["hgvs_p"].upper() in upper or info["hgvs_c"].upper() in upper:
+        hgvs_p_norm = info["hgvs_p"].upper().replace("->", ">")
+        hgvs_c_norm = info["hgvs_c"].upper().replace("->", ">")
+        if hgvs_p_norm in upper or hgvs_c_norm in upper:
             return {
                 **info,
                 "transcript": REFSEQ_TRANSCRIPT,
                 "uniprot": UNIPROT_ACCESSION,
             }
 
-    # Generic codon extraction when query mentions CFTR or HGVS protein notation
-    if "CFTR" in upper or "P." in upper:
-        m = _CODON_RE.search(term)
+    # 3. Generic codon extraction when query mentions CFTR or HGVS protein notation
+    if "CFTR" in upper or "P." in upper or "CODON" in upper:
+        m = _CODON_RE.search(normalized)
         if m:
             codon = int(m.group(1))
             if 1 <= codon <= 1480:
@@ -193,4 +374,176 @@ def lookup_cftr_context(term: str) -> dict[str, Any] | None:
                     "transcript": REFSEQ_TRANSCRIPT,
                     "uniprot": UNIPROT_ACCESSION,
                 }
+        m_num = _STANDALONE_CODON_RE.search(normalized)
+        if m_num:
+            codon = int(m_num.group(1))
+            if 1 <= codon <= 1480:
+                return {
+                    "allele": f"codon {codon}",
+                    "hgvs_c": "not stated",
+                    "hgvs_p": f"codon {codon}",
+                    "codon": codon,
+                    "exon": exon_for_codon(codon),
+                    "domain": domain_for_codon(codon),
+                    "cftr_class": "not stated",
+                    "transcript": REFSEQ_TRANSCRIPT,
+                    "uniprot": UNIPROT_ACCESSION,
+                }
+
     return None
+
+
+def self_check() -> dict[str, Any]:
+    """Run built-in positive and negative controls across CFTR domain, exon, and allele lookups."""
+    checks: list[dict[str, Any]] = []
+
+    # 1. Canonical alleles completeness check
+    all_keys = list(CANONICAL_ALLELES.keys())
+    has_expected_count = len(all_keys) >= 23
+    checks.append({
+        "name": "canonical_alleles_count",
+        "ok": has_expected_count,
+        "detail": f"{len(all_keys)} canonical alleles indexed",
+    })
+
+    # 2. Contiguity of CFTR domains (1..1480)
+    domain_ok = True
+    curr_pos = 1
+    for start, end, name, _ in CFTR_DOMAINS:
+        if start != curr_pos:
+            domain_ok = False
+            break
+        curr_pos = end + 1
+    domain_ok = domain_ok and (curr_pos - 1 == 1480)
+    checks.append({
+        "name": "cftr_domains_contiguity",
+        "ok": domain_ok,
+        "detail": "9 domains span residues 1 through 1480 without gaps",
+    })
+
+    # 3. Contiguity of CFTR exons (1..27)
+    exon_ok = True
+    curr_pos = 1
+    for exon_num, start, end in CFTR_EXON_SPANS:
+        if start != curr_pos:
+            exon_ok = False
+            break
+        curr_pos = end + 1
+    exon_ok = exon_ok and (curr_pos - 1 == 1480) and (len(CFTR_EXON_SPANS) == 27)
+    checks.append({
+        "name": "cftr_exons_contiguity",
+        "ok": exon_ok,
+        "detail": "27 exons span codons 1 through 1480 without gaps",
+    })
+
+    # 4. Positive lookup controls: canonical, HGVS, and normalized arrows
+    positive_cases = [
+        ("F508del", "F508del", 11, "NBD1 (Nucleotide-Binding Domain 1)"),
+        ("ΔF508", "F508del", 11, "NBD1 (Nucleotide-Binding Domain 1)"),
+        ("c.1652G>A", "G551D", 12, "NBD1 (Nucleotide-Binding Domain 1)"),
+        ("621+1G->T", "621+1G>T", 4, "Intron 4 (canonical 5' donor splice site)"),
+        ("3849+10kbC->T", "3849+10kbC>T", 22, "Intron 22 (84-bp pseudoexon inclusion between exons 22 and 23)"),
+        ("CFTR codon 508", "codon 508", 11, "NBD1 (Nucleotide-Binding Domain 1)"),
+    ]
+    pos_ok = True
+    for query, expected_allele, expected_exon, expected_domain in positive_cases:
+        res = lookup_cftr_context(query)
+        if not res or res["allele"] != expected_allele or res["exon"] != expected_exon or res["domain"] != expected_domain:
+            pos_ok = False
+            break
+    checks.append({
+        "name": "positive_lookups_and_normalizations",
+        "ok": pos_ok,
+        "detail": f"{len(positive_cases)} positive test cases resolved with exact coordinates",
+    })
+
+    # 5. Negative controls: invalid codons and nonsense inputs must return None
+    negative_cases = [
+        "",
+        "   ",
+        "CFTR codon 0",
+        "CFTR codon 1481",
+        "CFTR codon -10",
+        "completely_unrelated_query_without_cftr",
+    ]
+    neg_ok = True
+    for query in negative_cases:
+        res = lookup_cftr_context(query)
+        if res is not None:
+            neg_ok = False
+            break
+    checks.append({
+        "name": "negative_controls_rejected",
+        "ok": neg_ok,
+        "detail": f"{len(negative_cases)} negative control cases returned None",
+    })
+
+    all_passed = all(c["ok"] for c in checks)
+    return {
+        "check": "self-check",
+        "passed": all_passed,
+        "total_checks": len(checks),
+        "checks": checks,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="cftr_context",
+        description="Deterministic CFTR RefSeq NM_000492.4 exon and UniProt P13569 domain lookup (zero network).",
+    )
+    parser.add_argument("term", nargs="?", help="CFTR allele name, HGVS cDNA/protein notation, or codon")
+    parser.add_argument("--self-check", action="store_true", help="run deterministic positive and negative-control self-tests")
+    parser.add_argument("--list", action="store_true", help="list all canonical alleles")
+    parser.add_argument("--json", action="store_true", help="output JSON")
+
+    args = parser.parse_args(argv)
+
+    if args.self_check:
+        res = self_check()
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            status_str = "PASS" if res["passed"] else "FAIL"
+            print(f"cftr_context self-check: {status_str} ({res['total_checks']} checks)")
+            for c in res["checks"]:
+                mark = "[PASS]" if c["ok"] else "[FAIL]"
+                print(f"  {mark} {c['name']}: {c['detail']}")
+        return 0 if res["passed"] else 1
+
+    if args.list:
+        if args.json:
+            print(json.dumps(CANONICAL_ALLELES, indent=2))
+        else:
+            print(f"Canonical CFTR Alleles ({len(CANONICAL_ALLELES)} alleles indexed):")
+            for k, info in sorted(CANONICAL_ALLELES.items()):
+                exon_str = f"Exon {info['exon']}" if info['exon'] is not None else "Intronic"
+                print(f"  {info['allele']:<15} {info['hgvs_c']:<20} {exon_str:<10} {info['cftr_class']}")
+        return 0
+
+    if not args.term:
+        parser.print_help(sys.stderr)
+        return 2
+
+    res = lookup_cftr_context(args.term)
+    if res is not None:
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            exon_str = f"Exon {res['exon']}" if res["exon"] is not None else "Intronic"
+            print(
+                f"{res['allele']} ({res['hgvs_c']}, {res['hgvs_p']}): "
+                f"{exon_str} ({res['transcript']}), Domain: {res['domain']} (UniProt {res['uniprot']}), "
+                f"Class: {res['cftr_class']}"
+            )
+        return 0
+    else:
+        if args.json:
+            print(json.dumps({"error": f"CFTR context not found for '{args.term}'"}))
+        else:
+            print(f"not found: CFTR context for '{args.term}'", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
