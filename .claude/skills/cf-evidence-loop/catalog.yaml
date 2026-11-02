@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-28
+updated: 2026-10-31
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1321,6 +1321,220 @@ sources:
       metadata terms. Admitted 2026-10-17 for T-0044 paper-trail lookups; requires EVIDENCE_CONTACT email parameter
       for Unpaywall only (redacted from saved record URLs).
 
+  # ---------------------------------------------------------------- journal articles behind grounded site claims (added 2026-10-31)
+  # Entries of kind journal_article record one open-access paper that a public sentence on senseiewok.ai rests on.
+  # No tool downloads them: no url, no filename. The text was read once through the europe-pmc API entry above
+  # (full text by PMCID) on the date in `accessed`. The verbatim quotes and the claims file that checks them stay in
+  # the private workspace; article text is not committed here. Identifiers checked 2026-10-31 with cf-evidence-loop:
+  # every DOI with cite-check (Crossref, PASS) and every PMID-to-PMCID pair with an epmc search (found).
+
+  - id: kovalenko-2025-bmjopen
+    title: Development of a novel intervention using a person-based approach to support physical activity among families of children with cystic fibrosis in the UK
+    publisher: BMJ Publishing Group
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1136/bmjopen-2024-093843
+    url: null
+    doi: 10.1136/bmjopen-2024-093843
+    pmid: '41146370'
+    pmcid: PMC12557749
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution 4.0 Unported licence)
+    accessed: 2026-10-31
+    site_use: >-
+      The opening definition on the site, that CF is an inherited condition that mainly affects the lungs and the digestive
+      system (site claim s1-cf-inherited-lungs-digestion).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the first paragraph of the Introduction. The paper is about developing a physical-activity
+      intervention; it is used only for its general description of CF, not for any finding. Robots.txt and terms of the
+      publisher's site were not read; the text was read through Europe PMC.
+      Published as Kovalenko AG et al. BMJ Open 2025;15(10):e093843.
+
+  - id: solomon-2013-plosone
+    title: IP-10 Is a Potential Biomarker of Cystic Fibrosis Acute Pulmonary Exacerbations
+    publisher: PLOS
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1371/journal.pone.0072398
+    url: null
+    doi: 10.1371/journal.pone.0072398
+    pmid: '23977293'
+    pmcid: PMC3745468
+    licence: CC BY (the article states the Creative Commons Attribution License; the version is not stated in the text read)
+    accessed: 2026-10-31
+    site_use: >-
+      The sentence that CF can also affect other organs, such as the pancreas, the gut and the reproductive tract
+      (site claim s1-cf-organs-pancreas).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the first paragraph of the Introduction. The paper is a biomarker study of pulmonary
+      exacerbations; it is used only for its general description of the organs CF affects. The licence version was not
+      looked up elsewhere and is not guessed. Robots.txt and terms of the publisher's site were not read.
+      Published as Solomon GM et al. PLoS One 2013;8(8):e72398.
+
+  - id: lee-2022-jci
+    title: Small-molecule eRF3a degraders rescue CFTR nonsense mutations by promoting premature termination codon readthrough
+    publisher: American Society for Clinical Investigation
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1172/JCI154571
+    url: null
+    doi: 10.1172/JCI154571
+    pmid: '35900863'
+    pmcid: PMC9479597
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution 4.0 International License)
+    accessed: 2026-10-31
+    site_use: >-
+      The plain explanation of stop (nonsense) variants: an early stop signal in the CFTR instructions, so cells make little
+      or no CFTR protein (site claim s2-stop-variant-little-protein).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the Abstract (the premature termination codon) and the Discussion (little to no protein). The
+      paper's own results on eRF3a degraders are not used by the site. Robots.txt and terms of the publisher's site were not read.
+      Published as Lee RE et al. J Clin Invest 2022;132(18):e154571.
+
+  - id: sharma-2018-plosgenet
+    title: Capitalizing on the heterogeneous effects of CFTR nonsense and frameshift variants to inform therapeutic strategy for cystic fibrosis
+    publisher: PLOS
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1371/journal.pgen.1007723
+    url: null
+    doi: 10.1371/journal.pgen.1007723
+    pmid: '30444886'
+    pmcid: PMC6267994
+    licence: CC BY (the article states the Creative Commons Attribution License; the version is not stated in the text read)
+    accessed: 2026-10-31
+    site_use: >-
+      The sentence that the little protein made from a stop variant is cut short and usually does not work
+      (site claim s2-stop-variant-not-working).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the Introduction (nonsense-mediated decay lowers the transcript level; truncated proteins
+      typically lack function). The licence version was not looked up elsewhere and is not guessed. Robots.txt and terms of
+      the publisher's site were not read.
+      Published as Sharma N et al. PLoS Genet 2018;14(11):e1007723.
+
+  - id: conte-2022-acsami
+    title: 'Hybrid Lipid/Polymer Nanoparticles to Tackle the Cystic Fibrosis Mucus Barrier in siRNA Delivery to the Lungs: Does PEGylation Make the Difference?'
+    publisher: American Chemical Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1021/acsami.1c14975
+    url: null
+    doi: 10.1021/acsami.1c14975
+    pmid: '35107987'
+    pmcid: PMC8855343
+    licence: CC BY 4.0 (the permissions give the licence link creativecommons.org/licenses/by/4.0 and the PMC licence reference CC BY; ACS AuthorChoice)
+    accessed: 2026-10-31
+    site_use: >-
+      The sentence that CF airway mucus is dehydrated, thick and sticky, and that the mucus layer is a barrier that strongly
+      affects what happens to inhaled particles, including medicine-carrying nanoparticles (site claim s3-cf-mucus-dehydrated-barrier).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the Introduction (the barrier and the viscous mucus) and the section on siRNA-loaded
+      nanoparticles in CF sputum samples (dehydration). The paper's formulation results are not used by the site.
+      Robots.txt and terms of the publisher's site were not read.
+      Published as Conte G et al. ACS Appl Mater Interfaces 2022;14(6):7565.
+
+  - id: comegna-2021-scirep
+    title: Assisting PNA transport through cystic fibrosis human airway epithelia with biodegradable hybrid lipid-polymer nanoparticles
+    publisher: Nature Publishing Group
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1038/s41598-021-85549-z
+    url: null
+    doi: 10.1038/s41598-021-85549-z
+    pmid: '33737583'
+    pmcid: PMC7973768
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution 4.0 International License)
+    accessed: 2026-10-31
+    site_use: >-
+      The sentence that thick, sticky CF mucus restricts drugs in reaching their target cells, which can limit how well
+      treatments work (site claim s3-cf-mucus-holds-back-drugs).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the Abstract. The paper's nanoparticle results are not used by the site. Robots.txt and terms
+      of the publisher's site were not read.
+      Published as Comegna M et al. Sci Rep 2021;11:6393.
+
+  - id: santos-2023-cellbiosci
+    title: Mutation-class dependent signatures outweigh disease-associated processes in cystic fibrosis cells
+    publisher: BMC
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1186/s13578-023-00975-y
+    url: null
+    doi: 10.1186/s13578-023-00975-y
+    pmid: '36759923'
+    pmcid: PMC9912517
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution 4.0 International License; CC0 1.0 applies to its data)
+    accessed: 2026-10-31
+    site_use: >-
+      The definition of class VII in the seven-class grouping: variants that impair the making of CFTR mRNA, usually through
+      large deletions in the gene (site claim s4-class-vii-definition).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the first paragraph of the Introduction. Margarida D. Amaral, one of the two proposers of the
+      seven-class grouping, is a co-author. The paper's transcriptome results are not used by the site. Robots.txt and terms
+      of the publisher's site were not read.
+      Published as Santos L et al. Cell Biosci 2023;13:26.
+
+  - id: anwar-2024-advrespirmed
+    title: 'Cystic Fibrosis: Understanding Cystic Fibrosis Transmembrane Regulator Mutation Classification and Modulator Therapies'
+    publisher: MDPI
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.3390/arm92040026
+    url: null
+    doi: 10.3390/arm92040026
+    pmid: '39051188'
+    pmcid: PMC11270331
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution (CC BY) licence with the link creativecommons.org/licenses/by/4.0)
+    accessed: 2026-10-31
+    site_use: >-
+      The attribution of the seven-class grouping to Kris De Boeck and Margarida Amaral, the other proposal that folds class
+      VII into class I as subtype IA, and the note that many sources still use six classes (site claim s4-class-vii-attribution).
+    claim_label: verified
+    notes: >-
+      Supporting words are in section 5, Classification of CFTR Mutations. The six-class wording is in the Highlights and
+      in the same section. A review article: it reports others' classifications and is not their primary source. Robots.txt
+      and terms of the publisher's site were not read.
+      Published as Anwar S et al. Adv Respir Med 2024;92(4):263-277.
+
+  - id: sousa-2012-plosone
+    title: Measurements of CFTR-Mediated Cl- Secretion in Human Rectal Biopsies Constitute a Robust Biomarker for Cystic Fibrosis Diagnosis and Prognosis
+    publisher: PLOS
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1371/journal.pone.0047708
+    url: null
+    doi: 10.1371/journal.pone.0047708
+    pmid: '23082198'
+    pmcid: PMC3474728
+    licence: CC BY (the article states the Creative Commons Attribution License; the version is not stated in the text read)
+    accessed: 2026-10-31
+    site_use: >-
+      The sentence on residual CFTR function: in rectal biopsies from 51 people with confirmed CF, those with milder disease
+      had residual CFTR-mediated chloride secretion of 10 to 57 percent of normal, and the authors proposed about 10 percent
+      as needed for a better outlook (site claim s5-residual-function-milder).
+    claim_label: verified
+    notes: >-
+      Supporting words are in the Abstract and the Discussion. Ex vivo rectal biopsies from 118 individuals, 51 with
+      confirmed CF. The 10 percent threshold is the authors' proposal from one study, not a clinical rule. The title writes
+      chloride as Cl with a minus sign; here it is ASCII. The licence version was not looked up elsewhere and is not guessed.
+      Robots.txt and terms of the publisher's site were not read.
+      Published as Sousa M et al. PLoS One 2012;7(10):e47708.
+
   # ---------------------------------------------------------------- resource pages (proposals/2026-10-09-resources-tab.md)
   # Entries of kind resource_pages record what we may do with an organisation's public help pages, which the Resources tab links to.
   # They are not report files: no url, no filename, and no tool downloads from them. A row in resources/resources.yaml points here.
@@ -1676,7 +1890,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://cystiskfibrose.dk/
     url: null
     claim_label: unverified
@@ -1721,7 +1935,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.hengitysliitto.fi/
     url: null
     claim_label: unverified
@@ -1737,7 +1951,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.anfq.pt/
     url: null
     claim_label: unverified
@@ -1842,7 +2056,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-23
+    robots_checked: 2026-10-29
     landing_page: https://klubcf.cz/
     url: null
     claim_label: unverified
@@ -1902,7 +2116,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-24
+    robots_checked: 2026-10-29
     landing_page: https://www.cisztasfibrozis.hu/
     url: null
     claim_label: unverified
@@ -1917,7 +2131,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-24
+    robots_checked: 2026-10-29
     landing_page: https://www.cfasociacia.sk/
     url: null
     claim_label: unverified
@@ -1947,7 +2161,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-24
+    robots_checked: 2026-10-29
     landing_page: https://afcr.ro/
     url: null
     claim_label: unverified
@@ -2141,7 +2355,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.mischiquiticos.com/
     url: null
     claim_label: unverified
@@ -2154,7 +2368,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.fusal.org/
     url: null
     claim_label: unverified
@@ -2167,7 +2381,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://senadis.gov.py/
     url: null
     claim_label: unverified
@@ -2180,7 +2394,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.minsalud.gob.bo/
     url: null
     claim_label: unverified
@@ -2441,7 +2655,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://hospitalmaria.org/
     url: null
     claim_label: unverified
@@ -2608,7 +2822,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://kantichildrenhospital.gov.np/
     url: null
     claim_label: unverified
@@ -2619,7 +2833,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.laumcrh.com/
     url: null
     claim_label: unverified
@@ -2642,7 +2856,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://dubaihealth.ae/
     url: null
     claim_label: unverified
@@ -2713,7 +2927,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://kaznmu.edu.kz/
     url: null
     claim_label: unverified
@@ -2726,7 +2940,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://pediatriya.uz/
     url: null
     claim_label: unverified
@@ -2739,7 +2953,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.oshsu.kg/
     url: null
     claim_label: unverified
@@ -2777,7 +2991,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.dasmaninstitute.org/
     url: null
     claim_label: unverified
@@ -2790,7 +3004,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.moh.gov.om/
     url: null
     claim_label: unverified
@@ -2803,7 +3017,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://comed.uobaghdad.edu.iq/
     url: null
     claim_label: unverified
@@ -2881,7 +3095,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.ucad.sn/
     url: null
     claim_label: unverified
@@ -2894,7 +3108,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://pasteur.ci/
     url: null
     claim_label: unverified
@@ -2907,7 +3121,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://pasteur-yaounde.org/
     url: null
     claim_label: unverified
@@ -3011,7 +3225,7 @@ sources:
     kind: resource_pages
     access: manual
     robots: allow
-    robots_checked: 2026-10-25
+    robots_checked: 2026-10-29
     landing_page: https://www.unza.zm/
     url: null
     claim_label: unverified
