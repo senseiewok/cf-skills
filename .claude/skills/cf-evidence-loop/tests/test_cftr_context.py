@@ -29,9 +29,9 @@ spec.loader.exec_module(cftr_context)
 
 class CftrContextTests(unittest.TestCase):
     def test_canonical_alleles_catalog_integrity(self):
-        """Verify that canonical alleles catalog contains at least 23 curated alleles with full metadata."""
+        """Verify that canonical alleles catalog contains at least 60 curated alleles with full metadata."""
         alleles = cftr_context.CANONICAL_ALLELES
-        self.assertGreaterEqual(len(alleles), 23)
+        self.assertGreaterEqual(len(alleles), 60)
         for key, info in alleles.items():
             self.assertTrue(key.isupper() or any(c in key for c in "+->"))
             self.assertIn("allele", info)
@@ -135,6 +135,12 @@ class CftrContextTests(unittest.TestCase):
             ("C524X", "C524X", 11, "Class I"),
             ("W846X", "W846X", 15, "Class I"),
             ("R1066H", "R1066H", 20, "Class II"),
+            ("S1255X", "S1255X", 23, "Class I"),
+            ("3905insT", "3905insT", 23, "Class I"),
+            ("1811+1.6kbA>G", "1811+1.6kbA>G", 13, "Class V"),
+            ("S945L", "S945L", 18, "Class V"),
+            ("G970R", "G970R", 18, "Class III"),
+            ("F1052V", "F1052V", 20, "Class IV"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -426,7 +432,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (19 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (21 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -436,6 +442,8 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("5UAR", val)
             self.assertIn("6MSK", val)
             self.assertIn("8EIR", val)
+            self.assertIn("8EIG", val)
+            self.assertIn("8GLS", val)
         finally:
             sys.stdout = old_stdout
 
