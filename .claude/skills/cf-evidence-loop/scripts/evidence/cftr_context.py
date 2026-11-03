@@ -485,6 +485,43 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "TMD2-NBD2 linker",
         "cftr_class": "Class I (premature termination codon in cytoplasmic linker)",
     },
+    "R347H": {
+        "allele": "R347H",
+        "hgvs_c": "c.1040G>A",
+        "hgvs_p": "p.Arg347His",
+        "codon": 347,
+        "exon": 8,
+        "domain": "TMD1 (Transmembrane Domain 1 / TM6 pore)",
+        "cftr_class": "Class IV (reduced channel conductance in TM6 pore; Kalydeco-responsive)",
+    },
+    "CFTRDELE2,3": {
+        "allele": "CFTRdele2,3",
+        "hgvs_c": "c.54-5940_273+10250del21kb",
+        "hgvs_p": "p.Met1_Lys95del",
+        "codon": None,
+        "exon": 2,
+        "domain": "N-terminal lasso motif / TMD1 (exons 2-3 deletion)",
+        "cftr_class": "Class I (21kb founder deletion / loss of initiation codon and lasso)",
+        "aliases": ["dele2,3", "dele2,3(21kb)", "CFTRdele2,3(21kb)", "del2,3"],
+    },
+    "R1070W": {
+        "allele": "R1070W",
+        "hgvs_c": "c.3208C>T",
+        "hgvs_p": "p.Arg1070Trp",
+        "codon": 1070,
+        "exon": 20,
+        "domain": "TMD2 (ICL4 coupling loop)",
+        "cftr_class": "Class II (ICL4-NBD1 interface allele; classic F508del structural suppressor)",
+    },
+    "W1089X": {
+        "allele": "W1089X",
+        "hgvs_c": "c.3267G>A",
+        "hgvs_p": "p.Trp1089Ter",
+        "codon": 1089,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM11)",
+        "cftr_class": "Class I (premature termination codon in TM11 / NMD substrate)",
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -666,6 +703,42 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "Cryo-EM",
         "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
     },
+    "8EIO": {
+        "pdb_id": "8EIO",
+        "title": "Cryo-EM structure of human F508del CFTR in complex with elexacaftor (VX-445), lumacaftor (VX-809), and ATP",
+        "conformation": "Phosphorylated F508del dual-corrected active/pre-open conformation",
+        "ligands": ["VX-445 (elexacaftor)", "VX-809 (lumacaftor)", "ATP", "Mg2+"],
+        "resolution_angstrom": 2.8,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
+    },
+    "9MXL": {
+        "pdb_id": "9MXL",
+        "title": "Cryo-EM structure of phosphorylated human CFTR in complex with (R)-BPO-27 and ATP",
+        "conformation": "Phosphorylated, ATP-bound active state with pore-blocker (R)-BPO-27",
+        "ligands": ["(R)-BPO-27", "ATP", "Mg2+"],
+        "resolution_angstrom": 2.1,
+        "method": "Cryo-EM",
+        "reference": "Young et al., Nat Commun 2025 (DOI: 10.1038/s41467-025-62199-7)",
+    },
+    "6O1V": {
+        "pdb_id": "6O1V",
+        "title": "Cryo-EM structure of human CFTR in complex with potentiator GLPG1837 and ATP",
+        "conformation": "Phosphorylated, ATP-bound CFTR with potentiator GLPG1837 bound at TM8/TM12 hotspot",
+        "ligands": ["GLPG1837", "ATP", "Mg2+"],
+        "resolution_angstrom": 3.2,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Science 2019 (DOI: 10.1126/science.aaw7611)",
+    },
+    "8UBR": {
+        "pdb_id": "8UBR",
+        "title": "Cryo-EM structure of phosphorylated human CFTR in complex with inhibitor CFTRinh-172 and ATP",
+        "conformation": "Phosphorylated, ATP-bound CFTR with pore blocker CFTRinh-172 in intracellular vestibule",
+        "ligands": ["CFTRinh-172", "ATP", "Mg2+"],
+        "resolution_angstrom": 2.7,
+        "method": "Cryo-EM",
+        "reference": "Young et al., Proc Natl Acad Sci USA 2024 (DOI: 10.1073/pnas.2316675121)",
+    },
 }
 
 
@@ -773,7 +846,7 @@ def lookup_cftr_context(term: str) -> dict[str, Any] | None:
                 "uniprot": UNIPROT_ACCESSION,
             }
 
-    # 2. Check protein and cDNA HGVS aliases
+    # 2. Check protein and cDNA HGVS aliases, plus optional clinical aliases
     for info in CANONICAL_ALLELES.values():
         hgvs_p_norm = info["hgvs_p"].upper().replace("->", ">")
         hgvs_c_norm = info["hgvs_c"].upper().replace("->", ">")
@@ -783,6 +856,13 @@ def lookup_cftr_context(term: str) -> dict[str, Any] | None:
                 "transcript": REFSEQ_TRANSCRIPT,
                 "uniprot": UNIPROT_ACCESSION,
             }
+        for alias in info.get("aliases", []):
+            if alias.upper() in upper:
+                return {
+                    **info,
+                    "transcript": REFSEQ_TRANSCRIPT,
+                    "uniprot": UNIPROT_ACCESSION,
+                }
 
     # 3. Generic codon extraction when query mentions CFTR or HGVS protein notation
     if "CFTR" in upper or "P." in upper or "CODON" in upper:
@@ -973,6 +1053,7 @@ def self_check() -> dict[str, Any]:
     # 10. Cryo-EM PDB structures lookup positive and negative controls
     pdb_pos_cases = [
         "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
+        "8EIO", "9MXL", "6O1V", "8UBR",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
