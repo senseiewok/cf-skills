@@ -192,8 +192,8 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("cftr-modulator", help="look up CFTR modulator brand, active ingredient, molecular code, NDA, and openFDA SPL boxed warning context")
     p.add_argument("term", help="CFTR modulator brand, API, molecular code, or abbreviation (e.g. Trikafta, ivacaftor, VX-770, Alyftrek, VX-121, ETI)")
 
-    p = sub.add_parser("cftr-structure", aliases=["cftr-pdb"], help="look up canonical CFTR Cryo-EM structure metadata (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 8EIQ, 8EJ1)")
-    p.add_argument("pdb_id", nargs="?", help="4-character PDB accession (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 8EIQ, 8EJ1)")
+    p = sub.add_parser("cftr-structure", aliases=["cftr-pdb"], help="look up canonical CFTR Cryo-EM structure metadata (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1)")
+    p.add_argument("pdb_id", nargs="?", help="4-character PDB accession (e.g. 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1)")
     p.add_argument("--list", action="store_true", help="list all canonical CFTR Cryo-EM structures")
 
     a = ap.parse_args(argv)

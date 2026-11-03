@@ -90,6 +90,7 @@ python scripts/evidence_cli.py cftr-context "621+1G->T" --json
 python scripts/evidence_cli.py cftr-modulator "Trikafta"
 python scripts/evidence_cli.py cftr-modulator "VX-121" --json
 python scripts/evidence_cli.py cftr-structure "8EIQ"
+python scripts/evidence_cli.py cftr-structure "7SV7"
 python scripts/evidence_cli.py cftr-structure "6O2P"
 python scripts/evidence_cli.py cftr-pdb --list
 ```
