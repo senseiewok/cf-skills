@@ -417,11 +417,14 @@ def test_cli_cftr_structure_subcommand():
         rc = cli.main(["cftr-pdb", "--list"])
         assert rc == 0
         val = sys.stdout.getvalue()
-        assert "Canonical CFTR Cryo-EM Structures (9 structures indexed)" in val
+        assert "Canonical CFTR Cryo-EM Structures (12 structures indexed)" in val
         assert "7SVD" in val
         assert "7SV7" in val
         assert "8EIZ" in val
         assert "7SVR" in val
+        assert "8EIA" in val
+        assert "8EIB" in val
+        assert "8EIU" in val
     finally:
         sys.stdout = old_stdout
 
