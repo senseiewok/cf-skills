@@ -458,6 +458,33 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "TMD1 (Transmembrane Domain 1)",
         "cftr_class": "Class I (premature termination codon in ECL1/TM2)",
     },
+    "Q493X": {
+        "allele": "Q493X",
+        "hgvs_c": "c.1477C>T",
+        "hgvs_p": "p.Gln493Ter",
+        "codon": 493,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 / NMD substrate)",
+    },
+    "E60X": {
+        "allele": "E60X",
+        "hgvs_c": "c.178G>T",
+        "hgvs_p": "p.Glu60Ter",
+        "codon": 60,
+        "exon": 3,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class I (N-terminal premature termination codon / NMD substrate)",
+    },
+    "R1158X": {
+        "allele": "R1158X",
+        "hgvs_c": "c.3472C>T",
+        "hgvs_p": "p.Arg1158Ter",
+        "codon": 1158,
+        "exon": 21,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class I (premature termination codon in cytoplasmic linker)",
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -611,6 +638,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "resolution_angstrom": 3.6,
         "method": "Cryo-EM",
         "reference": "Zhang & Chen, Cell 2021 (DOI: 10.1016/j.cell.2021.11.014)",
+    },
+    "8EIA": {
+        "pdb_id": "8EIA",
+        "title": "Cryo-EM structure of human CFTR in complex with tezacaftor (VX-661)",
+        "conformation": "Tezacaftor (Type I corrector)-bound pre-open conformation",
+        "ligands": ["VX-661 (tezacaftor)", "ATP"],
+        "resolution_angstrom": 3.2,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
+    },
+    "8EIB": {
+        "pdb_id": "8EIB",
+        "title": "Cryo-EM structure of human CFTR in complex with elexacaftor (VX-445)",
+        "conformation": "Elexacaftor (Type II corrector)-bound pre-open conformation",
+        "ligands": ["VX-445 (elexacaftor)", "ATP"],
+        "resolution_angstrom": 3.1,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
+    },
+    "8EIU": {
+        "pdb_id": "8EIU",
+        "title": "Cryo-EM structure of human CFTR in complex with lumacaftor (VX-809)",
+        "conformation": "Lumacaftor (first-generation Type I corrector)-bound pre-open conformation",
+        "ligands": ["VX-809 (lumacaftor)", "ATP"],
+        "resolution_angstrom": 3.4,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
     },
 }
 
@@ -917,7 +971,9 @@ def self_check() -> dict[str, Any]:
     })
 
     # 10. Cryo-EM PDB structures lookup positive and negative controls
-    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR"]
+    pdb_pos_cases = [
+        "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
+    ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
     checks.append({

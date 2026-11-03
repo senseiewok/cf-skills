@@ -121,6 +121,9 @@ class CftrContextTests(unittest.TestCase):
             ("R117C", "R117C", 4, "Class IV"),
             ("S1255P", "S1255P", 23, "Class III"),
             ("Y122X", "Y122X", 4, "Class I"),
+            ("Q493X", "Q493X", 11, "Class I"),
+            ("E60X", "E60X", 3, "Class I"),
+            ("R1158X", "R1158X", 21, "Class I"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -283,8 +286,10 @@ class CftrContextTests(unittest.TestCase):
         self.assertEqual(symdeko["fda_nda"], "NDA 210491")
 
     def test_cryoem_structures_catalog_integrity(self):
-        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1, 8EIZ, and 7SVR."""
-        pdbs = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR"]
+        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1, 8EIZ, 7SVR, 8EIA, 8EIB, and 8EIU."""
+        pdbs = [
+            "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
+        ]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
             self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
@@ -410,7 +415,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (9 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (12 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
         finally:

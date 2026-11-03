@@ -5,7 +5,7 @@ license: CC0-1.0
 compatibility: "Python 3.10+ (tested on Python 3.13) with requests and PyYAML; outbound HTTPS to the hosts permitted in catalog.yaml (sources command). Most commands require no API key; optional providers such as OpenAlex and authenticated Scite require keys. Works with any Agent-Skills-spec-compatible tool that can run a shell command; tested with the scripts run directly, not through any specific agent client."
 metadata:
     version: "1.0.0"
-    last-updated: "2026-10-24"
+    last-updated: "2026-11-02"
     capabilities: "network, python, runs-code"
     optional-capabilities: "api-key, writes-files"
     audience: "researchers, builders"
