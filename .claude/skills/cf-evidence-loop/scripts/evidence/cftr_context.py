@@ -359,6 +359,42 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "NBD2 (Nucleotide-Binding Domain 2)",
         "cftr_class": "Class VI (accelerated cell-surface turnover / C-terminal truncation)",
     },
+    "G1349D": {
+        "allele": "G1349D",
+        "hgvs_c": "c.4046G>A",
+        "hgvs_p": "p.Gly1349Asp",
+        "codon": 1349,
+        "exon": 25,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class III (NBD2 ATP signature motif LSGGQ gating defect; potentiator-responsive)",
+    },
+    "P67L": {
+        "allele": "P67L",
+        "hgvs_c": "c.200C>T",
+        "hgvs_p": "p.Pro67Leu",
+        "codon": 67,
+        "exon": 3,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class IV (N-terminal / TM1 misprocessing & reduced conductance; modulator-responsive)",
+    },
+    "R1066C": {
+        "allele": "R1066C",
+        "hgvs_c": "c.3196C>T",
+        "hgvs_p": "p.Arg1066Cys",
+        "codon": 1066,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class II (severe ICL4 pocket destabilization and trafficking arrest)",
+    },
+    "R75X": {
+        "allele": "R75X",
+        "hgvs_c": "c.223C>T",
+        "hgvs_p": "p.Arg75Ter",
+        "codon": 75,
+        "exon": 3,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class I (premature termination codon in N-terminal lasso)",
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -465,6 +501,15 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "conformation": "G551D gating-defective catalytic site uncoupled conformation",
         "ligands": ["ATP", "Mg2+"],
         "resolution_angstrom": 3.4,
+        "method": "Cryo-EM",
+        "reference": "Zhang & Chen, Cell 2021 (DOI: 10.1016/j.cell.2021.11.014)",
+    },
+    "7SV7": {
+        "pdb_id": "7SV7",
+        "title": "Cryo-EM structure of human CFTR phosphorylated and ATP-bound channel open state",
+        "conformation": "Phosphorylated, ATP-bound active channel open state",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.2,
         "method": "Cryo-EM",
         "reference": "Zhang & Chen, Cell 2021 (DOI: 10.1016/j.cell.2021.11.014)",
     },
@@ -791,13 +836,13 @@ def self_check() -> dict[str, Any]:
     })
 
     # 10. Cryo-EM PDB structures lookup positive and negative controls
-    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "8EIQ", "8EJ1"]
+    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1"]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
     checks.append({
         "name": "pdb_structures_positive_and_negative",
         "ok": pdb_ok and pdb_neg_ok,
-        "detail": "6 canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
+        "detail": f"{len(pdb_pos_cases)} canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
     })
 
     all_passed = all(c["ok"] for c in checks)
