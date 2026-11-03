@@ -114,6 +114,13 @@ class CftrContextTests(unittest.TestCase):
             ("P67L", "P67L", 3, "Class IV"),
             ("R1066C", "R1066C", 20, "Class II"),
             ("R75X", "R75X", 3, "Class I"),
+            ("711+1G>T", "711+1G>T", 5, "Class I"),
+            ("2183AA>G", "2183AA>G", 14, "Class I"),
+            ("394delTT", "394delTT", 3, "Class I"),
+            ("1078delT", "1078delT", 8, "Class I"),
+            ("R117C", "R117C", 4, "Class IV"),
+            ("S1255P", "S1255P", 23, "Class III"),
+            ("Y122X", "Y122X", 4, "Class I"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -135,6 +142,14 @@ class CftrContextTests(unittest.TestCase):
         res2 = cftr_context.lookup_cftr_context("3849+10kbC->T")
         self.assertIsNotNone(res2)
         self.assertEqual(res2["allele"], "3849+10kbC>T")
+
+        res_arrow1 = cftr_context.lookup_cftr_context("711+1G->T")
+        self.assertIsNotNone(res_arrow1)
+        self.assertEqual(res_arrow1["allele"], "711+1G>T")
+
+        res_arrow2 = cftr_context.lookup_cftr_context("2183AA->G")
+        self.assertIsNotNone(res_arrow2)
+        self.assertEqual(res_arrow2["allele"], "2183AA>G")
 
         # Delta symbol Δ and delta prefix
         res3 = cftr_context.lookup_cftr_context("ΔF508")
@@ -268,8 +283,8 @@ class CftrContextTests(unittest.TestCase):
         self.assertEqual(symdeko["fda_nda"], "NDA 210491")
 
     def test_cryoem_structures_catalog_integrity(self):
-        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, and 8EJ1."""
-        pdbs = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1"]
+        """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1, 8EIZ, and 7SVR."""
+        pdbs = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR"]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
             self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
@@ -395,7 +410,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (7 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (9 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
         finally:
