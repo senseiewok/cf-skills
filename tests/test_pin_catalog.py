@@ -12,11 +12,14 @@ from pathlib import Path
 import shutil
 import tempfile
 from types import SimpleNamespace
+import sys
 import unittest
 
-import scripts.pin_catalog as pin_catalog
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import scripts.pin_catalog as pin_catalog
 SHA = "0123456789abcdef0123456789abcdef01234567"
 TIP = "f" * 40
 FIXTURE_DATE = "2026-10-16"
