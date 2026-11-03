@@ -522,6 +522,60 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "TMD2 (Transmembrane Domain 2 / TM11)",
         "cftr_class": "Class I (premature termination codon in TM11 / NMD substrate)",
     },
+    "E92K": {
+        "allele": "E92K",
+        "hgvs_c": "c.274G>A",
+        "hgvs_p": "p.Glu92Lys",
+        "codon": 92,
+        "exon": 4,
+        "domain": "TMD1 (Transmembrane Domain 1 / TM1)",
+        "cftr_class": "Class II (misfolding/processing defect in TM1; prevalent Slavic founder variant)",
+    },
+    "S492F": {
+        "allele": "S492F",
+        "hgvs_c": "c.1475C>T",
+        "hgvs_p": "p.Ser492Phe",
+        "codon": 492,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (NBD1 core folding destabilization and processing arrest)",
+    },
+    "G1249R": {
+        "allele": "G1249R",
+        "hgvs_c": "c.3745G>A",
+        "hgvs_p": "p.Gly1249Arg",
+        "codon": 1249,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class III (NBD2 Walker A signature gating defect; ivacaftor-responsive)",
+    },
+    "C524X": {
+        "allele": "C524X",
+        "hgvs_c": "c.1572C>A",
+        "hgvs_p": "p.Cys524Ter",
+        "codon": 524,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 / NMD substrate)",
+    },
+    "W846X": {
+        "allele": "W846X",
+        "hgvs_c": "c.2538G>A",
+        "hgvs_p": "p.Trp846Ter",
+        "codon": 846,
+        "exon": 15,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM7)",
+        "cftr_class": "Class I (premature termination codon in TM7 / NMD substrate)",
+    },
+    "R1066H": {
+        "allele": "R1066H",
+        "hgvs_c": "c.3197G>A",
+        "hgvs_p": "p.Arg1066His",
+        "codon": 1066,
+        "exon": 20,
+        "domain": "TMD2 (ICL4 coupling loop)",
+        "cftr_class": "Class II (severe ICL4 coupling loop destabilization and trafficking arrest)",
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -738,6 +792,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "resolution_angstrom": 2.7,
         "method": "Cryo-EM",
         "reference": "Young et al., Proc Natl Acad Sci USA 2024 (DOI: 10.1073/pnas.2316675121)",
+    },
+    "5UAR": {
+        "pdb_id": "5UAR",
+        "title": "Cryo-EM structure of human CFTR phosphorylated and ATP-bound pre-translocation state",
+        "conformation": "Phosphorylated, ATP-bound active/pre-translocation state",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.9,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Cell 2017 (DOI: 10.1016/j.cell.2017.02.024)",
+    },
+    "6MSK": {
+        "pdb_id": "6MSK",
+        "title": "Cryo-EM structure of human CFTR phosphorylated and ATP-bound channel open state without potentiator",
+        "conformation": "Phosphorylated, ATP-bound apo channel open state",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.4,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Science 2019 (DOI: 10.1126/science.aaw7611)",
+    },
+    "8EIR": {
+        "pdb_id": "8EIR",
+        "title": "Cryo-EM structure of human CFTR in complex with GLPG2222 (galicaftor) and ATP",
+        "conformation": "GLPG2222 (Type I corrector)-bound pre-open conformation",
+        "ligands": ["GLPG2222 (galicaftor)", "ATP"],
+        "resolution_angstrom": 3.0,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
     },
 }
 
@@ -1053,7 +1134,7 @@ def self_check() -> dict[str, Any]:
     # 10. Cryo-EM PDB structures lookup positive and negative controls
     pdb_pos_cases = [
         "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
-        "8EIO", "9MXL", "6O1V", "8UBR",
+        "8EIO", "9MXL", "6O1V", "8UBR", "5UAR", "6MSK", "8EIR",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
