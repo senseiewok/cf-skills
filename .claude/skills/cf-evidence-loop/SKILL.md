@@ -87,10 +87,13 @@ python scripts/evidence_cli.py variants "CFTR[gene] AND F508del" --limit 5
 python scripts/evidence_cli.py population country/USA
 python scripts/evidence_cli.py cftr-context "F508del"
 python scripts/evidence_cli.py cftr-context "621+1G->T" --json
+python scripts/evidence_cli.py cftr-context "711+1G->T"
 python scripts/evidence_cli.py cftr-modulator "Trikafta"
 python scripts/evidence_cli.py cftr-modulator "VX-121" --json
 python scripts/evidence_cli.py cftr-structure "8EIQ"
+python scripts/evidence_cli.py cftr-structure "8EIZ"
 python scripts/evidence_cli.py cftr-structure "7SV7"
+python scripts/evidence_cli.py cftr-structure "7SVR"
 python scripts/evidence_cli.py cftr-structure "6O2P"
 python scripts/evidence_cli.py cftr-pdb --list
 ```

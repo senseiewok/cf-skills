@@ -268,9 +268,10 @@ def variant(client: Client, term: str) -> Brief:
 
     ctx = cftr_context.lookup_cftr_context(term)
     if ctx is not None:
+        exon_part = f"Exon {ctx['exon']}" if ctx["exon"] is not None else "Intronic"
         summary_str = (
             f"{ctx['allele']} ({ctx['hgvs_c']}, {ctx['hgvs_p']}): "
-            f"Exon {ctx['exon']} ({ctx['transcript']}), Domain: {ctx['domain']} (UniProt {ctx['uniprot']}), "
+            f"{exon_part} ({ctx['transcript']}), Domain: {ctx['domain']} (UniProt {ctx['uniprot']}), "
             f"Class: {ctx['cftr_class']}"
         )
         b.facts.append(("cftr_context", "domain_and_exon (computed)", summary_str))

@@ -376,6 +376,19 @@ def test_drug_brief_non_modulator_has_no_modulator_context(monkeypatch, no_sleep
     assert not any(chk.what == "CFTR modulator safety boundary (AH-4)" for chk in b.checks)
 
 
+def test_variant_brief_intronic_variant_formatting(monkeypatch, no_sleep):
+    s = Script([ok(esearch("4072070")), ok(load("clinvar_esummary.json")),
+                ok(esearch("23974870")), ok(load("pubmed_esummary.json")),
+                ok(openalex_search_page())])
+    b = briefs.variant(make_client(monkeypatch, s), "3849+10kbC>T")
+    text = b.text()
+    assert "Exon 22 (NM_000492.4)" in text
+    assert "Exon None" not in text
+    c = [chk for chk in b.checks if chk.what == "CFTR structural domain & exon map"][0]
+    assert c.verdict == briefs.PASS
+    assert "Class V" in c.detail
+
+
 def test_cli_cftr_structure_subcommand():
     """Verify cftr-structure and cftr-pdb subcommands via evidence.cli."""
     old_stdout = sys.stdout
@@ -404,9 +417,11 @@ def test_cli_cftr_structure_subcommand():
         rc = cli.main(["cftr-pdb", "--list"])
         assert rc == 0
         val = sys.stdout.getvalue()
-        assert "Canonical CFTR Cryo-EM Structures (7 structures indexed)" in val
+        assert "Canonical CFTR Cryo-EM Structures (9 structures indexed)" in val
         assert "7SVD" in val
         assert "7SV7" in val
+        assert "8EIZ" in val
+        assert "7SVR" in val
     finally:
         sys.stdout = old_stdout
 

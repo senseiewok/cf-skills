@@ -395,6 +395,69 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "N-terminal lasso motif",
         "cftr_class": "Class I (premature termination codon in N-terminal lasso)",
     },
+    "711+1G>T": {
+        "allele": "711+1G>T",
+        "hgvs_c": "c.579+1G>T",
+        "hgvs_p": "canonical splice donor disruption (exon 5 skipping)",
+        "codon": None,
+        "exon": 5,
+        "domain": "Intron 5 (canonical 5' donor splice site)",
+        "cftr_class": "Class I (splice donor site disruption / loss of full-length protein)",
+    },
+    "2183AA>G": {
+        "allele": "2183AA>G",
+        "hgvs_c": "c.2051_2052delAAinsG",
+        "hgvs_p": "p.Lys684fs",
+        "codon": 684,
+        "exon": 14,
+        "domain": "R-domain (Regulatory Domain)",
+        "cftr_class": "Class I (frameshift leading to premature stop / NMD substrate)",
+    },
+    "394DELTT": {
+        "allele": "394delTT",
+        "hgvs_c": "c.262_263delTT",
+        "hgvs_p": "p.Leu88fs",
+        "codon": 88,
+        "exon": 3,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class I (N-terminal frameshift / loss of functional protein)",
+    },
+    "1078DELT": {
+        "allele": "1078delT",
+        "hgvs_c": "c.948delT",
+        "hgvs_p": "p.Phe316fs",
+        "codon": 316,
+        "exon": 8,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class I (TM5 frameshift / premature truncation)",
+    },
+    "R117C": {
+        "allele": "R117C",
+        "hgvs_c": "c.349C>T",
+        "hgvs_p": "p.Arg117Cys",
+        "codon": 117,
+        "exon": 4,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class IV (external pore loop ECL1 / reduced chloride conductance)",
+    },
+    "S1255P": {
+        "allele": "S1255P",
+        "hgvs_c": "c.3763T>C",
+        "hgvs_p": "p.Ser1255Pro",
+        "codon": 1255,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class III (NBD2 ATP-binding cassette gating defect; potentiator-responsive)",
+    },
+    "Y122X": {
+        "allele": "Y122X",
+        "hgvs_c": "c.366T>A",
+        "hgvs_p": "p.Tyr122Ter",
+        "codon": 122,
+        "exon": 4,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class I (premature termination codon in ECL1/TM2)",
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -530,6 +593,24 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "resolution_angstrom": 3.4,
         "method": "Cryo-EM",
         "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.abq7985)",
+    },
+    "8EIZ": {
+        "pdb_id": "8EIZ",
+        "title": "Cryo-EM structure of human CFTR in complex with elexacaftor (VX-445) and tezacaftor (VX-661)",
+        "conformation": "Dual corrector-bound ternary pre-open conformation",
+        "ligands": ["VX-445 (elexacaftor)", "VX-661 (tezacaftor)", "ATP"],
+        "resolution_angstrom": 3.0,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.abq7985)",
+    },
+    "7SVR": {
+        "pdb_id": "7SVR",
+        "title": "Cryo-EM structure of human CFTR G551D mutant channel in dephosphorylated, ATP-free state",
+        "conformation": "G551D dephosphorylated inward-facing quiescent/inactive state",
+        "ligands": [],
+        "resolution_angstrom": 3.6,
+        "method": "Cryo-EM",
+        "reference": "Zhang & Chen, Cell 2021 (DOI: 10.1016/j.cell.2021.11.014)",
     },
 }
 
@@ -836,7 +917,7 @@ def self_check() -> dict[str, Any]:
     })
 
     # 10. Cryo-EM PDB structures lookup positive and negative controls
-    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1"]
+    pdb_pos_cases = ["6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR"]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
     checks.append({
