@@ -576,6 +576,66 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "domain": "TMD2 (ICL4 coupling loop)",
         "cftr_class": "Class II (severe ICL4 coupling loop destabilization and trafficking arrest)",
     },
+    "S1255X": {
+        "allele": "S1255X",
+        "hgvs_c": "c.3764C>A",
+        "hgvs_p": "p.Ser1255Ter",
+        "codon": 1255,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 / NMD substrate)",
+        "aliases": ["S1255X", "p.Ser1255Ter", "p.Ser1255*", "c.3764C>A"],
+    },
+    "3905INST": {
+        "allele": "3905insT",
+        "hgvs_c": "c.3773dupT",
+        "hgvs_p": "p.Leu1258PhefsTer7",
+        "codon": 1258,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (1-bp frameshift duplication in NBD2 introducing premature termination)",
+        "aliases": ["3905insT", "3905INST", "c.3773dupT", "c.3773dup", "p.Leu1258PhefsTer7"],
+    },
+    "1811+1.6KBA>G": {
+        "allele": "1811+1.6kbA>G",
+        "hgvs_c": "c.1680-883A>G",
+        "hgvs_p": "p.(=) (cryptic pseudoexon insertion with premature termination)",
+        "codon": None,
+        "exon": 13,
+        "domain": "Intron 12 (deep intronic cryptic splice site creating 49-bp pseudoexon)",
+        "cftr_class": "Class V (cryptic splice site activation; low residual normal transcript)",
+        "aliases": ["1811+1.6kbA->G", "1811+1.6kbA>G", "c.1680-883A>G", "1811+1.6kbA-G"],
+    },
+    "S945L": {
+        "allele": "S945L",
+        "hgvs_c": "c.2834C>T",
+        "hgvs_p": "p.Ser945Leu",
+        "codon": 945,
+        "exon": 18,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM8)",
+        "cftr_class": "Class V / Class II (TM8 misprocessing and reduced trafficking; ivacaftor and ETI responsive)",
+        "aliases": ["S945L", "p.Ser945Leu", "c.2834C>T"],
+    },
+    "G970R": {
+        "allele": "G970R",
+        "hgvs_c": "c.2908G>A",
+        "hgvs_p": "p.Gly970Arg",
+        "codon": 970,
+        "exon": 18,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM8)",
+        "cftr_class": "Class III (TM8 gating/conduction defect; potentiator-responsive)",
+        "aliases": ["G970R", "p.Gly970Arg", "c.2908G>A"],
+    },
+    "F1052V": {
+        "allele": "F1052V",
+        "hgvs_c": "c.3154T>G",
+        "hgvs_p": "p.Phe1052Val",
+        "codon": 1052,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM10)",
+        "cftr_class": "Class IV (reduced conductance / residual function; modulator-responsive)",
+        "aliases": ["F1052V", "p.Phe1052Val", "c.3154T>G"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -819,6 +879,24 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "resolution_angstrom": 3.0,
         "method": "Cryo-EM",
         "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
+    },
+    "8EIG": {
+        "pdb_id": "8EIG",
+        "title": "Cryo-EM structure of phosphorylated human delta F508 CFTR in complex with elexacaftor (VX-445) and ATP/Mg",
+        "conformation": "Phosphorylated F508del in complex with Type II corrector elexacaftor and ATP",
+        "ligands": ["VX-445 (elexacaftor)", "ATP", "Mg2+"],
+        "resolution_angstrom": 3.6,
+        "method": "Cryo-EM",
+        "reference": "Fiedorczuk & Chen, Science 2022 (DOI: 10.1126/science.ade2216 / 10.1126/science.abq7985)",
+    },
+    "8GLS": {
+        "pdb_id": "8GLS",
+        "title": "Cryo-EM structure of human CFTR in complex with allosteric modulator Z1834339853",
+        "conformation": "Phosphorylated, ATP-bound CFTR with novel allosteric potentiator/inhibitor Z1834339853",
+        "ligands": ["Z1834339853", "ATP", "Mg2+"],
+        "resolution_angstrom": 3.8,
+        "method": "Cryo-EM",
+        "reference": "Liu et al., Cell 2024 (DOI: 10.1016/j.cell.2024.04.046)",
     },
 }
 
@@ -1134,7 +1212,7 @@ def self_check() -> dict[str, Any]:
     # 10. Cryo-EM PDB structures lookup positive and negative controls
     pdb_pos_cases = [
         "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
-        "8EIO", "9MXL", "6O1V", "8UBR", "5UAR", "6MSK", "8EIR",
+        "8EIO", "9MXL", "6O1V", "8UBR", "5UAR", "6MSK", "8EIR", "8EIG", "8GLS",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
