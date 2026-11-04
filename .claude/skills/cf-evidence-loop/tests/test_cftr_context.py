@@ -157,6 +157,14 @@ class CftrContextTests(unittest.TestCase):
             ("E1104X", "E1104X", 20, "Class I"),
             ("R792X", "R792X", 14, "Class I"),
             ("Q890X", "Q890X", 16, "Class I"),
+            ("R352Q", "R352Q", 8, "Class IV"),
+            ("D993Y", "D993Y", 18, "Class IV"),
+            ("V232D", "V232D", 6, "Class II"),
+            ("Q39X", "Q39X", 2, "Class I"),
+            ("W401X", "W401X", 9, "Class I"),
+            ("R1102X", "R1102X", 20, "Class I"),
+            ("E831X", "E831X", 14, "Class I"),
+            ("K1250A", "K1250A", 23, "Class III"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -323,6 +331,7 @@ class CftrContextTests(unittest.TestCase):
         pdbs = [
             "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
             "9DW9", "9DW5", "9DW8", "9DW7", "8EIJ", "8EIK", "7SVE", "7SVF",
+            "8FZQ", "8V7Z", "8V81",
         ]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
@@ -449,7 +458,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (29 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (32 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -467,6 +476,9 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("8EIK", val)
             self.assertIn("7SVE", val)
             self.assertIn("7SVF", val)
+            self.assertIn("8FZQ", val)
+            self.assertIn("8V7Z", val)
+            self.assertIn("8V81", val)
         finally:
             sys.stdout = old_stdout
 
