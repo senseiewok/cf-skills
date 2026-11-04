@@ -29,9 +29,9 @@ spec.loader.exec_module(cftr_context)
 
 class CftrContextTests(unittest.TestCase):
     def test_canonical_alleles_catalog_integrity(self):
-        """Verify that canonical alleles catalog contains at least 60 curated alleles with full metadata."""
+        """Verify that canonical alleles catalog contains at least 70 curated alleles with full metadata."""
         alleles = cftr_context.CANONICAL_ALLELES
-        self.assertGreaterEqual(len(alleles), 60)
+        self.assertGreaterEqual(len(alleles), 70)
         for key, info in alleles.items():
             self.assertTrue(key.isupper() or any(c in key for c in "+->"))
             self.assertIn("allele", info)
@@ -141,6 +141,15 @@ class CftrContextTests(unittest.TestCase):
             ("S945L", "S945L", 18, "Class V"),
             ("G970R", "G970R", 18, "Class III"),
             ("F1052V", "F1052V", 20, "Class IV"),
+            ("3272-26A>G", "3272-26A>G", 20, "Class V"),
+            ("L927P", "L927P", 17, "Class II"),
+            ("D579G", "D579G", 13, "Class IV"),
+            ("H1085R", "H1085R", 20, "Class II"),
+            ("K1060T", "K1060T", 20, "Class II"),
+            ("G314E", "G314E", 8, "Class II"),
+            ("P5L", "P5L", 1, "Class IV"),
+            ("W57G", "W57G", 3, "Class II"),
+            ("R1070Q", "R1070Q", 20, "Class II"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -306,6 +315,7 @@ class CftrContextTests(unittest.TestCase):
         """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1, 8EIZ, 7SVR, 8EIA, 8EIB, and 8EIU."""
         pdbs = [
             "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
+            "9DW9", "9DW5", "9DW8", "9DW7",
         ]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
@@ -432,7 +442,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (21 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (25 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -444,6 +454,8 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("8EIR", val)
             self.assertIn("8EIG", val)
             self.assertIn("8GLS", val)
+            self.assertIn("9DW9", val)
+            self.assertIn("9DW5", val)
         finally:
             sys.stdout = old_stdout
 
