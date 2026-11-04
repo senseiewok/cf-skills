@@ -150,6 +150,13 @@ class CftrContextTests(unittest.TestCase):
             ("P5L", "P5L", 1, "Class IV"),
             ("W57G", "W57G", 3, "Class II"),
             ("R1070Q", "R1070Q", 20, "Class II"),
+            ("E1371Q", "E1371Q", 25, "Class III"),
+            ("K464N", "K464N", 10, "Class III"),
+            ("D1370N", "D1370N", 25, "Class III"),
+            ("G673X", "G673X", 14, "Class I"),
+            ("E1104X", "E1104X", 20, "Class I"),
+            ("R792X", "R792X", 14, "Class I"),
+            ("Q890X", "Q890X", 16, "Class I"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -315,7 +322,7 @@ class CftrContextTests(unittest.TestCase):
         """Verify Cryo-EM coordinate metadata for 6MSM, 5UAK, 6O2P, 7SVD, 7SV7, 8EIQ, 8EJ1, 8EIZ, 7SVR, 8EIA, 8EIB, and 8EIU."""
         pdbs = [
             "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
-            "9DW9", "9DW5", "9DW8", "9DW7",
+            "9DW9", "9DW5", "9DW8", "9DW7", "8EIJ", "8EIK", "7SVE", "7SVF",
         ]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
@@ -442,7 +449,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Cryo-EM Structures (25 structures indexed)", val)
+            self.assertIn("Canonical CFTR Cryo-EM Structures (29 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -456,6 +463,10 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("8GLS", val)
             self.assertIn("9DW9", val)
             self.assertIn("9DW5", val)
+            self.assertIn("8EIJ", val)
+            self.assertIn("8EIK", val)
+            self.assertIn("7SVE", val)
+            self.assertIn("7SVF", val)
         finally:
             sys.stdout = old_stdout
 
