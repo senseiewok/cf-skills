@@ -1036,6 +1036,86 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in NBD1 / NMD substrate)",
         "aliases": ["E585X", "p.Glu585Ter", "c.1753G>T"],
     },
+    "Q98X": {
+        "allele": "Q98X",
+        "hgvs_c": "c.292C>T",
+        "hgvs_p": "p.Gln98Ter",
+        "codon": 98,
+        "exon": 4,
+        "domain": "TMD1 (Transmembrane Domain 1 / TM1)",
+        "cftr_class": "Class I (early premature termination codon in TM1 alpha-helix / NMD substrate)",
+        "aliases": ["Q98X", "p.Gln98Ter", "c.292C>T"],
+    },
+    "R114X": {
+        "allele": "R114X",
+        "hgvs_c": "c.340C>T",
+        "hgvs_p": "p.Arg114Ter",
+        "codon": 114,
+        "exon": 4,
+        "domain": "TMD1 (Transmembrane Domain 1 / ICL1 boundary)",
+        "cftr_class": "Class I (premature termination codon in intracellular loop 1 / NMD substrate)",
+        "aliases": ["R114X", "p.Arg114Ter", "c.340C>T"],
+    },
+    "W1098X": {
+        "allele": "W1098X",
+        "hgvs_c": "c.3293G>A",
+        "hgvs_p": "p.Trp1098Ter",
+        "codon": 1098,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM11)",
+        "cftr_class": "Class I (premature termination codon in TM11 alpha-helix / NMD substrate)",
+        "aliases": ["W1098X", "p.Trp1098Ter", "c.3293G>A"],
+    },
+    "S1196X": {
+        "allele": "S1196X",
+        "hgvs_c": "c.3587C>A",
+        "hgvs_p": "p.Ser1196Ter",
+        "codon": 1196,
+        "exon": 22,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class I (premature termination codon in TMD2-NBD2 boundary / NMD substrate)",
+        "aliases": ["S1196X", "p.Ser1196Ter", "c.3587C>A", "c.3587C>G"],
+    },
+    "L467P": {
+        "allele": "L467P",
+        "hgvs_c": "c.1400T>C",
+        "hgvs_p": "p.Leu467Pro",
+        "codon": 467,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1 / Walker A-B linker)",
+        "cftr_class": "Class II (severe misfolding defect in NBD1 Walker linker; fails ER quality control)",
+        "aliases": ["L467P", "p.Leu467Pro", "c.1400T>C"],
+    },
+    "F1074L": {
+        "allele": "F1074L",
+        "hgvs_c": "c.3220T>C",
+        "hgvs_p": "p.Phe1074Leu",
+        "codon": 1074,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM11)",
+        "cftr_class": "Class II / Class IV (TM11 destabilization and altered single-channel conductance)",
+        "aliases": ["F1074L", "p.Phe1074Leu", "c.3220T>C"],
+    },
+    "G970D": {
+        "allele": "G970D",
+        "hgvs_c": "c.2909G>A",
+        "hgvs_p": "p.Gly970Asp",
+        "codon": 970,
+        "exon": 18,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM8-TM9 linker)",
+        "cftr_class": "Class III (gating defect; reduces open probability while maintaining membrane trafficking)",
+        "aliases": ["G970D", "p.Gly970Asp", "c.2909G>A"],
+    },
+    "I1234V": {
+        "allele": "I1234V",
+        "hgvs_c": "c.3700A>G",
+        "hgvs_p": "p.Ile1234Val",
+        "codon": 1234,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class V (alternative cryptic splicing modifier in exon 23 / common Middle Eastern founder variant)",
+        "aliases": ["I1234V", "p.Ile1234Val", "c.3700A>G"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -1451,6 +1531,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "Cryo-EM",
         "reference": "Fay et al., Biochemistry 2018 (DOI: 10.1021/acs.biochem.8b00763)",
     },
+    "6UK1": {
+        "pdb_id": "6UK1",
+        "title": "Crystal structure of nucleotide-binding domain 2 (NBD2) of the human Cystic Fibrosis Transmembrane Conductance Regulator (CFTR)",
+        "conformation": "Isolated NBD2 catalytic domain in catalytically inactive conformation",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 2.69,
+        "method": "X-ray",
+        "reference": "Wang et al., 2020 (A thermodynamically stabilized form of the second nucleotide binding domain from human CFTR)",
+    },
+    "6WBS": {
+        "pdb_id": "6WBS",
+        "title": "Human CFTR first nucleotide binding domain with dF508/V510D",
+        "conformation": "Isolated NBD1 domain bearing F508del rescued by V510D suppressor mutation",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 1.86,
+        "method": "X-ray",
+        "reference": "Simon et al., 2020 (Determining the Molecular Mechanism of Suppressor Mutation V510D and the Contribution of Helical Unraveling to the dF508-CFTR Defect)",
+    },
+    "6ZE1": {
+        "pdb_id": "6ZE1",
+        "title": "human NBD1 of CFTR in complex with nanobody G11a",
+        "conformation": "Conformationally trapped NBD1 core stabilized by allosteric nanobody G11a",
+        "ligands": [],
+        "resolution_angstrom": 2.70,
+        "method": "X-ray",
+        "reference": "Scholl et al., Nat Chem Biol 2021 (A topological switch in CFTR modulates channel activity and sensitivity to unfolding)",
+    },
 }
 
 
@@ -1762,19 +1869,20 @@ def self_check() -> dict[str, Any]:
         "detail": f"{len(mod_neg_cases)} non-CFTR modulator queries rejected",
     })
 
-    # 10. Cryo-EM PDB structures lookup positive and negative controls
+    # 10. Cryo-EM and landmark PDB structures lookup positive and negative controls
     pdb_pos_cases = [
         "6MSM", "5UAK", "6O2P", "7SVD", "7SV7", "8EIQ", "8EJ1", "8EIZ", "7SVR", "8EIA", "8EIB", "8EIU",
         "8EIO", "9MXL", "6O1V", "8UBR", "5UAR", "6MSK", "8EIR", "8EIG", "8GLS",
         "9DW9", "9DW5", "9DW8", "9DW7", "8EIJ", "8EIK", "7SVE", "7SVF",
         "8FZQ", "8V7Z", "8V81", "9DW4", "9Y1Q", "9Y4T", "5W81", "6D3R", "6D3S",
+        "6UK1", "6WBS", "6ZE1",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
     checks.append({
         "name": "pdb_structures_positive_and_negative",
         "ok": pdb_ok and pdb_neg_ok,
-        "detail": f"{len(pdb_pos_cases)} canonical CFTR Cryo-EM structures verified and invalid accessions rejected",
+        "detail": f"{len(pdb_pos_cases)} canonical CFTR structures verified and invalid accessions rejected",
     })
 
     all_passed = all(c["ok"] for c in checks)
@@ -1835,7 +1943,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.json:
             print(json.dumps(CANONICAL_PDB_STRUCTURES, indent=2))
         else:
-            print(f"Canonical CFTR Cryo-EM Structures ({len(CANONICAL_PDB_STRUCTURES)} structures indexed):")
+            print(f"Canonical CFTR Structures ({len(CANONICAL_PDB_STRUCTURES)} structures indexed):")
             for k, s in sorted(CANONICAL_PDB_STRUCTURES.items()):
                 print(f"  {s['pdb_id']:<6} {s['resolution_angstrom']} A  {s['conformation']}")
         return 0
@@ -1863,7 +1971,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.json:
             print(json.dumps(res_pdb, indent=2))
         else:
-            print(f"PDB {res_pdb['pdb_id']}: {res_pdb['title']} ({res_pdb['resolution_angstrom']} A Cryo-EM)")
+            method = res_pdb.get("method", "Cryo-EM")
+            print(f"PDB {res_pdb['pdb_id']}: {res_pdb['title']} ({res_pdb['resolution_angstrom']} A {method})")
             print(f"  Conformation: {res_pdb['conformation']}")
             print(f"  Reference: {res_pdb['reference']}")
         return 0

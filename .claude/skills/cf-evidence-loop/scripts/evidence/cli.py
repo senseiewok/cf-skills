@@ -252,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
             if a.json:
                 print(json.dumps(cftr_context.CANONICAL_PDB_STRUCTURES, indent=2 if not a.ledger else None))
             else:
-                print(f"Canonical CFTR Cryo-EM Structures ({len(cftr_context.CANONICAL_PDB_STRUCTURES)} structures indexed):")
+                print(f"Canonical CFTR Structures ({len(cftr_context.CANONICAL_PDB_STRUCTURES)} structures indexed):")
                 for k, s in sorted(cftr_context.CANONICAL_PDB_STRUCTURES.items()):
                     print(f"  {s['pdb_id']:<6} {s['resolution_angstrom']} A  {s['conformation']}")
             return 0
@@ -261,15 +261,16 @@ def main(argv: list[str] | None = None) -> int:
             if a.json:
                 print(json.dumps(struct, indent=2 if not a.ledger else None))
             else:
-                print(f"PDB {struct['pdb_id']}: {struct['title']} ({struct['resolution_angstrom']} A Cryo-EM)")
+                method = struct.get("method", "Cryo-EM")
+                print(f"PDB {struct['pdb_id']}: {struct['title']} ({struct['resolution_angstrom']} A {method})")
                 print(f"  Conformation: {struct['conformation']}")
                 print(f"  Reference: {struct['reference']}")
             return 0
         else:
             if a.json:
-                print(json.dumps({"error": f"CFTR Cryo-EM structure not found for '{a.pdb_id}'"}))
+                print(json.dumps({"error": f"CFTR structure not found for '{a.pdb_id}'"}))
             else:
-                print(f"not found: CFTR Cryo-EM structure for '{a.pdb_id}'", file=sys.stderr)
+                print(f"not found: CFTR structure for '{a.pdb_id}'", file=sys.stderr)
             return 1
 
     blank_err = _check_blank_query(a)
