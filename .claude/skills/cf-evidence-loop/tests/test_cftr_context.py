@@ -189,6 +189,14 @@ class CftrContextTests(unittest.TestCase):
             ("C276X", "C276X", 7, "Class I"),
             ("G622X", "G622X", 14, "Class I"),
             ("Q1313X", "Q1313X", 24, "Class I"),
+            ("I507del", "I507del", 11, "Class II"),
+            ("A561E", "A561E", 13, "Class II"),
+            ("D1270N", "D1270N", 23, "Class IV"),
+            ("K710X", "K710X", 14, "Class I"),
+            ("CFTRdele22,23", "CFTRdele22,23", 22, "Class I"),
+            ("711+5G>A", "711+5G>A", 5, "Class V"),
+            ("1812-1G>A", "1812-1G>A", 13, "Class I"),
+            ("3878delG", "3878delG", 23, "Class I"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
@@ -482,7 +490,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (47 structures indexed)", val)
+            self.assertIn("Canonical CFTR Structures (50 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -518,6 +526,9 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("1XMJ", val)
             self.assertIn("2PZE", val)
             self.assertIn("4WZ6", val)
+            self.assertIn("2PZF", val)
+            self.assertIn("3GD7", val)
+            self.assertIn("2BBM", val)
         finally:
             sys.stdout = old_stdout
 

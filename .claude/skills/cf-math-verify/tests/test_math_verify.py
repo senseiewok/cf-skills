@@ -102,7 +102,7 @@ class MathVerifyTests(unittest.TestCase):
             self.assertEqual(code, 0)
             payload = json.loads(out_file.read_text(encoding="utf-8"))
             self.assertTrue(payload["passed"])
-            self.assertEqual(len(payload["presets"]), 15)
+            self.assertEqual(len(payload["presets"]), 16)
 
     def test_thermo_bounds_g551d_preset_passes(self):
         res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["g551d"])
@@ -136,6 +136,11 @@ class MathVerifyTests(unittest.TestCase):
 
     def test_thermo_bounds_r709x_preset_passes(self):
         res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["r709x"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_r1158x_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["r1158x"])
         self.assertTrue(res["passed"], res)
         self.assertEqual(res["findings"], [])
 
