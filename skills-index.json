@@ -257,6 +257,11 @@
       "user": ".agents/skills",
       "gh_agent": "cursor"
     },
+    "antigravity": {
+      "project": ".agents/skills",
+      "user": ".gemini/antigravity/skills",
+      "gh_agent": "antigravity"
+    },
     "amp": {
       "project": ".agents/skills",
       "user": ".agents/skills",
