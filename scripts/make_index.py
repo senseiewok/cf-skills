@@ -48,6 +48,7 @@ AGENTS = [
     ("codex", ".agents/skills", ".agents/skills", "codex"),
     ("gemini", ".agents/skills", ".agents/skills", "gemini-cli"),
     ("cursor", ".agents/skills", ".agents/skills", "cursor"),
+    ("antigravity", ".agents/skills", ".gemini/antigravity/skills", "antigravity"),
     ("amp", ".agents/skills", ".agents/skills", "amp"),
     ("opencode", ".agents/skills", ".agents/skills", "opencode"),
     ("goose", ".agents/skills", ".agents/skills", "goose"),

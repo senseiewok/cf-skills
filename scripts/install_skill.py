@@ -27,6 +27,10 @@ _DEFAULT_AGENTS = {
         "project": ".agents/skills",
         "user": ".agents/skills",
     },
+    "antigravity": {
+        "project": ".agents/skills",
+        "user": ".gemini/antigravity/skills",
+    },
     "amp": {
         "project": ".agents/skills",
         "user": ".agents/skills",

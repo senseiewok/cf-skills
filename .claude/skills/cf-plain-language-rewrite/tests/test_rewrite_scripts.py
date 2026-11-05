@@ -10,6 +10,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+SCRIPTS_DIR = str(SCRIPTS)
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
 import pytest
 
 import fact_diff as fd

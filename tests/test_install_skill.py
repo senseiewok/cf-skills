@@ -73,7 +73,7 @@ class InstallSkillTests(unittest.TestCase):
 
     # ---- agents and scopes
     def test_each_agent_gets_its_documented_project_folder(self):
-        cases = {"claude": ".claude/skills", "copilot": ".github/skills", "codex": ".agents/skills", "gemini": ".agents/skills", "cursor": ".agents/skills",
+        cases = {"claude": ".claude/skills", "copilot": ".github/skills", "codex": ".agents/skills", "gemini": ".agents/skills", "cursor": ".agents/skills", "antigravity": ".agents/skills",
                  "amp": ".agents/skills", "opencode": ".agents/skills", "goose": ".agents/skills", "windsurf": ".agents/skills", "qwen": ".qwen/skills"}
         for agent, rel in cases.items():
             with self.subTest(agent=agent):
@@ -84,7 +84,7 @@ class InstallSkillTests(unittest.TestCase):
                 self.assertTrue((proj / rel / "alpha" / "SKILL.md").is_file(), f"{agent}: {rel}")
 
     def test_user_scope_goes_under_the_home_folder(self):
-        cases = {"claude": ".claude/skills", "copilot": ".copilot/skills", "codex": ".agents/skills", "qwen": ".qwen/skills"}
+        cases = {"claude": ".claude/skills", "copilot": ".copilot/skills", "codex": ".agents/skills", "qwen": ".qwen/skills", "antigravity": ".gemini/antigravity/skills"}
         for agent, rel in cases.items():
             with self.subTest(agent=agent):
                 code, out = self.run_script("alpha", "--agent", agent, "--scope", "user")

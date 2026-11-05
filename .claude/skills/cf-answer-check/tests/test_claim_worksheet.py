@@ -10,6 +10,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+SKILL_ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = str(SKILL_ROOT / "scripts")
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
 import pytest
 
 import claim_worksheet as cw

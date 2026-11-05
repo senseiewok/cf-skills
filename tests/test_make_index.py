@@ -94,6 +94,7 @@ class MakeIndexTests(unittest.TestCase):
         self.assertEqual(agents["copilot"], {"project": ".github/skills", "user": ".copilot/skills", "gh_agent": "github-copilot"})
         self.assertEqual(agents["codex"]["gh_agent"], "codex")
         self.assertEqual(agents["qwen"]["project"], ".qwen/skills")
+        self.assertEqual(agents["antigravity"], {"project": ".agents/skills", "user": ".gemini/antigravity/skills", "gh_agent": "antigravity"})
         self.assertIsNone(agents["windsurf"]["gh_agent"], "no gh agent id is documented for Windsurf")
 
     def test_the_output_is_deterministic_and_ends_with_a_newline(self):
