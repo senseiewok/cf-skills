@@ -1556,6 +1556,36 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in TM7 pore assembly / NMD substrate)",
         "aliases": ["W882X", "p.Trp882Ter", "p.Trp882*", "c.2646G>A"],
     },
+    "Y563N": {
+        "allele": "Y563N",
+        "hgvs_c": "c.1687T>A",
+        "hgvs_p": "p.Tyr563Asn",
+        "codon": 563,
+        "exon": 12,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (NBD1 core missense defect at ICL4 interface, ~16.1 A from ICL4 coupling loop / candidate for corrector rescue)",
+        "aliases": ["Y563N", "p.Tyr563Asn", "c.1687T>A"],
+    },
+    "R560K": {
+        "allele": "R560K",
+        "hgvs_c": "c.1679G>A",
+        "hgvs_p": "p.Arg560Lys",
+        "codon": 560,
+        "exon": 12,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (NBD1 core missense defect at ICL4 interface, ~13.2 A from ICL4 coupling loop / candidate for corrector rescue)",
+        "aliases": ["R560K", "p.Arg560Lys", "c.1679G>A"],
+    },
+    "2143DELT": {
+        "allele": "2143delT",
+        "hgvs_c": "c.2012delT",
+        "hgvs_p": "p.Leu671Ter",
+        "codon": 671,
+        "exon": 14,
+        "domain": "R-domain (Regulatory Domain)",
+        "cftr_class": "Class I (frameshift single-base deletion in R-domain leading to premature termination at codon 671 / NMD substrate; prevalent in Mediterranean cohorts)",
+        "aliases": ["2143delT", "c.2012delT", "p.Leu671Ter", "p.Leu671*"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
