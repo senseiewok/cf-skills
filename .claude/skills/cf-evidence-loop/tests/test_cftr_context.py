@@ -206,6 +206,9 @@ class CftrContextTests(unittest.TestCase):
             ("CFTRdele2,3", "CFTRdele2,3", 2, "Class I"),
             ("3876delA", "3876delA", 23, "Class I"),
             ("W882X", "W882X", 15, "Class I"),
+            ("Y563N", "Y563N", 12, "Class II"),
+            ("R560K", "R560K", 12, "Class II"),
+            ("2143delT", "2143delT", 14, "Class I"),
         ]
 
         for query, expected_allele, expected_exon, expected_class_substr in test_matrix:
