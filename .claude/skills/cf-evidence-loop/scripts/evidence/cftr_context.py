@@ -1616,6 +1616,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in TM8 helix / NMD substrate)",
         "aliases": ["S912X", "p.Ser912Ter", "p.Ser912*", "c.2735C>A"],
     },
+    "Q1042X": {
+        "allele": "Q1042X",
+        "hgvs_c": "c.3124C>T",
+        "hgvs_p": "p.Gln1042Ter",
+        "codon": 1042,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM10)",
+        "cftr_class": "Class I (premature termination codon in TM10 helix / NMD substrate)",
+        "aliases": ["Q1042X", "p.Gln1042Ter", "p.Gln1042*", "c.3124C>T"],
+    },
+    "Q1291X": {
+        "allele": "Q1291X",
+        "hgvs_c": "c.3871C>T",
+        "hgvs_p": "p.Gln1291Ter",
+        "codon": 1291,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 core / NMD substrate)",
+        "aliases": ["Q1291X", "p.Gln1291Ter", "p.Gln1291*", "c.3871C>T"],
+    },
+    "S549I": {
+        "allele": "S549I",
+        "hgvs_c": "c.1646G>T",
+        "hgvs_p": "p.Ser549Ile",
+        "codon": 549,
+        "exon": 12,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class III (NBD1 ATP signature motif gating defect; potentiator-responsive)",
+        "aliases": ["S549I", "p.Ser549Ile", "c.1646G>T"],
+    },
+    "G480C": {
+        "allele": "G480C",
+        "hgvs_c": "c.1438G>T",
+        "hgvs_p": "p.Gly480Cys",
+        "codon": 480,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class II (misfolding & severe processing defect in NBD1 core causing ERAD)",
+        "aliases": ["G480C", "p.Gly480Cys", "c.1438G>T"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2301,6 +2341,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Amacher et al., Structure 2014 (DOI: 10.1016/j.str.2014.04.015)",
     },
+    "6RQU": {
+        "pdb_id": "6RQU",
+        "title": "Crystal structure of the NHERF1 PDZ1 domain in complex with the CFTR C-terminal peptide",
+        "conformation": "NHERF1 PDZ1 domain bound to CFTR C-terminal peptide (QDTRL)",
+        "ligands": [],
+        "resolution_angstrom": 1.50,
+        "method": "X-ray",
+        "reference": "Martin et al., J Biol Chem 2020 (DOI: 10.1074/jbc.RA119.012015)",
+    },
+    "1K6C": {
+        "pdb_id": "1K6C",
+        "title": "Solution NMR structure of NHERF1 PDZ1 domain in complex with CFTR C-terminal tail",
+        "conformation": "NHERF1 PDZ1 domain bound to CFTR C-terminal peptide (DLDVQDTRL)",
+        "ligands": [],
+        "resolution_angstrom": None,
+        "method": "NMR",
+        "reference": "Karthikeyan et al., J Biol Chem 2001 (DOI: 10.1074/jbc.M105436200)",
+    },
+    "2BTO": {
+        "pdb_id": "2BTO",
+        "title": "Crystal structure of CFTR nucleotide-binding domain 1 (NBD1) with ATP and magnesium",
+        "conformation": "Isolated CFTR NBD1 (residues 389-678 with regulatory insertion) bound to ATP and Mg2+",
+        "ligands": ["ATP", "MG"],
+        "resolution_angstrom": 2.25,
+        "method": "X-ray",
+        "reference": "Thibodeau et al., Nat Struct Mol Biol 2005 (DOI: 10.1038/nsmb922)",
+    },
 }
 
 
@@ -2622,6 +2689,7 @@ def self_check() -> dict[str, Any]:
         "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT", "1R10", "2BBS", "6GJQ",
         "1R0W", "1R0Y", "1R0Z", "6GJS", "6GJU", "6GK4", "6GKD", "1I92", "7QI1",
         "6RQR", "2LOB", "4K75",
+        "6RQU", "1K6C", "2BTO",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
