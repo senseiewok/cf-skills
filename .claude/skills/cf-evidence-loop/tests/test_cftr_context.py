@@ -493,7 +493,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (56 structures indexed)", val)
+            self.assertIn("Canonical CFTR Structures (59 structures indexed)", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
@@ -535,6 +535,9 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("1R10", val)
             self.assertIn("2BBS", val)
             self.assertIn("6GJQ", val)
+            self.assertIn("1R0W", val)
+            self.assertIn("1R0Y", val)
+            self.assertIn("1R0Z", val)
         finally:
             sys.stdout = old_stdout
 

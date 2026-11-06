@@ -1466,6 +1466,36 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I / Class VI (frameshift in C-terminal cytoplasmic tail truncating terminal residues and disrupting apical stability)",
         "aliases": ["4374delA", "c.4242delA", "p.Lys1415AsnfsTer11", "p.Lys1415Ter"],
     },
+    "3667DELTA4": {
+        "allele": "3667del4",
+        "hgvs_c": "c.3535_3538delACAA",
+        "hgvs_p": "p.Thr1179IlefsTer17",
+        "codon": 1179,
+        "exon": 22,
+        "domain": "TMD2-NBD2 linker",
+        "cftr_class": "Class I (frameshift 4-bp deletion causing premature truncation at codon 1195 / NMD substrate)",
+        "aliases": ["3667del4", "c.3535_3538delACAA", "p.Thr1179IlefsTer17", "p.Thr1179Ter"],
+    },
+    "2347DELG": {
+        "allele": "2347delG",
+        "hgvs_c": "c.2215delG",
+        "hgvs_p": "p.Val739TyrfsTer16",
+        "codon": 739,
+        "exon": 14,
+        "domain": "R-domain (Regulatory Domain)",
+        "cftr_class": "Class I (frameshift single-base deletion in R domain causing truncation at codon 754 / NMD substrate)",
+        "aliases": ["2347delG", "c.2215delG", "p.Val739TyrfsTer16", "p.Val739Ter"],
+    },
+    "1161DELC": {
+        "allele": "1161delC",
+        "hgvs_c": "c.1029delC",
+        "hgvs_p": "p.Phe343LeufsTer5",
+        "codon": 343,
+        "exon": 8,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class I (frameshift deletion in TM6 pore-lining helix leading to truncation at codon 347 / severe premature arrest)",
+        "aliases": ["1161delC", "c.1029delC", "p.Phe343LeufsTer5", "p.Phe343Ter"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2043,6 +2073,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10714-y)",
     },
+    "1R0W": {
+        "pdb_id": "1R0W",
+        "title": "Structure of nucleotide-binding domain 1 of the cystic fibrosis transmembrane conductance regulator: unliganded mouse NBD1",
+        "conformation": "Mouse CFTR NBD1 core unliganded (apo) state",
+        "ligands": [],
+        "resolution_angstrom": 2.25,
+        "method": "X-ray",
+        "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
+    },
+    "1R0Y": {
+        "pdb_id": "1R0Y",
+        "title": "Structure of nucleotide-binding domain 1 of the cystic fibrosis transmembrane conductance regulator with AMP-PNP",
+        "conformation": "Mouse CFTR NBD1 core bound to non-hydrolyzable ATP analogue AMP-PNP and magnesium",
+        "ligands": ["AMP-PNP", "Mg2+"],
+        "resolution_angstrom": 2.50,
+        "method": "X-ray",
+        "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
+    },
+    "1R0Z": {
+        "pdb_id": "1R0Z",
+        "title": "Structure of nucleotide-binding domain 1 of the cystic fibrosis transmembrane conductance regulator: phosphorylated mouse NBD1 with ATP",
+        "conformation": "Phosphorylated mouse CFTR NBD1 core bound to ATP and magnesium",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 2.25,
+        "method": "X-ray",
+        "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
+    },
 }
 
 
@@ -2362,6 +2419,7 @@ def self_check() -> dict[str, Any]:
         "8FZQ", "8V7Z", "8V81", "9DW4", "9Y1Q", "9Y4T", "5W81", "6D3R", "6D3S",
         "6UK1", "6WBS", "6ZE1", "1XMI", "2BBO", "8GLR", "1XMJ", "2PZE", "4WZ6",
         "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT", "1R10", "2BBS", "6GJQ",
+        "1R0W", "1R0Y", "1R0Z",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
