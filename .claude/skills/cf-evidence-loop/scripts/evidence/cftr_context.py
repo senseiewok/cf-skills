@@ -1586,6 +1586,36 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (frameshift single-base deletion in R-domain leading to premature termination at codon 671 / NMD substrate; prevalent in Mediterranean cohorts)",
         "aliases": ["2143delT", "c.2012delT", "p.Leu671Ter", "p.Leu671*"],
     },
+    "E193X": {
+        "allele": "E193X",
+        "hgvs_c": "c.577G>T",
+        "hgvs_p": "p.Glu193Ter",
+        "codon": 193,
+        "exon": 5,
+        "domain": "TMD1 (Transmembrane Domain 1 / TM3)",
+        "cftr_class": "Class I (premature termination codon in TM3 helix / NMD substrate)",
+        "aliases": ["E193X", "p.Glu193Ter", "p.Glu193*", "c.577G>T"],
+    },
+    "W496X": {
+        "allele": "W496X",
+        "hgvs_c": "c.1487G>A",
+        "hgvs_p": "p.Trp496Ter",
+        "codon": 496,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 core near F508 / NMD substrate)",
+        "aliases": ["W496X", "p.Trp496Ter", "p.Trp496*", "c.1487G>A"],
+    },
+    "S912X": {
+        "allele": "S912X",
+        "hgvs_c": "c.2735C>A",
+        "hgvs_p": "p.Ser912Ter",
+        "codon": 912,
+        "exon": 16,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM8)",
+        "cftr_class": "Class I (premature termination codon in TM8 helix / NMD substrate)",
+        "aliases": ["S912X", "p.Ser912Ter", "p.Ser912*", "c.2735C>A"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2244,6 +2274,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Stevers et al., Nat Commun 2022 (DOI: 10.1038/s41467-022-29706-9)",
     },
+    "6RQR": {
+        "pdb_id": "6RQR",
+        "title": "Extended NHERF1 PDZ2 domain in complex with the PDZ-binding motif of CFTR",
+        "conformation": "Extended NHERF1 PDZ2 domain bound to CFTR C-terminal peptide (QDTRL)",
+        "ligands": [],
+        "resolution_angstrom": 2.20,
+        "method": "X-ray",
+        "reference": "Martin et al., J Biol Chem 2020 (DOI: 10.1074/jbc.RA119.012015)",
+    },
+    "2LOB": {
+        "pdb_id": "2LOB",
+        "title": "Solution NMR structure of CAL PDZ domain bound to CFTR C-terminal tail",
+        "conformation": "CAL (CFTR-associated ligand) PDZ domain bound to CFTR C-terminal peptide (TEEEVQDTRL)",
+        "ligands": [],
+        "resolution_angstrom": None,
+        "method": "NMR",
+        "reference": "Piserchio et al., Biochemistry 2005 (DOI: 10.1021/bi0516475)",
+    },
+    "4K75": {
+        "pdb_id": "4K75",
+        "title": "Crystal structure of CAL PDZ domain in complex with CFTR-targeting peptide iCAL36-QDTRL",
+        "conformation": "CAL PDZ domain in complex with high-affinity peptide iCAL36-QDTRL containing CFTR C-terminal motif",
+        "ligands": [],
+        "resolution_angstrom": 1.30,
+        "method": "X-ray",
+        "reference": "Amacher et al., Structure 2014 (DOI: 10.1016/j.str.2014.04.015)",
+    },
 }
 
 
@@ -2564,6 +2621,7 @@ def self_check() -> dict[str, Any]:
         "6UK1", "6WBS", "6ZE1", "1XMI", "2BBO", "8GLR", "1XMJ", "2PZE", "4WZ6",
         "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT", "1R10", "2BBS", "6GJQ",
         "1R0W", "1R0Y", "1R0Z", "6GJS", "6GJU", "6GK4", "6GKD", "1I92", "7QI1",
+        "6RQR", "2LOB", "4K75",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
