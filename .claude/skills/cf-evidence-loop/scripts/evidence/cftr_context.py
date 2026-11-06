@@ -1496,6 +1496,36 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (frameshift deletion in TM6 pore-lining helix leading to truncation at codon 347 / severe premature arrest)",
         "aliases": ["1161delC", "c.1029delC", "p.Phe343LeufsTer5", "p.Phe343Ter"],
     },
+    "3120DELA": {
+        "allele": "3120delA",
+        "hgvs_c": "c.2988delA",
+        "hgvs_p": "p.Lys997AsnfsTer11",
+        "codon": 997,
+        "exon": 18,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM10)",
+        "cftr_class": "Class I (frameshift single-base deletion in TM10 causing premature termination at codon 1007 / NMD substrate; high frequency in African ancestry cohorts)",
+        "aliases": ["3120delA", "c.2988delA", "p.Lys997AsnfsTer11", "p.Lys997Ter"],
+    },
+    "2184INSA": {
+        "allele": "2184insA",
+        "hgvs_c": "c.2052dupA",
+        "hgvs_p": "p.Gln685ThrfsTer4",
+        "codon": 685,
+        "exon": 14,
+        "domain": "R-domain (Regulatory Domain)",
+        "cftr_class": "Class I (frameshift single-base duplication in regulatory R domain causing premature termination at codon 688 / NMD substrate; high frequency in Slavic cohorts)",
+        "aliases": ["2184insA", "c.2052dupA", "c.2051_2052insA", "p.Gln685ThrfsTer4", "p.Gln685Ter"],
+    },
+    "Q1411X": {
+        "allele": "Q1411X",
+        "hgvs_c": "c.4231C>T",
+        "hgvs_p": "p.Gln1411Ter",
+        "codon": 1411,
+        "exon": 27,
+        "domain": "C-terminus (Cytoplasmic C-terminal tail / PDZ-binding motif)",
+        "cftr_class": "Class I (premature termination codon in C-terminal cytosolic tail truncating PDZ-binding motif / NMD substrate)",
+        "aliases": ["Q1411X", "p.Gln1411Ter", "p.Gln1411*", "c.4231C>T"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2100,6 +2130,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
     },
+    "6GJS": {
+        "pdb_id": "6GJS",
+        "title": "Human NBD1 of CFTR in complex with nanobodies D12 and T4",
+        "conformation": "Human CFTR NBD1 bound to stabilizing nanobodies D12 and T4, ATP, and magnesium",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 1.95,
+        "method": "X-ray",
+        "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10714-y)",
+    },
+    "6GJU": {
+        "pdb_id": "6GJU",
+        "title": "human NBD1 of CFTR in complex with nanobodies T2a and T4",
+        "conformation": "Human CFTR NBD1 bound to nanobodies T2a and T4",
+        "ligands": [],
+        "resolution_angstrom": 2.60,
+        "method": "X-ray",
+        "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10714-y)",
+    },
+    "6GK4": {
+        "pdb_id": "6GK4",
+        "title": "Human NBD1 of CFTR in complex with nanobodies D12 and T8",
+        "conformation": "Human CFTR NBD1 bound to stabilizing nanobodies D12 and T8, ATP, and magnesium",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 2.91,
+        "method": "X-ray",
+        "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10714-y)",
+    },
 }
 
 
@@ -2419,7 +2476,7 @@ def self_check() -> dict[str, Any]:
         "8FZQ", "8V7Z", "8V81", "9DW4", "9Y1Q", "9Y4T", "5W81", "6D3R", "6D3S",
         "6UK1", "6WBS", "6ZE1", "1XMI", "2BBO", "8GLR", "1XMJ", "2PZE", "4WZ6",
         "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT", "1R10", "2BBS", "6GJQ",
-        "1R0W", "1R0Y", "1R0Z",
+        "1R0W", "1R0Y", "1R0Z", "6GJS", "6GJU", "6GK4",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
