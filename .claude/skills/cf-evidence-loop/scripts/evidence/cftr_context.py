@@ -1436,6 +1436,36 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (large deletion of exon 1 removing translation initiation ATG / complete absence of protein)",
         "aliases": ["CFTRdele1", "dele1", "c.1-?_53+?del"],
     },
+    "1677DELTA": {
+        "allele": "1677delTA",
+        "hgvs_c": "c.1545_1546delTA",
+        "hgvs_p": "p.Tyr515Ter",
+        "codon": 515,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (frameshift deletion in NBD1 introducing premature stop codon at codon 515 / NMD substrate)",
+        "aliases": ["1677delTA", "c.1545_1546delTA", "p.Tyr515Ter", "p.Tyr515X"],
+    },
+    "3199DEL6": {
+        "allele": "3199del6",
+        "hgvs_c": "c.3067_3072delATAGTG",
+        "hgvs_p": "p.Ile1023_Val1024del",
+        "codon": 1023,
+        "exon": 19,
+        "domain": "TMD2 (Transmembrane Domain 2 / TM10)",
+        "cftr_class": "Class II (in-frame deletion of two residues in TM10 causing misfolding and defective trafficking)",
+        "aliases": ["3199del6", "c.3067_3072delATAGTG", "p.Ile1023_Val1024del"],
+    },
+    "4374DELA": {
+        "allele": "4374delA",
+        "hgvs_c": "c.4242delA",
+        "hgvs_p": "p.Lys1415AsnfsTer11",
+        "codon": 1415,
+        "exon": 27,
+        "domain": "C-terminus (Cytoplasmic C-terminal tail / PDZ-binding motif)",
+        "cftr_class": "Class I / Class VI (frameshift in C-terminal cytoplasmic tail truncating terminal residues and disrupting apical stability)",
+        "aliases": ["4374delA", "c.4242delA", "p.Lys1415AsnfsTer11", "p.Lys1415Ter"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -1986,6 +2016,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Lewis et al., Cell 2005 (DOI: 10.1016/j.cell.2005.10.024)",
     },
+    "1R10": {
+        "pdb_id": "1R10",
+        "title": "Cystic fibrosis transmembrane conductance regulator (CFTR) nucleotide-binding domain one (NBD1) with ATP, I4122 space group",
+        "conformation": "Mouse CFTR NBD1 core carrying the pathogenic DeltaF508 mutation bound to ATP and magnesium",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 3.00,
+        "method": "X-ray",
+        "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
+    },
+    "2BBS": {
+        "pdb_id": "2BBS",
+        "title": "Human deltaF508 NBD1 with three solubilizing mutations",
+        "conformation": "Human CFTR NBD1 carrying F508del with solubilizing substitutions F409L, F429S, F433L bound to ATP",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 2.05,
+        "method": "X-ray",
+        "reference": "Lewis et al., J Mol Biol 2010 (DOI: 10.1016/j.jmb.2009.11.051)",
+    },
+    "6GJQ": {
+        "pdb_id": "6GJQ",
+        "title": "Human NBD1 of CFTR in complex with nanobody T27",
+        "conformation": "Human CFTR NBD1 in complex with conformation-specific stabilizing single-domain antibody (nanobody) T27",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 2.49,
+        "method": "X-ray",
+        "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10714-y)",
+    },
 }
 
 
@@ -2304,7 +2361,7 @@ def self_check() -> dict[str, Any]:
         "9DW9", "9DW5", "9DW8", "9DW7", "8EIJ", "8EIK", "7SVE", "7SVF",
         "8FZQ", "8V7Z", "8V81", "9DW4", "9Y1Q", "9Y4T", "5W81", "6D3R", "6D3S",
         "6UK1", "6WBS", "6ZE1", "1XMI", "2BBO", "8GLR", "1XMJ", "2PZE", "4WZ6",
-        "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT",
+        "2PZF", "3GD7", "2BBM", "2PZG", "1R0X", "2BBT", "1R10", "2BBS", "6GJQ",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
