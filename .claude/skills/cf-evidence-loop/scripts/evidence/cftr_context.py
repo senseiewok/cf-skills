@@ -1816,6 +1816,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in NBD2 / NMD substrate)",
         "aliases": ["W1274X", "p.Trp1274Ter", "p.Trp1274*", "c.3821G>A", "c.3822G>A"],
     },
+    "E56X": {
+        "allele": "E56X",
+        "hgvs_c": "c.166G>T",
+        "hgvs_p": "p.Glu56Ter",
+        "codon": 56,
+        "exon": 3,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class I (premature termination codon in N-terminal lasso / NMD substrate)",
+        "aliases": ["E56X", "p.Glu56Ter", "p.Glu56*", "c.166G>T"],
+    },
+    "Q414X": {
+        "allele": "Q414X",
+        "hgvs_c": "c.1240C>T",
+        "hgvs_p": "p.Gln414Ter",
+        "codon": 414,
+        "exon": 10,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 / NMD substrate)",
+        "aliases": ["Q414X", "p.Gln414Ter", "p.Gln414*", "c.1240C>T"],
+    },
+    "E1308X": {
+        "allele": "E1308X",
+        "hgvs_c": "c.3922G>T",
+        "hgvs_p": "p.Glu1308Ter",
+        "codon": 1308,
+        "exon": 24,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 / NMD substrate)",
+        "aliases": ["E1308X", "p.Glu1308Ter", "p.Glu1308*", "c.3922G>T"],
+    },
+    "E1418X": {
+        "allele": "E1418X",
+        "hgvs_c": "c.4252G>T",
+        "hgvs_p": "p.Glu1418Ter",
+        "codon": 1418,
+        "exon": 26,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 C-terminus / NMD substrate)",
+        "aliases": ["E1418X", "p.Glu1418Ter", "p.Glu1418*", "c.4252G>T"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2645,6 +2685,24 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tff/pdb)",
     },
+    "1Q3H": {
+        "pdb_id": "1Q3H",
+        "title": "Structure of nucleotide-binding domain 1 of the cystic fibrosis transmembrane conductance regulator",
+        "conformation": "Mouse NBD1 monomer complexed with non-hydrolyzable ATP analogue AMP-PNP",
+        "ligands": ["ANP", "MG"],
+        "resolution_angstrom": 2.50,
+        "method": "X-ray",
+        "reference": "Lewis et al., EMBO J 2004 (DOI: 10.1038/sj.emboj.7600040)",
+    },
+    "1XFA": {
+        "pdb_id": "1XFA",
+        "title": "Structure of NBD1 from murine CFTR - F508R mutant",
+        "conformation": "Mouse NBD1 monomer carrying F508R suppressor mutation",
+        "ligands": ["ACY"],
+        "resolution_angstrom": 3.10,
+        "method": "X-ray",
+        "reference": "Thibodeau et al., Nat Struct Mol Biol 2005 (DOI: 10.1038/nsmb881)",
+    },
 }
 
 
@@ -2971,6 +3029,7 @@ def self_check() -> dict[str, Any]:
         "5D3E", "5D3F", "5TF7",
         "5TSI", "6GJR", "6HEQ",
         "5TF8", "5TFC", "5TFD", "5TFF",
+        "1Q3H", "1XFA",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
