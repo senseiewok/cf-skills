@@ -417,7 +417,7 @@ def test_cli_cftr_structure_subcommand():
         rc = cli.main(["cftr-pdb", "--list"])
         assert rc == 0
         val = sys.stdout.getvalue()
-        assert "Canonical CFTR Structures (96 structures indexed)" in val
+        assert "Canonical CFTR Structures (97 structures indexed)" in val
         assert "6MSL" in val
         assert "1R0V" in val
         assert "7SVC" in val
@@ -486,6 +486,7 @@ def test_cli_cftr_structure_subcommand():
         assert "5TFI" in val
         assert "5TFJ" in val
         assert "5TGK" in val
+        assert "3SI7" in val
     finally:
         sys.stdout = old_stdout
 
