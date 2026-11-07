@@ -1736,6 +1736,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in TMD2 ICL4 coupling region / NMD substrate)",
         "aliases": ["Q1071X", "p.Gln1071Ter", "p.Gln1071*", "c.3211C>T"],
     },
+    "K68X": {
+        "allele": "K68X",
+        "hgvs_c": "c.202A>T",
+        "hgvs_p": "p.Lys68Ter",
+        "codon": 68,
+        "exon": 3,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class I (premature termination codon in N-terminal lasso motif / NMD substrate)",
+        "aliases": ["K68X", "p.Lys68Ter", "p.Lys68*", "c.202A>T"],
+    },
+    "Q715X": {
+        "allele": "Q715X",
+        "hgvs_c": "c.2143C>T",
+        "hgvs_p": "p.Gln715Ter",
+        "codon": 715,
+        "exon": 14,
+        "domain": "RD (Regulatory Domain)",
+        "cftr_class": "Class I (premature termination codon in Regulatory Domain / NMD substrate)",
+        "aliases": ["Q715X", "p.Gln715Ter", "p.Gln715*", "c.2143C>T"],
+    },
+    "Y849X": {
+        "allele": "Y849X",
+        "hgvs_c": "c.2547C>A",
+        "hgvs_p": "p.Tyr849Ter",
+        "codon": 849,
+        "exon": 15,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class I (premature termination codon in TMD2 TM7 / NMD substrate)",
+        "aliases": ["Y849X", "p.Tyr849Ter", "p.Tyr849*", "c.2547C>A", "c.2547C>G"],
+    },
+    "Y913X": {
+        "allele": "Y913X",
+        "hgvs_c": "c.2739C>A",
+        "hgvs_p": "p.Tyr913Ter",
+        "codon": 913,
+        "exon": 16,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class I (premature termination codon in TMD2 TM8 / NMD substrate)",
+        "aliases": ["Y913X", "p.Tyr913Ter", "p.Tyr913*", "c.2739C>A", "c.2739C>G"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2502,6 +2542,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tf7/pdb)",
     },
+    "5TSI": {
+        "pdb_id": "5TSI",
+        "title": "Cryo-EM structure of zebrafish cystic fibrosis transmembrane conductance regulator (CFTR)",
+        "conformation": "Dephosphorylated, ATP-free inward-facing closed channel state (foundational first atomic CFTR structure)",
+        "ligands": [],
+        "resolution_angstrom": 3.40,
+        "method": "Cryo-EM",
+        "reference": "Zhang & Chen, Science 2016 (DOI: 10.1126/science.aag2779)",
+    },
+    "6GJR": {
+        "pdb_id": "6GJR",
+        "title": "Human NBD1 of CFTR in complex with nanobody T2a",
+        "conformation": "Human NBD1 monomer with solubilizing mutations bound to conformation-specific nanobody T2a",
+        "ligands": ["ATP", "MG"],
+        "resolution_angstrom": 2.45,
+        "method": "X-ray",
+        "reference": "Sigoillot et al., Nat Commun 2019 (DOI: 10.1038/s41467-019-10740-x)",
+    },
+    "6HEQ": {
+        "pdb_id": "6HEQ",
+        "title": "Crystal structure of human 14-3-3 sigma in complex with CFTR R-domain peptide pS753-pS768",
+        "conformation": "14-3-3 sigma bound to CFTR doubly phosphorylated R-domain peptide (pS753/pS768)",
+        "ligands": [],
+        "resolution_angstrom": 1.63,
+        "method": "X-ray",
+        "reference": "Stevers et al., J Am Chem Soc 2018 (DOI: 10.1021/jacs.8b09618)",
+    },
 }
 
 
@@ -2826,6 +2893,7 @@ def self_check() -> dict[str, Any]:
         "6RQU", "1K6C", "2BTO",
         "3ISW", "5D2D", "6HEP",
         "5D3E", "5D3F", "5TF7",
+        "5TSI", "6GJR", "6HEQ",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
