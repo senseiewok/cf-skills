@@ -387,6 +387,19 @@ class CftrContextTests(unittest.TestCase):
             ("GLPG1837", "GLPG1837", ["GLPG1837", "GLPG-1837"]),
             ("ELX-02", "ELX-02", ["ELX-02", "ELX02", "NB124"]),
             ("NB124", "ELX-02", ["ELX-02", "ELX02", "NB124"]),
+            ("ataluren", "Ataluren", ["PTC124", "PTC-124"]),
+            ("PTC124", "Ataluren", ["PTC124", "PTC-124"]),
+            ("PTC-124", "Ataluren", ["PTC124", "PTC-124"]),
+            ("nesolicaftor", "Nesolicaftor", ["PTI-428", "PTI428"]),
+            ("PTI-428", "Nesolicaftor", ["PTI-428", "PTI428"]),
+            ("posenacaftor", "Posenacaftor", ["PTI-801", "PTI801"]),
+            ("PTI-801", "Posenacaftor", ["PTI-801", "PTI801"]),
+            ("dirocaftor", "Dirocaftor", ["PTI-808", "PTI808"]),
+            ("PTI-808", "Dirocaftor", ["PTI-808", "PTI808"]),
+            ("ABBV-974", "ABBV-974", ["ABBV-974", "ABBV974", "GLPG3067", "GLPG-3067"]),
+            ("GLPG3067", "ABBV-974", ["ABBV-974", "ABBV974", "GLPG3067", "GLPG-3067"]),
+            ("cavosonstat", "Cavosonstat", ["N91115", "N-91115"]),
+            ("N91115", "Cavosonstat", ["N91115", "N-91115"]),
         ]
         for query, expected_brand, expected_codes in investigational_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -561,7 +574,11 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (92 structures indexed)", val)
+            self.assertIn("Canonical CFTR Structures (96 structures indexed)", val)
+            self.assertIn("6MSL", val)
+            self.assertIn("1R0V", val)
+            self.assertIn("7SVC", val)
+            self.assertIn("8EIC", val)
             self.assertIn("7SVD", val)
             self.assertIn("7SV7", val)
             self.assertIn("8EIO", val)
