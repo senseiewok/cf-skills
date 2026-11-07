@@ -1696,6 +1696,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in NBD2 C-terminal subdomain / NMD substrate)",
         "aliases": ["Q1382X", "p.Gln1382Ter", "p.Gln1382*", "c.4144C>T"],
     },
+    "S4X": {
+        "allele": "S4X",
+        "hgvs_c": "c.11C>A",
+        "hgvs_p": "p.Ser4Ter",
+        "codon": 4,
+        "exon": 1,
+        "domain": "N-terminal lasso motif",
+        "cftr_class": "Class I (extreme N-terminal premature termination codon / NMD substrate)",
+        "aliases": ["S4X", "p.Ser4Ter", "p.Ser4*", "c.11C>A"],
+    },
+    "W57X": {
+        "allele": "W57X",
+        "hgvs_c": "c.170G>A",
+        "hgvs_p": "p.Trp57Ter",
+        "codon": 57,
+        "exon": 3,
+        "domain": "TMD1 (Transmembrane Domain 1)",
+        "cftr_class": "Class I (premature termination codon in TM1 helix / NMD substrate)",
+        "aliases": ["W57X", "p.Trp57Ter", "p.Trp57*", "c.170G>A"],
+    },
+    "Q359X": {
+        "allele": "Q359X",
+        "hgvs_c": "c.1075C>T",
+        "hgvs_p": "p.Gln359Ter",
+        "codon": 359,
+        "exon": 8,
+        "domain": "TMD1-NBD1 linker",
+        "cftr_class": "Class I (premature termination codon in TMD1-NBD1 cytoplasmic linker / NMD substrate)",
+        "aliases": ["Q359X", "p.Gln359Ter", "p.Gln359*", "c.1075C>T"],
+    },
+    "Q1071X": {
+        "allele": "Q1071X",
+        "hgvs_c": "c.3211C>T",
+        "hgvs_p": "p.Gln1071Ter",
+        "codon": 1071,
+        "exon": 20,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class I (premature termination codon in TMD2 ICL4 coupling region / NMD substrate)",
+        "aliases": ["Q1071X", "p.Gln1071Ter", "p.Gln1071*", "c.3211C>T"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2435,6 +2475,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Stevers et al., J Am Chem Soc 2018 (DOI: 10.1021/jacs.8b09618)",
     },
+    "5D3E": {
+        "pdb_id": "5D3E",
+        "title": "Crystal structure of human 14-3-3 gamma in complex with CFTR R-domain peptide pS768-pS795",
+        "conformation": "14-3-3 gamma dimer bound to phosphorylated CFTR R-domain regulatory peptide (pS768/pS795)",
+        "ligands": ["SO4"],
+        "resolution_angstrom": 2.75,
+        "method": "X-ray",
+        "reference": "Stevers et al., Proc Natl Acad Sci USA 2016 (DOI: 10.1073/pnas.1518765113)",
+    },
+    "5D3F": {
+        "pdb_id": "5D3F",
+        "title": "Crystal structure of human 14-3-3 zeta in complex with CFTR R-domain peptide pS753-pS768 and stabilizer fusicoccin-A",
+        "conformation": "14-3-3 zeta bound to phosphorylated CFTR R-domain peptide (pS753/pS768) stabilized by fusicoccin-A",
+        "ligands": ["Fusicoccin-A", "SO4"],
+        "resolution_angstrom": 2.74,
+        "method": "X-ray",
+        "reference": "Stevers et al., Proc Natl Acad Sci USA 2016 (DOI: 10.1073/pnas.1518765113)",
+    },
+    "5TF7": {
+        "pdb_id": "5TF7",
+        "title": "Nucleotide-binding domain 1 of the human cystic fibrosis transmembrane conductance regulator (CFTR) with ATP",
+        "conformation": "Human NBD1 monomer with solubilizing suppressor mutations in complex with ATP and Mg2+",
+        "ligands": ["ATP", "Mg2+"],
+        "resolution_angstrom": 1.93,
+        "method": "X-ray",
+        "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tf7/pdb)",
+    },
 }
 
 
@@ -2758,6 +2825,7 @@ def self_check() -> dict[str, Any]:
         "6RQR", "2LOB", "4K75",
         "6RQU", "1K6C", "2BTO",
         "3ISW", "5D2D", "6HEP",
+        "5D3E", "5D3F", "5TF7",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
