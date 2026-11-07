@@ -29,9 +29,9 @@ spec.loader.exec_module(cftr_context)
 
 class CftrContextTests(unittest.TestCase):
     def test_canonical_alleles_catalog_integrity(self):
-        """Verify that canonical alleles catalog contains at least 70 curated alleles with full metadata."""
+        """Verify that canonical alleles catalog contains at least 200 curated alleles with full metadata."""
         alleles = cftr_context.CANONICAL_ALLELES
-        self.assertGreaterEqual(len(alleles), 70)
+        self.assertGreaterEqual(len(alleles), 200)
         for key, info in alleles.items():
             self.assertTrue(key.isupper() or any(c in key for c in "+->"))
             self.assertIn("allele", info)
@@ -81,6 +81,14 @@ class CftrContextTests(unittest.TestCase):
             ("2184delA", "2184delA", 14, "Class I"),
             ("3659delC", "3659delC", 22, "Class I"),
             ("Y1092X", "Y1092X", 20, "Class I"),
+            ("Q2X", "Q2X", 1, "Class I"),
+            ("S13X", "S13X", 1, "Class I"),
+            ("W216X", "W216X", 6, "Class I"),
+            ("Y275X", "Y275X", 7, "Class I"),
+            ("Q552X", "Q552X", 12, "Class I"),
+            ("S578X", "S578X", 13, "Class I"),
+            ("R899X", "R899X", 16, "Class I"),
+            ("K1330X", "K1330X", 25, "Class I"),
             # Class II: Misfolding & Trafficking
             ("F508del", "F508del", 11, "Class II"),
             ("N1303K", "N1303K", 24, "Class II"),
@@ -325,9 +333,9 @@ class CftrContextTests(unittest.TestCase):
             self.assertIsNone(res, f"Negative control query '{query}' did not return None")
 
     def test_canonical_modulators_catalog_integrity(self):
-        """Verify that canonical modulators catalog contains at least 5 approved/pipeline regimens with complete metadata."""
+        """Verify that canonical modulators catalog contains at least 20 approved/pipeline regimens with complete metadata."""
         mods = cftr_context.CANONICAL_MODULATORS
-        self.assertGreaterEqual(len(mods), 5)
+        self.assertGreaterEqual(len(mods), 20)
         for key, info in mods.items():
             self.assertTrue(key.isupper())
             self.assertIn("brand", info)
@@ -400,6 +408,10 @@ class CftrContextTests(unittest.TestCase):
             ("GLPG3067", "ABBV-974", ["ABBV-974", "ABBV974", "GLPG3067", "GLPG-3067"]),
             ("cavosonstat", "Cavosonstat", ["N91115", "N-91115"]),
             ("N91115", "Cavosonstat", ["N91115", "N-91115"]),
+            ("SION-638", "SION-638", ["SION-638", "SION638"]),
+            ("SION-109", "SION-109", ["SION-109", "SION109"]),
+            ("SION-719", "SION-719", ["SION-719", "SION719"]),
+            ("SION-451", "SION-451", ["SION-451", "SION451"]),
         ]
         for query, expected_brand, expected_codes in investigational_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -574,7 +586,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (96 structures indexed)", val)
+            self.assertIn("Canonical CFTR Structures (97 structures indexed)", val)
             self.assertIn("6MSL", val)
             self.assertIn("1R0V", val)
             self.assertIn("7SVC", val)
@@ -656,6 +668,7 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("5TFI", val)
             self.assertIn("5TFJ", val)
             self.assertIn("5TGK", val)
+            self.assertIn("3SI7", val)
         finally:
             sys.stdout = old_stdout
 
