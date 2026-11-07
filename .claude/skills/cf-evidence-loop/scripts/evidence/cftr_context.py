@@ -1965,6 +1965,84 @@ CANONICAL_MODULATORS: dict[str, dict[str, Any]] = {
         "target_mechanism": "High-potency next-generation corrector vanzacaftor with deuterated potentiator deutivacaftor for once-daily dosing",
         "aliases": ["ALYFTREK", "VANZACAFTOR", "VX-121", "VX121", "DEUTIVACAFTOR", "VX-561", "VX561", "VTD", "VANZACAFTOR/TEZACAFTOR/DEUTIVACAFTOR", "VNZ/TEZ/D-IVA"],
     },
+    "GALICAFTOR": {
+        "brand": "Galicaftor",
+        "active_ingredients": ["galicaftor"],
+        "molecular_codes": ["GLPG2222", "ABBV-2222"],
+        "mechanistic_class": "Type I CFTR Corrector (TMD1 chaperone stabilizing NBD1-ICL1/ICL4 interface)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "Galapagos / AbbVie",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "8EIR",
+        "target_mechanism": "Binds TMD1 pocket (TM1/TM2/TM3/TM6) to stabilize CFTR folding; evaluated in ALBATROSS and FALCON Phase 2 clinical trials",
+        "aliases": ["GALICAFTOR", "GLPG2222", "GLPG-2222", "ABBV-2222", "ABBV2222"],
+    },
+    "ICENTICAFTOR": {
+        "brand": "Icenticaftor",
+        "active_ingredients": ["icenticaftor"],
+        "molecular_codes": ["QBW251", "QBW-251"],
+        "mechanistic_class": "CFTR Potentiator (increases channel open probability Po across Class III/IV mutations)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "Novartis",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "6MSM",
+        "target_mechanism": "Oral small-molecule potentiator activating wild-type and mutant CFTR channels; evaluated in CF and COPD Phase 2 trials (NCT02449018, NCT03912246)",
+        "aliases": ["ICENTICAFTOR", "QBW251", "QBW-251"],
+    },
+    "NAVOCAFTOR": {
+        "brand": "Navocaftor",
+        "active_ingredients": ["navocaftor"],
+        "molecular_codes": ["ABBV-3067", "ABBV3067"],
+        "mechanistic_class": "Type I CFTR Corrector (MSD1 chaperone targeting F508del trafficking)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "AbbVie",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "Second-generation Type I corrector evaluated in combination with potentiator ABBV-974 and corrector ABBV-2222 in Phase 2 trials (NCT03969888, NCT04853368)",
+        "aliases": ["NAVOCAFTOR", "ABBV-3067", "ABBV3067"],
+    },
+    "BAMOCAFTOR": {
+        "brand": "Bamocaftor",
+        "active_ingredients": ["bamocaftor"],
+        "molecular_codes": ["VX-659", "VX659"],
+        "mechanistic_class": "Next-Generation Type II CFTR Corrector (cooperative corrector chaperone)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "Vertex Pharmaceuticals",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "Next-generation corrector evaluated in Phase 3 trials in combination with tezacaftor and ivacaftor prior to Trikafta (VX-445) selection",
+        "aliases": ["BAMOCAFTOR", "VX-659", "VX659"],
+    },
+    "GLPG1837": {
+        "brand": "GLPG1837",
+        "active_ingredients": ["GLPG1837"],
+        "molecular_codes": ["GLPG1837", "GLPG-1837"],
+        "mechanistic_class": "High-Potency CFTR Potentiator (allosteric gating enhancer)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "Galapagos",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "6O1V",
+        "target_mechanism": "Binds transmembrane helices TM8 and TM12 at a distinct allosteric pocket with ~2-3 fold higher maximal efficacy than ivacaftor on G551D; evaluated in SAPPHIRE and PELICAN Phase 2 trials",
+        "aliases": ["GLPG1837", "GLPG-1837"],
+    },
+    "ELX-02": {
+        "brand": "ELX-02",
+        "active_ingredients": ["elx-02"],
+        "molecular_codes": ["ELX-02", "ELX02", "NB124"],
+        "mechanistic_class": "Translational Readthrough-Inducing Agent (Class I nonsense suppressor / aminoglycoside derivative)",
+        "fda_nda": "investigational (IND)",
+        "sponsor": "Eloxx Pharmaceuticals",
+        "approval_year": None,
+        "spl_boxed_warning": "not stated (investigational agent / not FDA approved)",
+        "primary_pdb": "8EIQ",
+        "target_mechanism": "Eukaryotic ribosomal decoding center binder inducing translational readthrough of premature termination codons (G542X, W1282X, R553X) with low nephro/ototoxicity; evaluated in Phase 2 clinical trials (NCT04135495)",
+        "aliases": ["ELX-02", "ELX02", "NB124"],
+    },
 }
 
 # Curated benchmark Cryo-EM coordinate structures for human CFTR
@@ -3062,6 +3140,13 @@ def self_check() -> dict[str, Any]:
         ("ETI", "Trikafta"),
         ("Symdeko", "Symdeko"),
         ("Orkambi", "Orkambi"),
+        ("GLPG2222", "Galicaftor"),
+        ("galicaftor", "Galicaftor"),
+        ("QBW251", "Icenticaftor"),
+        ("icenticaftor", "Icenticaftor"),
+        ("VX-659", "Bamocaftor"),
+        ("GLPG1837", "GLPG1837"),
+        ("ELX-02", "ELX-02"),
     ]
     mod_pos_ok = True
     for q, expected_brand in mod_test_cases:
@@ -3207,9 +3292,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.json:
             print(json.dumps(res_mod, indent=2))
         else:
+            app_str = f"approved {res_mod['approval_year']}" if res_mod.get("approval_year") else "investigational / unapproved"
             print(
                 f"{res_mod['brand']} ({', '.join(res_mod['active_ingredients'])}; {', '.join(res_mod['molecular_codes'])}): "
-                f"{res_mod['mechanistic_class']} [{res_mod['fda_nda']}, approved {res_mod['approval_year']}]. "
+                f"{res_mod['mechanistic_class']} [{res_mod['fda_nda']}, {app_str}]. "
                 f"SPL Boxed Warning: {res_mod['spl_boxed_warning']}. Primary PDB: {res_mod['primary_pdb']}."
             )
         return 0
