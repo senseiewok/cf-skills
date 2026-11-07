@@ -436,6 +436,16 @@ class CheckRepoTests(unittest.TestCase):
         self.assertEqual(code, 1, text)
         self.assertTrue(any("catalog.yaml" in e and "copy_sha256" in e for e in errs), errs)
 
+    def test_a_skill_missing_from_readme_manual_skills_table_is_reported(self):
+        readme_with_tables = (
+            "# Skills\n\n## Skills\n\n| Skill | What it does | Status |\n| --- | --- | --- |\n"
+            "<!-- skills-table:start -->\n<!-- skills-table:end -->\n"
+        )
+        (self.root / "README.md").write_text(readme_with_tables, encoding="utf-8")
+        code, errs, text = self.errors()
+        self.assertEqual(code, 1, text)
+        self.assertTrue(any("README.md" in e and "alpha" in e and "## Skills" in e for e in errs), errs)
+
     # ---- output shape
     def test_errors_are_sorted_each_on_its_own_line_and_the_run_is_deterministic(self):
         self.edit(".claude/skills/alpha/SKILL.md", "references/notes.md", "references/gone.md")

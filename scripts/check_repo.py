@@ -502,6 +502,34 @@ def _check_catalog_lock(root: Path, errors: list):
 
 
 # ---------------------------------------------------------------------------
+# check 10: README manual ## Skills table parity with .claude/skills/
+# ---------------------------------------------------------------------------
+
+def _check_readme_organization(root: Path, skill_folders: list, errors: list):
+    readme = root / "README.md"
+    if not readme.is_file():
+        return
+    text = _read_text(readme)
+    if text is None or "<!-- skills-table:start -->" not in text:
+        return
+    before_gen = text.split("<!-- skills-table:start -->", 1)[0]
+    if "## Skills" not in before_gen:
+        return
+    skills_sec = before_gen.split("## Skills", 1)[1]
+    row_re = re.compile(r"^\|\s*\[`([^`]+)`\]\(\.claude/skills/([^/]+)/SKILL\.md\)")
+    listed = set()
+    for line in skills_sec.splitlines():
+        m = row_re.match(line.strip())
+        if m:
+            listed.add(m.group(2))
+    for sf in skill_folders:
+        if sf not in listed:
+            errors.append(
+                "ERROR README.md: skill folder '{}' is missing from the manual '## Skills' table".format(sf)
+            )
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -537,6 +565,8 @@ def main(argv):
     _check_eval_cases(root, errors)
 
     _check_catalog_lock(root, errors)
+
+    _check_readme_organization(root, skill_folders, errors)
 
     if errors:
         for e in sorted(errors):

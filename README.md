@@ -21,7 +21,7 @@ Reusable agent skills from the Sensei Ewok Research Lab, an independent open-sou
 
 > *A pattern punched once can be woven by hands that never met the one who punched it.*
 
-**Eight skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own license. Research, not medical advice.
+**Nine skills so far, an install helper, an index of what each skill can do, and notes on where every major agent looks for skills.** The catalog is CC0; each skill declares its own license. Research, not medical advice.
 
 **Using AI around cystic fibrosis care?** Five skills here help patients, families and care teams use an AI chat app more safely. You need no install: [Where to paste](docs/paste-ready.md) shows how to copy one into your chat app.
 
@@ -53,7 +53,7 @@ python cf-skills/scripts/install_skill.py --how cf-evidence-loop --agent claude
 
 ## How we check it
 
-- **The repository checks itself.** `python scripts/check_repo.py` checks every skill's frontmatter and links before a pull request, and fails an eval case that asks to rewrite or translate "this" text without giving it, unless a person has marked it `suspect`; `python scripts/make_index.py --check` fails when `skills-index.json`, `docs/skills-by-audience.md` or the README's audience table is out of date; `python scripts/make_tested_grid.py --check` recounts every result in [where each skill has been tried](docs/tested-with.md) from the judged rows in `docs/tested-with-runs/`; `python scripts/pin_catalog.py --check` verifies that `cf-evidence-loop/catalog.yaml` matches `catalog.lock.json`; `python -m unittest discover tests` runs the seven test suites covering `check_repo`, `install_skill`, `make_index`, `make_paste_ready`, `make_tested_grid`, `paste_ready` and `pin_catalog`.
+- **The repository checks itself.** `python scripts/check_repo.py` checks every skill's frontmatter, links, and README organization before a pull request, and fails an eval case that asks to rewrite or translate "this" text without giving it, unless a person has marked it `suspect`; `python scripts/make_index.py --check` fails when `skills-index.json`, `docs/skills-by-audience.md` or the README's audience table is out of date; `python scripts/make_tested_grid.py --check` recounts every result in [where each skill has been tried](docs/tested-with.md) from the judged rows in `docs/tested-with-runs/`; `python scripts/pin_catalog.py --check` verifies that `cf-evidence-loop/catalog.yaml` matches `catalog.lock.json`; `python -m unittest discover tests` runs the eight test suites covering `check_repo`, `install_skill`, `make_index`, `make_paste_ready`, `make_tested_grid`, `paste_ready`, `pin_catalog` and `sentinels_manifest`.
 - **Every pull request runs the tests.** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the five commands above, the site-seo-review tests (`python -m unittest discover -s tests` in its folder) and each skill's pytest suite (`python -m pytest -q tests` in its folder, with pinned `pytest`, `requests` and `PyYAML` on Python 3.13) on every pull request and every push to `main`; run the same commands locally before pushing.
 - **The evidence tool refuses before it reaches.** Its offline tests include at least one per network-conduct rule (`tests/test_conduct.py`); `tests/test_gate.py` fails any test that opens a socket, which is how it proves that forbidden, manual and unknown sources are refused before the network; `tests/test_hardening.py` holds the defects found in review, each reproduced by a failing test first; `tests/test_providers.py` runs each parser on a saved response captured 2026-10-04.
 - **A record is checkable.** The skill's [`SKILL.md`](.claude/skills/cf-evidence-loop/SKILL.md) lists the 47 commands (counted from `cli.py` on 2026-10-25), and [`references/NETWORK-RULES.md`](.claude/skills/cf-evidence-loop/references/NETWORK-RULES.md) lists the eleven network rules, each with the code that enforces it and its test. The website's [Evidence](https://senseiewok.ai/evidence/) page shows one record exactly as the tool wrote it.
@@ -90,6 +90,7 @@ Research, not medical advice. Nothing here is a medical device, a clinical tool 
 | [`cf-answer-check`](.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF one claim at a time against primary sources, and marks what could not be checked as unverified. | draft, in review |
 | [`cf-ai-tool-review`](.claude/skills/cf-ai-tool-review/SKILL.md) | A structured review of an AI tool before a CF care team or patient group uses it: every answer points to a document, demo or test, and people make the decision. | draft, in review |
 | [`cf-math-verify`](.claude/skills/cf-math-verify/SKILL.md) | An offline mathematical and biophysical invariant verifier: checks exact rational Buckingham Pi dimensional homogeneity, machine-precision complex-step derivatives (`h = 1e-30`), Lean 4 formal proof DAG acyclicity and zero-`sorryAx` cones, and 20 non-equilibrium statistical-mechanics bounds. | v0.1.0, offline tests, in review |
+| [`complex-systems-monograph`](.claude/skills/complex-systems-monograph/SKILL.md) | Structures and verifies interactive Living Executable Monographs with 4-Act narrative architectures, 4-Seat Council review, and portable `SKILL.md` companions. | v0.1.0, offline tests, in review |
 
 "In review" means the maintainer has not yet confirmed the license or read every file. Read a skill's `SKILL.md` and scripts before you let an agent run them.
 
@@ -174,8 +175,9 @@ scripts/make_index.py      builds skills-index.json, docs/skills-by-audience.md 
 scripts/make_paste_ready.py builds and checks the paste-ready boxes for the five CF care skills (--check for a pull request)
 scripts/make_tested_grid.py builds and checks docs/tested-with.md from docs/tested-with-runs/ (--check for a pull request)
 scripts/pin_catalog.py     pins and checks cf-evidence-loop/catalog.yaml against cf-research (--check for a pull request)
-scripts/check_repo.py      checks every skill's frontmatter and links (run it before a pull request)
-tests/                     unit tests for check_repo, install_skill, make_index, make_paste_ready, make_tested_grid, paste_ready and pin_catalog
+scripts/check_repo.py      checks every skill's frontmatter, links and README organization (run it before a pull request)
+tasks/                     sentinel manifest (tasks/sentinels.cf-skills.json)
+tests/                     unit tests for check_repo, install_skill, make_index, make_paste_ready, make_tested_grid, paste_ready, pin_catalog and sentinels_manifest
 ```
 
 Each skill has its own plugin entry in `.claude-plugin/marketplace.json` (each entry uses the repository root as its source and exposes one skill folder in its `skills` list, such as `cf-evidence-loop`, so enabling one plugin exposes that skill without enabling the others). That is a difference from the Anthropic repository, whose plugins bundle many skills. GitHub Copilot still reads `.claude/skills` directly without needing marketplace installation. A plugin brings the skill's scripts too; read them first. Once releases are tagged, pin an install with `/plugin marketplace add senseiewok/cf-skills#<tag>`.
