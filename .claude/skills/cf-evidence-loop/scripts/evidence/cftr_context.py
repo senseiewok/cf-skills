@@ -1776,6 +1776,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class I (premature termination codon in TMD2 TM8 / NMD substrate)",
         "aliases": ["Y913X", "p.Tyr913Ter", "p.Tyr913*", "c.2739C>A", "c.2739C>G"],
     },
+    "K370X": {
+        "allele": "K370X",
+        "hgvs_c": "c.1108A>T",
+        "hgvs_p": "p.Lys370Ter",
+        "codon": 370,
+        "exon": 8,
+        "domain": "TMD1-NBD1 linker",
+        "cftr_class": "Class I (premature termination codon in TMD1-NBD1 cytoplasmic linker / NMD substrate)",
+        "aliases": ["K370X", "p.Lys370Ter", "p.Lys370*", "c.1108A>T"],
+    },
+    "W514X": {
+        "allele": "W514X",
+        "hgvs_c": "c.1541G>A",
+        "hgvs_p": "p.Trp514Ter",
+        "codon": 514,
+        "exon": 11,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 / NMD substrate)",
+        "aliases": ["W514X", "p.Trp514Ter", "p.Trp514*", "c.1541G>A", "c.1542G>A"],
+    },
+    "W1145X": {
+        "allele": "W1145X",
+        "hgvs_c": "c.3434G>A",
+        "hgvs_p": "p.Trp1145Ter",
+        "codon": 1145,
+        "exon": 21,
+        "domain": "TMD2 (Transmembrane Domain 2)",
+        "cftr_class": "Class I (premature termination codon in TMD2 TM12 / NMD substrate)",
+        "aliases": ["W1145X", "p.Trp1145Ter", "p.Trp1145*", "c.3434G>A", "c.3435G>A"],
+    },
+    "W1274X": {
+        "allele": "W1274X",
+        "hgvs_c": "c.3821G>A",
+        "hgvs_p": "p.Trp1274Ter",
+        "codon": 1274,
+        "exon": 23,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 / NMD substrate)",
+        "aliases": ["W1274X", "p.Trp1274Ter", "p.Trp1274*", "c.3821G>A", "c.3822G>A"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2569,6 +2609,42 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Stevers et al., J Am Chem Soc 2018 (DOI: 10.1021/jacs.8b09618)",
     },
+    "5TF8": {
+        "pdb_id": "5TF8",
+        "title": "Nucleotide-binding domain 1 of the human cystic fibrosis transmembrane conductance regulator (CFTR) with dTTP",
+        "conformation": "Human NBD1 monomer with solubilizing mutations bound to dTTP",
+        "ligands": ["TTP", "MG"],
+        "resolution_angstrom": 1.86,
+        "method": "X-ray",
+        "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tf8/pdb)",
+    },
+    "5TFC": {
+        "pdb_id": "5TFC",
+        "title": "Nucleotide-binding domain 1 of the human cystic fibrosis transmembrane conductance regulator (CFTR) with GTP",
+        "conformation": "Human NBD1 monomer with solubilizing mutations bound to GTP",
+        "ligands": ["GTP", "MG"],
+        "resolution_angstrom": 1.92,
+        "method": "X-ray",
+        "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tfc/pdb)",
+    },
+    "5TFD": {
+        "pdb_id": "5TFD",
+        "title": "Nucleotide-binding domain 1 of the human cystic fibrosis transmembrane conductance regulator (CFTR) with CTP",
+        "conformation": "Human NBD1 monomer with solubilizing mutations bound to CTP",
+        "ligands": ["CTP", "MG"],
+        "resolution_angstrom": 1.89,
+        "method": "X-ray",
+        "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tfd/pdb)",
+    },
+    "5TFF": {
+        "pdb_id": "5TFF",
+        "title": "Nucleotide-binding domain 1 of the human cystic fibrosis transmembrane conductance regulator (CFTR) with UTP",
+        "conformation": "Human NBD1 monomer with solubilizing mutations bound to UTP",
+        "ligands": ["UTP", "MG"],
+        "resolution_angstrom": 1.89,
+        "method": "X-ray",
+        "reference": "Wang et al., Protein Data Bank 2016 (DOI: 10.2210/pdb5tff/pdb)",
+    },
 }
 
 
@@ -2894,6 +2970,7 @@ def self_check() -> dict[str, Any]:
         "3ISW", "5D2D", "6HEP",
         "5D3E", "5D3F", "5TF7",
         "5TSI", "6GJR", "6HEQ",
+        "5TF8", "5TFC", "5TFD", "5TFF",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
