@@ -372,6 +372,34 @@ class CftrContextTests(unittest.TestCase):
             self.assertEqual(res["brand"], expected_brand)
             self.assertEqual(res["molecular_codes"], expected_codes)
 
+    def test_investigational_modulators_lookups_and_ah4(self):
+        """Verify investigational CFTR modulators (galicaftor, icenticaftor, navocaftor, bamocaftor, GLPG1837, ELX-02) resolve correctly with strict AH-4 'not stated' boxed warnings."""
+        investigational_cases = [
+            ("galicaftor", "Galicaftor", ["GLPG2222", "ABBV-2222"]),
+            ("GLPG2222", "Galicaftor", ["GLPG2222", "ABBV-2222"]),
+            ("ABBV-2222", "Galicaftor", ["GLPG2222", "ABBV-2222"]),
+            ("icenticaftor", "Icenticaftor", ["QBW251", "QBW-251"]),
+            ("QBW251", "Icenticaftor", ["QBW251", "QBW-251"]),
+            ("navocaftor", "Navocaftor", ["ABBV-3067", "ABBV3067"]),
+            ("ABBV-3067", "Navocaftor", ["ABBV-3067", "ABBV3067"]),
+            ("bamocaftor", "Bamocaftor", ["VX-659", "VX659"]),
+            ("VX-659", "Bamocaftor", ["VX-659", "VX659"]),
+            ("GLPG1837", "GLPG1837", ["GLPG1837", "GLPG-1837"]),
+            ("ELX-02", "ELX-02", ["ELX-02", "ELX02", "NB124"]),
+            ("NB124", "ELX-02", ["ELX-02", "ELX02", "NB124"]),
+        ]
+        for query, expected_brand, expected_codes in investigational_cases:
+            res = cftr_context.lookup_cftr_modulator(query)
+            self.assertIsNotNone(res, f"Investigational modulator lookup failed for '{query}'")
+            self.assertEqual(res["brand"], expected_brand)
+            self.assertEqual(res["molecular_codes"], expected_codes)
+            self.assertTrue(
+                res["spl_boxed_warning"].startswith("not stated"),
+                f"Expected 'not stated' for investigational agent {expected_brand}, got {res['spl_boxed_warning']}",
+            )
+            self.assertIsNone(res["approval_year"], f"Expected None approval_year for {expected_brand}")
+            self.assertIn(res["primary_pdb"], cftr_context.CANONICAL_PDB_STRUCTURES)
+
     def test_modulator_boxed_warning_boundaries_ah4(self):
         """Verify strict openFDA SPL boxed warning vs not stated boundary per AH-4."""
         # TRIKAFTA and ALYFTREK carry verified DILI Boxed Warning
