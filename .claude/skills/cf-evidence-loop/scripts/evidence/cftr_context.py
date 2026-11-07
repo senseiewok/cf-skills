@@ -1656,6 +1656,46 @@ CANONICAL_ALLELES: dict[str, dict[str, Any]] = {
         "cftr_class": "Class II (misfolding & severe processing defect in NBD1 core causing ERAD)",
         "aliases": ["G480C", "p.Gly480Cys", "c.1438G>T"],
     },
+    "G458X": {
+        "allele": "G458X",
+        "hgvs_c": "c.1372G>T",
+        "hgvs_p": "p.Gly458Ter",
+        "codon": 458,
+        "exon": 10,
+        "domain": "NBD1 (Nucleotide-Binding Domain 1)",
+        "cftr_class": "Class I (premature termination codon in NBD1 core / NMD substrate)",
+        "aliases": ["G458X", "p.Gly458Ter", "p.Gly458*", "c.1372G>T"],
+    },
+    "Q685X": {
+        "allele": "Q685X",
+        "hgvs_c": "c.2053C>T",
+        "hgvs_p": "p.Gln685Ter",
+        "codon": 685,
+        "exon": 14,
+        "domain": "RD (Regulatory Domain)",
+        "cftr_class": "Class I (premature termination codon in Regulatory Domain / NMD substrate)",
+        "aliases": ["Q685X", "p.Gln685Ter", "p.Gln685*", "c.2053C>T"],
+    },
+    "L1258X": {
+        "allele": "L1258X",
+        "hgvs_c": "c.3773T>A",
+        "hgvs_p": "p.Leu1258Ter",
+        "codon": 1258,
+        "exon": 22,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 core / NMD substrate)",
+        "aliases": ["L1258X", "p.Leu1258Ter", "p.Leu1258*", "c.3773T>A"],
+    },
+    "Q1382X": {
+        "allele": "Q1382X",
+        "hgvs_c": "c.4144C>T",
+        "hgvs_p": "p.Gln1382Ter",
+        "codon": 1382,
+        "exon": 24,
+        "domain": "NBD2 (Nucleotide-Binding Domain 2)",
+        "cftr_class": "Class I (premature termination codon in NBD2 C-terminal subdomain / NMD substrate)",
+        "aliases": ["Q1382X", "p.Gln1382Ter", "p.Gln1382*", "c.4144C>T"],
+    },
 }
 
 # Curated approved & investigational CFTR modulators with active ingredients, NDAs, and AH-4 boxed warning boundaries
@@ -2368,6 +2408,33 @@ CANONICAL_PDB_STRUCTURES: dict[str, dict[str, Any]] = {
         "method": "X-ray",
         "reference": "Thibodeau et al., Nat Struct Mol Biol 2005 (DOI: 10.1038/nsmb922)",
     },
+    "3ISW": {
+        "pdb_id": "3ISW",
+        "title": "Crystal structure of filamin-A immunoglobulin-like repeat 21 bound to an N-terminal peptide of CFTR",
+        "conformation": "Filamin-A IgFLNa21 domain bound to CFTR N-terminal cytoplasmic peptide",
+        "ligands": [],
+        "resolution_angstrom": 2.80,
+        "method": "X-ray",
+        "reference": "Smith et al., J Biol Chem 2010 (DOI: 10.1074/jbc.M109.080911)",
+    },
+    "5D2D": {
+        "pdb_id": "5D2D",
+        "title": "Crystal structure of human 14-3-3 zeta in complex with CFTR R-domain peptide pS753-pS768",
+        "conformation": "14-3-3 zeta bound to CFTR doubly phosphorylated R-domain peptide (pS753/pS768)",
+        "ligands": [],
+        "resolution_angstrom": 2.10,
+        "method": "X-ray",
+        "reference": "Stevers et al., Proc Natl Acad Sci USA 2016 (DOI: 10.1073/pnas.1518765113)",
+    },
+    "6HEP": {
+        "pdb_id": "6HEP",
+        "title": "Crystal structure of human 14-3-3 beta in complex with CFTR R-domain peptide pS753-pS768",
+        "conformation": "14-3-3 beta bound to CFTR doubly phosphorylated R-domain peptide (pS753/pS768)",
+        "ligands": [],
+        "resolution_angstrom": 1.86,
+        "method": "X-ray",
+        "reference": "Stevers et al., J Am Chem Soc 2018 (DOI: 10.1021/jacs.8b09618)",
+    },
 }
 
 
@@ -2690,6 +2757,7 @@ def self_check() -> dict[str, Any]:
         "1R0W", "1R0Y", "1R0Z", "6GJS", "6GJU", "6GK4", "6GKD", "1I92", "7QI1",
         "6RQR", "2LOB", "4K75",
         "6RQU", "1K6C", "2BTO",
+        "3ISW", "5D2D", "6HEP",
     ]
     pdb_ok = all(lookup_pdb_structure(p) is not None for p in pdb_pos_cases)
     pdb_neg_ok = lookup_pdb_structure("9999") is None and lookup_pdb_structure("") is None
