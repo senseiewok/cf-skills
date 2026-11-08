@@ -377,6 +377,16 @@ class CftrContextTests(unittest.TestCase):
             ("dornase alfa", "Pulmozyme", ["rhDNase", "dornase alfa"]),
             ("Bronchitol", "Bronchitol", ["mannitol", "D-mannitol"]),
             ("mannitol", "Bronchitol", ["mannitol", "D-mannitol"]),
+            ("TOBI", "TOBI", ["tobramycin", "nebcin", "TOBI Podhaler"]),
+            ("tobramycin", "TOBI", ["tobramycin", "nebcin", "TOBI Podhaler"]),
+            ("Cayston", "Cayston", ["aztreonam lysine", "AZLI"]),
+            ("aztreonam", "Cayston", ["aztreonam lysine", "AZLI"]),
+            ("Colobreathe", "Colobreathe", ["CMS", "colistin", "colistimethate"]),
+            ("colistin", "Colobreathe", ["CMS", "colistin", "colistimethate"]),
+            ("Hyper-Sal", "Hyper-Sal", ["7% NaCl", "hypertonic saline"]),
+            ("hypertonic saline", "Hyper-Sal", ["7% NaCl", "hypertonic saline"]),
+            ("Creon", "Creon", ["pancrelipase delayed-release", "PERT"]),
+            ("pancrelipase", "Creon", ["pancrelipase delayed-release", "PERT"]),
         ]
         for query, expected_brand, expected_codes in test_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -764,13 +774,18 @@ class CftrContextTests(unittest.TestCase):
                 self.assertGreater(info["resolution_angstrom"], 0.0)
 
     def test_landmark_pdb_lookups(self):
-        """Verify lookup of landmark CFTR and therapeutic structures (8EIP, 8EIW, 1DNK, 2Z57, 6WTA)."""
+        """Verify lookup of landmark CFTR and therapeutic structures (8EIP, 8EIW, 1DNK, 2Z57, 6WTA, 1J7T, 1FR6, 5L3J, 1H4X, 6WTC)."""
         landmark_cases = [
             ("8EIP", "Cryo-EM", 2.90),
             ("8EIW", "Cryo-EM", 3.00),
             ("1DNK", "X-ray", 2.80),
             ("2Z57", "X-ray", 2.10),
             ("6WTA", "Cryo-EM", 3.40),
+            ("1J7T", "X-ray", 2.54),
+            ("1FR6", "X-ray", 2.10),
+            ("5L3J", "X-ray", 2.50),
+            ("1H4X", "X-ray", 2.80),
+            ("6WTC", "Cryo-EM", 3.60),
         ]
         for pdb_id, expected_method, expected_res in landmark_cases:
             res = cftr_context.lookup_pdb_structure(pdb_id)

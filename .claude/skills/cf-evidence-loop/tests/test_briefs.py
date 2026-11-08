@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from evidence import briefs, cli
+from evidence import briefs, cli, cftr_context
 from evidence.record import Status
 
 from test_conduct import FakeResponse, Script, make_client, no_sleep  # noqa: F401  (shared fakes and fixture)
@@ -417,7 +417,7 @@ def test_cli_cftr_structure_subcommand():
         rc = cli.main(["cftr-pdb", "--list"])
         assert rc == 0
         val = sys.stdout.getvalue()
-        assert "Canonical CFTR Structures (127 structures indexed)" in val
+        assert f"Canonical CFTR Structures ({len(cftr_context.CANONICAL_PDB_STRUCTURES)} structures indexed)" in val
         assert "6MSL" in val
         assert "1R0V" in val
         assert "7SVC" in val
@@ -492,6 +492,11 @@ def test_cli_cftr_structure_subcommand():
         assert "2LW0" in val
         assert "4WZ8" in val
         assert "2PZD" in val
+        assert "1J7T" in val
+        assert "1FR6" in val
+        assert "5L3J" in val
+        assert "1H4X" in val
+        assert "6WTC" in val
     finally:
         sys.stdout = old_stdout
 
