@@ -373,6 +373,10 @@ class CftrContextTests(unittest.TestCase):
             ("VX-121", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
             ("deutivacaftor", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
             ("VX-561", "Alyftrek", ["VX-121", "VX-661", "VX-561"]),
+            ("Pulmozyme", "Pulmozyme", ["rhDNase", "dornase alfa"]),
+            ("dornase alfa", "Pulmozyme", ["rhDNase", "dornase alfa"]),
+            ("Bronchitol", "Bronchitol", ["mannitol", "D-mannitol"]),
+            ("mannitol", "Bronchitol", ["mannitol", "D-mannitol"]),
         ]
         for query, expected_brand, expected_codes in test_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -441,6 +445,13 @@ class CftrContextTests(unittest.TestCase):
             ("4D-710", "4D-710", ["4D-710", "4D710", "AEROW"]),
             ("BI 1265162", "BI 1265162", ["BI 1265162", "BI-1265162", "BI1265162"]),
             ("ARO-ENaC", "ARO-ENaC", ["ARO-ENaC", "AROENaC"]),
+            ("KB407", "KB407", ["KB407", "KB-407", "Kresnik"]),
+            ("KB-407", "KB407", ["KB407", "KB-407", "Kresnik"]),
+            ("Kresnik", "KB407", ["KB407", "KB-407", "Kresnik"]),
+            ("MRT5005", "MRT5005", ["MRT5005", "MRT-5005"]),
+            ("MRT-5005", "MRT5005", ["MRT5005", "MRT-5005"]),
+            ("SPX-101", "SPX-101", ["SPX-101", "SPX101"]),
+            ("SPX101", "SPX-101", ["SPX-101", "SPX101"]),
         ]
         for query, expected_brand, expected_codes in investigational_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -627,7 +638,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (122 structures indexed)", val)
+            self.assertIn(f"Canonical CFTR Structures ({len(cftr_context.CANONICAL_PDB_STRUCTURES)} structures indexed)", val)
             self.assertIn("6MSL", val)
             self.assertIn("1R0V", val)
             self.assertIn("7SVC", val)
@@ -736,6 +747,37 @@ class CftrContextTests(unittest.TestCase):
         # Negative control
         rc_neg = cli.main(["cftr-structure", "0000"])
         self.assertEqual(rc_neg, 1)
+
+    def test_pdb_structures_catalog_integrity(self):
+        """Verify that canonical PDB structures catalog contains at least 100 entries with complete Cryo-EM/X-ray metadata."""
+        pdbs = cftr_context.CANONICAL_PDB_STRUCTURES
+        self.assertGreaterEqual(len(pdbs), 100)
+        for pdb_id, info in pdbs.items():
+            self.assertEqual(pdb_id, info["pdb_id"])
+            self.assertIn("title", info)
+            self.assertIn("conformation", info)
+            self.assertIn("ligands", info)
+            self.assertIn("method", info)
+            self.assertIn("reference", info)
+            if info["resolution_angstrom"] is not None:
+                self.assertIsInstance(info["resolution_angstrom"], (int, float))
+                self.assertGreater(info["resolution_angstrom"], 0.0)
+
+    def test_landmark_pdb_lookups(self):
+        """Verify lookup of landmark CFTR and therapeutic structures (8EIP, 8EIW, 1DNK, 2Z57, 6WTA)."""
+        landmark_cases = [
+            ("8EIP", "Cryo-EM", 2.90),
+            ("8EIW", "Cryo-EM", 3.00),
+            ("1DNK", "X-ray", 2.80),
+            ("2Z57", "X-ray", 2.10),
+            ("6WTA", "Cryo-EM", 3.40),
+        ]
+        for pdb_id, expected_method, expected_res in landmark_cases:
+            res = cftr_context.lookup_pdb_structure(pdb_id)
+            self.assertIsNotNone(res, f"PDB lookup failed for {pdb_id}")
+            self.assertEqual(res["pdb_id"], pdb_id)
+            self.assertEqual(res["method"], expected_method)
+            self.assertEqual(res["resolution_angstrom"], expected_res)
 
     def test_audit_hook_zero_network_zero_subprocess(self):
         """Verify that looking up CFTR context triggers zero network sockets or subprocess calls."""
