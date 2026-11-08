@@ -462,6 +462,14 @@ class CftrContextTests(unittest.TestCase):
             ("MRT-5005", "MRT5005", ["MRT5005", "MRT-5005"]),
             ("SPX-101", "SPX-101", ["SPX-101", "SPX101"]),
             ("SPX101", "SPX-101", ["SPX-101", "SPX101"]),
+            ("SPL29", "SPL29", ["SPL29", "SPL-29"]),
+            ("SPL-29", "SPL29", ["SPL29", "SPL-29"]),
+            ("RCT-2100", "RCT-2100", ["RCT-2100", "RCT2100"]),
+            ("SPIRO-2101", "SPIRO-2101", ["SPIRO-2101", "SPIRO2101"]),
+            ("AZD5634", "AZD5634", ["AZD5634", "AZD-5634"]),
+            ("AZD-5634", "AZD5634", ["AZD5634", "AZD-5634"]),
+            ("ETD002", "ETD002", ["ETD002", "ETD-002"]),
+            ("ETD-002", "ETD002", ["ETD002", "ETD-002"]),
         ]
         for query, expected_brand, expected_codes in investigational_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -751,6 +759,11 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("1CKX", val)
             self.assertIn("1CKY", val)
             self.assertIn("1CKZ", val)
+            self.assertIn("8UBQ", val)
+            self.assertIn("7XDE", val)
+            self.assertIn("8K78", val)
+            self.assertIn("8K79", val)
+            self.assertIn("6UTG", val)
         finally:
             sys.stdout = old_stdout
 
@@ -786,6 +799,11 @@ class CftrContextTests(unittest.TestCase):
             ("5L3J", "X-ray", 2.50),
             ("1H4X", "X-ray", 2.80),
             ("6WTC", "Cryo-EM", 3.60),
+            ("8UBQ", "Cryo-EM", 2.90),
+            ("7XDE", "Cryo-EM", 3.00),
+            ("8K78", "Cryo-EM", 2.80),
+            ("8K79", "Cryo-EM", 2.60),
+            ("6UTG", "Cryo-EM", 3.20),
         ]
         for pdb_id, expected_method, expected_res in landmark_cases:
             res = cftr_context.lookup_pdb_structure(pdb_id)
