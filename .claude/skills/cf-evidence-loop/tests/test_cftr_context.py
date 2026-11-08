@@ -809,6 +809,11 @@ class CftrContextTests(unittest.TestCase):
             ("8UBO", "Cryo-EM", 3.00),
             ("7UID", "Cryo-EM", 3.20),
             ("8DXT", "Cryo-EM", 3.10),
+            ("6B42", "Cryo-EM", 3.20),
+            ("7OSK", "Cryo-EM", 3.30),
+            ("6U70", "Cryo-EM", 3.00),
+            ("8V80", "Cryo-EM", 3.10),
+            ("6S7O", "Cryo-EM", 3.40),
         ]
         for pdb_id, expected_method, expected_res in landmark_cases:
             res = cftr_context.lookup_pdb_structure(pdb_id)
@@ -825,6 +830,21 @@ class CftrContextTests(unittest.TestCase):
             ("OMKO1", "OMKO1", "Preclinical / Compassionate Use"),
             ("KB408", "KB408", "Phase 1 NCT06540638 / IND-enabling"),
             ("AR-501", "AR-501", "Phase 2a NCT03669614 / Orphan Drug"),
+        ]
+        for query, expected_brand, expected_nda_substr in therapy_cases:
+            res = cftr_context.lookup_cftr_modulator(query)
+            self.assertIsNotNone(res, f"Modulator/therapy lookup failed for {query}")
+            self.assertEqual(res["brand"], expected_brand)
+            self.assertIn(expected_nda_substr, res["fda_nda"])
+
+    def test_investigational_antiinflammatory_and_mucus_therapies_lookup(self):
+        """Verify lookup of approved liposomal and investigational anti-inflammatory/mucolytic agents (ARIKAYCE, LAU-7b, LONODELESTAT, SNSP002, BRENSOCATIB)."""
+        therapy_cases = [
+            ("ARIKAYCE", "ARIKAYCE", "NDA 207356"),
+            ("LAU-7b", "LAU-7b", "Phase 2 APPLAUD NCT03265288"),
+            ("LONODELESTAT", "LONODELESTAT", "Phase 1b/2a NCT03748199"),
+            ("SNSP002", "SNSP002", "Phase 1/2 NCT04456959"),
+            ("BRENSOCATIB", "BRENSOCATIB", "Phase 3 ASPEN NCT04594369"),
         ]
         for query, expected_brand, expected_nda_substr in therapy_cases:
             res = cftr_context.lookup_cftr_modulator(query)

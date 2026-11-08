@@ -5,7 +5,7 @@
     "sources/catalog.yaml": "535418ca59e84181cca608679493c4a4204105fbacdc57b4a4a5057065dbc75f"
   },
   "pinned_on": "2026-11-08",
-  "research_commit": "66f820c3be9a8f61d59349a6bd3ad637da32a22a",
+  "research_commit": "0ba65ef74db67f478f6792a90e5352c467fb5016",
   "schema_version": 1,
   "sources": 330
 }
