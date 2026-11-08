@@ -804,6 +804,11 @@ class CftrContextTests(unittest.TestCase):
             ("8K78", "Cryo-EM", 2.80),
             ("8K79", "Cryo-EM", 2.60),
             ("6UTG", "Cryo-EM", 3.20),
+            ("6RBF", "Cryo-EM", 3.80),
+            ("8UBP", "Cryo-EM", 3.10),
+            ("8UBO", "Cryo-EM", 3.00),
+            ("7UID", "Cryo-EM", 3.20),
+            ("8DXT", "Cryo-EM", 3.10),
         ]
         for pdb_id, expected_method, expected_res in landmark_cases:
             res = cftr_context.lookup_pdb_structure(pdb_id)
@@ -811,6 +816,21 @@ class CftrContextTests(unittest.TestCase):
             self.assertEqual(res["pdb_id"], pdb_id)
             self.assertEqual(res["method"], expected_method)
             self.assertEqual(res["resolution_angstrom"], expected_res)
+
+    def test_investigational_phage_and_curative_therapies_lookup(self):
+        """Verify lookup of investigational phage, gene therapy, and antimicrobial agents (BX004, AP-PA02, OMKO1, KB408, AR-501)."""
+        therapy_cases = [
+            ("BX004", "BX004", "Phase 1b/2a NCT05010577"),
+            ("AP-PA02", "AP-PA02", "Phase 1b/2a SWARM-P.a. NCT04596319"),
+            ("OMKO1", "OMKO1", "Preclinical / Compassionate Use"),
+            ("KB408", "KB408", "Phase 1 NCT06540638 / IND-enabling"),
+            ("AR-501", "AR-501", "Phase 2a NCT03669614 / Orphan Drug"),
+        ]
+        for query, expected_brand, expected_nda_substr in therapy_cases:
+            res = cftr_context.lookup_cftr_modulator(query)
+            self.assertIsNotNone(res, f"Modulator/therapy lookup failed for {query}")
+            self.assertEqual(res["brand"], expected_brand)
+            self.assertIn(expected_nda_substr, res["fda_nda"])
 
     def test_audit_hook_zero_network_zero_subprocess(self):
         """Verify that looking up CFTR context triggers zero network sockets or subprocess calls."""
