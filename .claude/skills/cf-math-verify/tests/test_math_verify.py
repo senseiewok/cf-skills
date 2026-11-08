@@ -103,7 +103,7 @@ class MathVerifyTests(unittest.TestCase):
             payload = json.loads(out_file.read_text(encoding="utf-8"))
             self.assertTrue(payload["passed"])
             self.assertEqual(len(payload["presets"]), len(math_verify.CANONICAL_PRESETS))
-            self.assertGreaterEqual(len(payload["presets"]), 116)
+            self.assertGreaterEqual(len(payload["presets"]), 126)
 
     def test_thermo_bounds_g551d_preset_passes(self):
         res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["g551d"])
@@ -553,6 +553,31 @@ class MathVerifyTests(unittest.TestCase):
 
     def test_thermo_bounds_2183aag_preset_passes(self):
         res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["2183aag"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_1161delc_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["1161delc"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_2184insa_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["2184insa"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_3876dela_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["3876dela"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_2143delt_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["2143delt"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_2347delg_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["2347delg"])
         self.assertTrue(res["passed"], res)
         self.assertEqual(res["findings"], [])
 
