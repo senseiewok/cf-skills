@@ -417,7 +417,8 @@ def test_cli_cftr_structure_subcommand():
         rc = cli.main(["cftr-pdb", "--list"])
         assert rc == 0
         val = sys.stdout.getvalue()
-        assert "Canonical CFTR Structures (122 structures indexed)" in val
+        assert f"Canonical CFTR Structures ({len(briefs.CFTR_STRUCTURES)} structures indexed)" in val
+        assert len(briefs.CFTR_STRUCTURES) >= 127
         assert "6MSL" in val
         assert "1R0V" in val
         assert "7SVC" in val
