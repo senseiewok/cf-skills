@@ -69,7 +69,7 @@ Exit codes: `0` worksheet written, `1` no candidate claims found (this does not 
 
 **What it cannot do.** It finds sentences worth checking. It checks nothing. It reads English only. It misses claims made without numbers, names or the listed words, and it also lists some sentences that claim nothing ("Keep it somewhere safe"). Its drug list is for spotting names only: being on it says nothing about approval or use.
 
-People who have the cf-research repository can run its claims checker (`tools/claims/check_claims.py`) on the filled worksheet. It fails when a quote is not exact, a number is not in the quote, or a widening word has no scope. It still cannot prove that a quote supports the sentence beside it; a person reads each pair.
+People who have the cf-research repository can run its claims checker (`../cf-research/tools/claims/check_claims.py`) on the filled worksheet. It fails when a quote is not exact, a number is not in the quote, or a widening word has no scope. It still cannot prove that a quote supports the sentence beside it; a person reads each pair.
 
 ## Files
 
