@@ -437,6 +437,10 @@ class CftrContextTests(unittest.TestCase):
             ("ETD-001", "ETD001", ["ETD001"]),
             ("QR-010", "QR-010", ["QR-010", "QR010"]),
             ("eluforsen", "QR-010", ["QR-010", "QR010"]),
+            ("ARCT-032", "ARCT-032", ["ARCT-032", "ARCT032", "LUNAR-CF"]),
+            ("4D-710", "4D-710", ["4D-710", "4D710", "AEROW"]),
+            ("BI 1265162", "BI 1265162", ["BI 1265162", "BI-1265162", "BI1265162"]),
+            ("ARO-ENaC", "ARO-ENaC", ["ARO-ENaC", "AROENaC"]),
         ]
         for query, expected_brand, expected_codes in investigational_cases:
             res = cftr_context.lookup_cftr_modulator(query)
@@ -486,12 +490,23 @@ class CftrContextTests(unittest.TestCase):
             "9DW9", "9DW5", "9DW8", "9DW7", "8EIJ", "8EIK", "7SVE", "7SVF",
             "8FZQ", "8V7Z", "8V81",
             "6VPC", "7Z4L", "6WTH", "6BQN", "6QP6",
+            "5OYB", "7L1V", "6OKD",
         ]
         for p in pdbs:
             res = cftr_context.lookup_pdb_structure(p)
             self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
             self.assertEqual(res["pdb_id"], p)
             self.assertEqual(res["method"], "Cryo-EM")
+            self.assertIsInstance(res["resolution_angstrom"], float)
+            self.assertIn("reference", res)
+
+        # X-ray landmark structures
+        xray_pdbs = ["6KO4", "4N0F"]
+        for p in xray_pdbs:
+            res = cftr_context.lookup_pdb_structure(p)
+            self.assertIsNotNone(res, f"PDB lookup failed for '{p}'")
+            self.assertEqual(res["pdb_id"], p)
+            self.assertEqual(res["method"], "X-ray")
             self.assertIsInstance(res["resolution_angstrom"], float)
             self.assertIn("reference", res)
 
@@ -612,7 +627,7 @@ class CftrContextTests(unittest.TestCase):
             rc = cli.main(["cftr-pdb", "--list"])
             self.assertEqual(rc, 0)
             val = sys.stdout.getvalue()
-            self.assertIn("Canonical CFTR Structures (117 structures indexed)", val)
+            self.assertIn("Canonical CFTR Structures (122 structures indexed)", val)
             self.assertIn("6MSL", val)
             self.assertIn("1R0V", val)
             self.assertIn("7SVC", val)
@@ -638,6 +653,11 @@ class CftrContextTests(unittest.TestCase):
             self.assertIn("2LW0", val)
             self.assertIn("4WZ8", val)
             self.assertIn("2PZD", val)
+            self.assertIn("5OYB", val)
+            self.assertIn("7L1V", val)
+            self.assertIn("6KO4", val)
+            self.assertIn("6OKD", val)
+            self.assertIn("4N0F", val)
             self.assertIn("9DW9", val)
             self.assertIn("9DW5", val)
             self.assertIn("8EIJ", val)
