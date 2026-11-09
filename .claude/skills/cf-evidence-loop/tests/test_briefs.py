@@ -502,6 +502,11 @@ def test_cli_cftr_structure_subcommand():
         assert "8K78" in val
         assert "8K79" in val
         assert "6UTG" in val
+        assert "7SVB" in val
+        assert "8EIL" in val
+        assert "8EIT" in val
+        assert "7XDF" in val
+        assert "6B43" in val
     finally:
         sys.stdout = old_stdout
 

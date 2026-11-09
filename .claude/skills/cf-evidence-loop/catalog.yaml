@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-10-31
+updated: 2026-11-09
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1534,6 +1534,293 @@ sources:
       chloride as Cl with a minus sign; here it is ASCII. The licence version was not looked up elsewhere and is not guessed.
       Robots.txt and terms of the publisher's site were not read.
       Published as Sousa M et al. PLoS One 2012;7(10):e47708.
+
+  # ---------------------------------------------------------------- single-channel kinetics and stochastic-thermodynamics sources (admitted 2026-11-09)
+  # Admitted before any text is written, for the proposed leap essay L.01 (the thermodynamic arrow in CFTR gating) and the
+  # Round 114 projection caveat. None of them backs a public sentence yet, so `site_use` says what each is admitted for.
+  # Identifiers were resolved on Crossref and Europe PMC on the `accessed` date; Scite tallies sit in sources/cite-check-ledger.jsonl.
+  # `claim_label: verified` only where the text was read (the 2010 PNAS paper, in part); every other entry is unverified until read.
+  # Theory papers (Gaspard, Roldan, Martinez, Skinner, Barato, Gingrich) are not CF literature and never ground a clinical statement.
+
+  - id: csanady-2010-pnas-burst-coupling
+    title: Strict coupling between CFTR's catalytic cycle and gating of its Cl- ion pore revealed by distributions of open channel burst durations
+    publisher: National Academy of Sciences
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1073/pnas.0911061107
+    url: null
+    doi: 10.1073/pnas.0911061107
+    pmid: '19966305'
+    pmcid: PMC2824283
+    licence: not stated in the text read (the PMC page carries no Creative Commons statement; the publisher's standard terms apply)
+    accessed: 2026-11-08
+    site_use: >-
+      None yet. The primary measurement behind the Round 114 projection caveat in landscape/mission-grounding-2026-11-07.md
+      and the proposed leap essay L.01 (the arrow inside the channel). No public sentence rests on it.
+    claim_label: verified
+    notes: >-
+      Read from the PMC HTML page on 2026-11-08 (about half the article; Methods equations, SI and figure-image numbers not
+      read). Verified from that text: the wild-type open-burst duration distribution at 2 mM ATP (1,441 bursts) is peaked,
+      not monotonic, and the irreversible four-state cycle (scheme 2, k-1 fixed to zero) fits it better than the equilibrium
+      closed-open model (log-likelihood ratio 18.01, P = 2e-9); the hydrolysis-deficient NBD2 Walker B mutant D1370N gives a
+      monotonic distribution that the cycle fits no better (coupling ratio 0 percent); NBD1 Walker A mutant K464A about 21
+      percent coupling. Mean burst durations are in figures not read. Scite tally in sources/cite-check-ledger.jsonl.
+      Robots.txt and terms of the publisher's site were not read. Published as Csanady L, Vergani P, Gadsby DC. Proc Natl
+      Acad Sci USA 2010;107(3):1241-1246.
+
+  - id: csanady-2019-physrev-cftr-review
+    title: Structure, Gating, and Regulation of the CFTR Anion Channel
+    publisher: American Physiological Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1152/physrev.00007.2018
+    url: null
+    doi: 10.1152/physrev.00007.2018
+    pmid: '30516439'
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-08
+    site_use: >-
+      None yet. Review of CFTR structure and gating admitted as the orientation source for leap essay L.01; a review, so
+      never the primary source of a number.
+    claim_label: unverified
+    notes: >-
+      Only the abstract (through the Europe PMC API catalogued above) and the Crossref record were read on 2026-11-08; the
+      full text was not. Not in PubMed Central. Any statement taken from it must be traced to the primary paper it cites
+      before use. Scite tally in sources/cite-check-ledger.jsonl. Published as Csanady L, Vergani P, Gadsby DC. Physiol Rev
+      2019;99(1):707-738.
+
+  - id: csanady-2006-jgp-irreversible-cycle
+    title: "Thermodynamics of CFTR Channel Gating: A Spreading Conformational Change Initiates an Irreversible Gating Cycle"
+    publisher: Rockefeller University Press
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1085/jgp.200609558
+    url: null
+    doi: 10.1085/jgp.200609558
+    pmid: '17043148'
+    pmcid: PMC2151586
+    licence: CC BY-NC-SA according to the Europe PMC record (version not stated there); the article's own licence statement was not read
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Earlier single-channel evidence that CFTR gating runs as an irreversible cycle, admitted for leap essay
+      L.01.
+    claim_label: unverified
+    notes: >-
+      Identifiers resolved on Crossref and Europe PMC on 2026-11-09 (open access in PMC); the full text was not read, so no
+      statement from it is verified yet. Scite tally in sources/cite-check-ledger.jsonl. Robots.txt and terms of the
+      publisher's site were not read. Published as Csanady L, Nairn AC, Gadsby DC. J Gen Physiol 2006;128(5):523-533.
+
+  - id: vergani-2005-nature-nbd-dimerization
+    title: CFTR channel opening by ATP-driven tight dimerization of its nucleotide-binding domains
+    publisher: Nature Portfolio
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1038/nature03313
+    url: null
+    doi: 10.1038/nature03313
+    pmid: '15729345'
+    pmcid: PMC2756053
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. The NBD dimerization step of the gating cycle, admitted for leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Identifiers resolved on Crossref and Europe PMC on 2026-11-09 (author manuscript in PMC, not flagged open access); the
+      text was not read. Scite tally in sources/cite-check-ledger.jsonl. Robots.txt and terms of the publisher's site were
+      not read. Published as Vergani P, Lockless SW, Nairn AC, Gadsby DC. Nature 2005;433(7028):876-880.
+
+  - id: jih-hwang-2013-pnas-vx770-decoupling
+    title: Vx-770 potentiates CFTR function by promoting decoupling between the gating cycle and ATP hydrolysis cycle
+    publisher: National Academy of Sciences
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1073/pnas.1215982110
+    url: null
+    doi: 10.1073/pnas.1215982110
+    pmid: '23440202'
+    pmcid: PMC3600496
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. The disputed claim that the potentiator ivacaftor decouples gating from hydrolysis, admitted so that leap
+      essay L.01 can cite the debate rather than assert a side.
+    claim_label: unverified
+    notes: >-
+      Identifiers resolved on Crossref and Europe PMC on 2026-11-09; the text was not read. Scite shows 1 contrasting
+      citation statement; the decoupling interpretation is disputed in the literature, so the essay must present it as one
+      side of an open question and never as a statement about how the medicine works for a person. Scite tally in
+      sources/cite-check-ledger.jsonl. Robots.txt and terms of the publisher's site were not read. Published as Jih KY,
+      Hwang TC. Proc Natl Acad Sci USA 2013;110(11):4404-4409.
+
+  - id: sorum-2015-cell-pore-opening-timing
+    title: Timing of CFTR Pore Opening and Structure of Its Transition State
+    publisher: Elsevier (Cell Press)
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1016/j.cell.2015.09.052
+    url: null
+    doi: 10.1016/j.cell.2015.09.052
+    pmid: '26496611'
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Transition-state analysis of the opening step, admitted for leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Identifiers resolved on Crossref and Europe PMC on 2026-11-09; not in PubMed Central; the text was not read. Scite
+      tally in sources/cite-check-ledger.jsonl. Robots.txt and terms of the publisher's site were not read. Published as
+      Sorum B, Czege D, Csanady L. Cell 2015;163(3):724-733.
+
+  - id: gaspard-2004-jstatphys-time-reversed-entropy
+    title: Time-Reversed Dynamical Entropy and Irreversibility in Markovian Random Processes
+    publisher: Springer
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1007/s10955-004-3455-1
+    url: null
+    doi: 10.1007/s10955-004-3455-1
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. The identity between entropy production and the forward-versus-reversed path divergence of a Markov jump
+      process, cited by tools/discovery/round114_gaspard_time_reversal_entropy.py and leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Theory paper, not CF literature. Resolved on Crossref on 2026-11-09; no PubMed record; the text was not read here. The
+      identity holds for the full state trajectory; on a recorded open/closed projection the divergence is only a lower
+      bound (see the 2010 PNAS entry and the 2019 and 2021 entries below). Scite tally in sources/cite-check-ledger.jsonl.
+      Published as Gaspard P. J Stat Phys 2004;117(3-4):599-615.
+
+  - id: roldan-parrondo-2010-prl-dissipation-trajectories
+    title: Estimating Dissipation from Single Stationary Trajectories
+    publisher: American Physical Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1103/PhysRevLett.105.150607
+    url: null
+    doi: 10.1103/PhysRevLett.105.150607
+    pmid: '21230886'
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Estimating the entropy-production lower bound from a single recorded trajectory, admitted for leap essay
+      L.01's dwell-pair estimator.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09; the text was not read. Scite tally in
+      sources/cite-check-ledger.jsonl. Published as Roldan E, Parrondo JMR. Phys Rev Lett 2010;105(15):150607.
+
+  - id: martinez-2019-natcommun-broken-detailed-balance
+    title: Inferring broken detailed balance in the absence of observable currents
+    publisher: Nature Portfolio
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1038/s41467-019-11051-w
+    url: null
+    doi: 10.1038/s41467-019-11051-w
+    pmid: '31387988'
+    pmcid: PMC6684597
+    licence: CC BY 4.0 according to the Crossref licence link and the Europe PMC record; the article's own licence statement was not read
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Detecting broken detailed balance from waiting-time asymmetries when no current is observable, admitted for
+      leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09 (open access in PMC); the text was not
+      read. Scite tally in sources/cite-check-ledger.jsonl. Published as Martinez IA, Bisker G, Horowitz JM, Parrondo JMR.
+      Nat Commun 2019;10:3542.
+
+  - id: skinner-dunkel-2021-pnas-entropy-bounds
+    title: Improved bounds on entropy production in living systems
+    publisher: National Academy of Sciences
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1073/pnas.2024300118
+    url: null
+    doi: 10.1073/pnas.2024300118
+    pmid: '33906948'
+    pmcid: PMC8106300
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Entropy-production bounds from coarse-grained observations, admitted for leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09 (in PMC, not flagged open access); the
+      text was not read. Scite tally in sources/cite-check-ledger.jsonl. Published as Skinner DJ, Dunkel J. Proc Natl Acad
+      Sci USA 2021;118(18):e2024300118.
+
+  - id: skinner-dunkel-2021-prl-waiting-times
+    title: Estimating Entropy Production from Waiting Time Distributions
+    publisher: American Physical Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1103/PhysRevLett.127.198101
+    url: null
+    doi: 10.1103/PhysRevLett.127.198101
+    pmid: '34797138'
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. Entropy production estimated from waiting-time (dwell-time) distributions, the quantity a patch clamp
+      records; admitted for leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09; the text was not read. Scite tally in
+      sources/cite-check-ledger.jsonl. Published as Skinner DJ, Dunkel J. Phys Rev Lett 2021;127(19):198101.
+
+  - id: barato-seifert-2016-prx-brownian-clocks
+    title: Cost and Precision of Brownian Clocks
+    publisher: American Physical Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1103/PhysRevX.6.041053
+    url: null
+    doi: 10.1103/PhysRevX.6.041053
+    licence: CC BY 4.0 according to the Crossref licence link; the article's own licence statement was not read
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. The clock framing of the thermodynamic uncertainty relation, admitted for the one paragraph of leap essay
+      L.01 that survived the killed L.02 essay.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Resolved on Crossref on 2026-11-09; no PubMed record; the text was not read. The relation bounds
+      time-integrated currents, not single first-exit times (the blind challenger's objection to L.02 on 2026-11-08). Scite
+      tally in sources/cite-check-ledger.jsonl. Published as Barato AC, Seifert U. Phys Rev X 2016;6(4):041053.
+
+  - id: gingrich-horowitz-2017-prl-first-passage-bounds
+    title: Fundamental Bounds on First Passage Time Fluctuations for Currents
+    publisher: American Physical Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1103/PhysRevLett.119.170601
+    url: null
+    doi: 10.1103/PhysRevLett.119.170601
+    pmid: '29219443'
+    licence: not stated in the text read (abstract and record metadata only; the publisher's standard terms apply until the article is read)
+    accessed: 2026-11-09
+    site_use: >-
+      None yet. The first-passage form of the thermodynamic uncertainty relation, the correct theorem if completed-cycle
+      counts are ever used as a clock; admitted for leap essay L.01.
+    claim_label: unverified
+    notes: >-
+      Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09; the text was not read. Scite tally in
+      sources/cite-check-ledger.jsonl. Published as Gingrich TR, Horowitz JM. Phys Rev Lett 2017;119(17):170601.
 
   # ---------------------------------------------------------------- resource pages (proposals/2026-10-09-resources-tab.md)
   # Entries of kind resource_pages record what we may do with an organisation's public help pages, which the Resources tab links to.

@@ -814,6 +814,11 @@ class CftrContextTests(unittest.TestCase):
             ("6U70", "Cryo-EM", 3.00),
             ("8V80", "Cryo-EM", 3.10),
             ("6S7O", "Cryo-EM", 3.40),
+            ("7SVB", "Cryo-EM", 3.20),
+            ("8EIL", "Cryo-EM", 3.00),
+            ("8EIT", "Cryo-EM", 2.90),
+            ("7XDF", "Cryo-EM", 3.00),
+            ("6B43", "Cryo-EM", 3.30),
         ]
         for pdb_id, expected_method, expected_res in landmark_cases:
             res = cftr_context.lookup_pdb_structure(pdb_id)
@@ -845,6 +850,23 @@ class CftrContextTests(unittest.TestCase):
             ("LONODELESTAT", "LONODELESTAT", "Phase 1b/2a NCT03748199"),
             ("SNSP002", "SNSP002", "Phase 1/2 NCT04456959"),
             ("BRENSOCATIB", "BRENSOCATIB", "Phase 3 ASPEN NCT04594369"),
+        ]
+        for query, expected_brand, expected_nda_substr in therapy_cases:
+            res = cftr_context.lookup_cftr_modulator(query)
+            self.assertIsNotNone(res, f"Modulator/therapy lookup failed for {query}")
+            self.assertEqual(res["brand"], expected_brand)
+            self.assertIn(expected_nda_substr, res["fda_nda"])
+
+
+
+    def test_investigational_lta4h_antiviral_and_nitrosothiol_therapies_lookup(self):
+        """Verify lookup of investigational anti-inflammatory, antiviral, and nitrosothiol agents (ACEBILUSTAT, ALX-0171, N6022, ARALAST-NP, GSNO)."""
+        therapy_cases = [
+            ("ACEBILUSTAT", "ACEBILUSTAT", "Phase 2 EMPIRE NCT02443688"),
+            ("ALX-0171", "ALX-0171", "Phase 2 NCT02979275"),
+            ("N6022", "N6022", "Phase 2 NCT02724527"),
+            ("ARALAST-NP", "ARALAST-NP", "BLA 125046"),
+            ("GSNO", "GSNO", "pilot clinical studies"),
         ]
         for query, expected_brand, expected_nda_substr in therapy_cases:
             res = cftr_context.lookup_cftr_modulator(query)
