@@ -631,6 +631,31 @@ class MathVerifyTests(unittest.TestCase):
         self.assertTrue(res["passed"], res)
         self.assertEqual(res["findings"], [])
 
+    def test_thermo_bounds_i507del_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["i507del"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_g85e_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["g85e"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_r117h_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["r117h"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_s549n_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["s549n"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
+    def test_thermo_bounds_a455e_preset_passes(self):
+        res = math_verify.verify_thermo_bounds(math_verify.CANONICAL_PRESETS["a455e"])
+        self.assertTrue(res["passed"], res)
+        self.assertEqual(res["findings"], [])
+
     def test_buckingham_cli(self):
         spec_obj = {
             "name": "CLI test",
