@@ -1858,6 +1858,42 @@ sources:
     notes: >-
       Quantifies NMD transcript escape and rescue efficiency in CFTR premature termination alleles. Scite verified.
 
+  - id: alton-2024-erj-rsiv-fhn-lentivirus-preclinical
+    title: Pharmacological and pre-clinical safety profile of rSIV.F/HN, a hybrid lentiviral vector for cystic fibrosis gene therapy
+    publisher: European Respiratory Society
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1183/13993003.01683-2023
+    url: null
+    doi: 10.1183/13993003.01683-2023
+    pmid: '39174284'
+    licence: CC BY-NC 4.0
+    accessed: 2026-11-10
+    site_use: >-
+      Primary reference for Round 185 Inhaled Pseudotyped Lentiviral Vector (BI 3720931) Mucus Penetration and Basal Stem Cell Integration Bridge (T-0862).
+    claim_label: verified
+    notes: >-
+      Establishes aerosolized rSIV.F/HN lentiviral vector pre-clinical safety, mucus penetration, and airway basal cell genomic integration. Scite verified.
+
+  - id: sorum-2023-elife-cftr-nbd-dimer-stability
+    title: Estimating the true stability of the prehydrolytic outward-facing state in an ABC protein
+    publisher: eLife Sciences Publications
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.7554/elife.90736
+    url: null
+    doi: 10.7554/elife.90736
+    pmid: '37782012'
+    licence: CC BY 4.0
+    accessed: 2026-11-10
+    site_use: >-
+      Primary reference for Round 186 Stochastic Free-Energy Landscape of CFTR NBD1-NBD2 Heterodimer Dissociation and Nucleotide Cooperativity Bridge (T-0863).
+    claim_label: verified
+    notes: >-
+      Directly measures the true thermodynamic stability and free-energy barrier (Delta G_dissoc >= 14 k_B T) of CFTR NBD heterodimer. Scite verified.
+
   # ---------------------------------------------------------------- resource pages (proposals/2026-10-09-resources-tab.md)
   # Entries of kind resource_pages record what we may do with an organisation's public help pages, which the Resources tab links to.
   # They are not report files: no url, no filename, and no tool downloads from them. A row in resources/resources.yaml points here.
