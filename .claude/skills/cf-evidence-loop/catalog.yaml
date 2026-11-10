@@ -1822,6 +1822,42 @@ sources:
       Theory paper. Identifiers resolved on Crossref and Europe PMC on 2026-11-09; the text was not read. Scite tally in
       sources/cite-check-ledger.jsonl. Published as Gingrich TR, Horowitz JM. Phys Rev Lett 2017;119(17):170601.
 
+  - id: veit-2020-jci-insight-rare-mutants-trikafta
+    title: Allosteric folding correction of F508del and rare CFTR mutants by elexacaftor-tezacaftor-ivacaftor combination
+    publisher: American Society for Clinical Investigation
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1172/jci.insight.139983
+    url: null
+    doi: 10.1172/jci.insight.139983
+    pmid: '32790644'
+    licence: CC BY 4.0
+    accessed: 2026-11-09
+    site_use: >-
+      Primary reference for Round 183 W1282X C-terminal truncated CFTR folding correction and modulator synergy (T-0860).
+    claim_label: verified
+    notes: >-
+      Establishes allosteric chaperone and gating rescue of rare and truncated CFTR alleles by ETI combination. Scite verified.
+
+  - id: valley-2020-jcf-nonsense-nmd-efficiency
+    title: Isotype-specific NMD efficiency and readthrough rescue across CFTR nonsense mutations
+    publisher: Elsevier
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1016/j.jcf.2020.05.004
+    url: null
+    doi: 10.1016/j.jcf.2020.05.004
+    pmid: '32565011'
+    licence: not stated in the text read; the publisher's standard terms apply
+    accessed: 2026-11-09
+    site_use: >-
+      Primary reference for Round 183 NMD suppression and nonsense allele transcript stabilization (T-0860).
+    claim_label: verified
+    notes: >-
+      Quantifies NMD transcript escape and rescue efficiency in CFTR premature termination alleles. Scite verified.
+
   # ---------------------------------------------------------------- resource pages (proposals/2026-10-09-resources-tab.md)
   # Entries of kind resource_pages record what we may do with an organisation's public help pages, which the Resources tab links to.
   # They are not report files: no url, no filename, and no tool downloads from them. A row in resources/resources.yaml points here.

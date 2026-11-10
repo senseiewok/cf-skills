@@ -1,11 +1,11 @@
 {
   "commit_date": "2026-11-09",
-  "copy_sha256": "d003b8abb5864abe35f5046e9fe2b4e95699988c8edd0b0e779ab534e1d0314f",
+  "copy_sha256": "c5da67250b7fbf7956be5968a7b29cf06bd2a1867a589982ff6beeb9dcae043d",
   "inputs": {
-    "sources/catalog.yaml": "f1cb7801deb90d1f5f1eefc964a80ed1089e432835e797db0c79a78b074b2b61"
+    "sources/catalog.yaml": "14f335d03bf4662ad57b6f229dd472f0f214d5ae322ab4baa140a86231fad937"
   },
   "pinned_on": "2026-11-09",
-  "research_commit": "c6c93cb66473925a69a5a32274e8f4c3a23da58b",
+  "research_commit": "a03d9ddf9df139f7f84fa38d04df6734f2150dc8",
   "schema_version": 1,
-  "sources": 343
+  "sources": 345
 }
