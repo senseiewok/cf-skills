@@ -41,7 +41,7 @@ from pathlib import Path
 from . import briefs, catalog, cite_check, guardrails
 from .http import BudgetExhausted, Client, HostInCooldown, PaperworkMissing, RobotsDisallow
 from .providers import (chembl, clinvar, crossref, dailymed, datacommons, ema, ensembl, europepmc, gnomad, myvariant,
-                        ncbi_variation, open_targets, openalex, openfda, preprints, pubmed, reporter, scite,
+                        ncbi_variation, open_targets, openalex, openfda, preprints, pubmed, reporter, retraction_watch, scite,
                         semantic_scholar, trials, ukri_gtr, uniprot, unpaywall)
 from .record import Evidence, Status, append_ledger, clean_for_terminal
 
@@ -75,6 +75,15 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("approval").add_argument("brand")
     p = sub.add_parser("label"); p.add_argument("brand"); p.add_argument("--sections", nargs="+", default=list(openfda.DEFAULT_SECTIONS))
     p = sub.add_parser("preprint"); p.add_argument("server", choices=preprints.SERVERS); p.add_argument("doi")
+    p = sub.add_parser("pubs", aliases=["preprint-pub"], help="Look up published version of a bioRxiv/medRxiv preprint via api.biorxiv.org/pubs")
+    p.add_argument("doi", help="Preprint DOI (e.g. 10.1101/2020.01.01.123456)")
+    p.add_argument("--server", choices=preprints.SERVERS, default=None, help="server (biorxiv or medrxiv; auto-detects if omitted)")
+    p = sub.add_parser("retraction-watch", aliases=["rw"], help="Retraction Watch daily data and OpenAlex retraction/correction/concern check")
+    p.add_argument("dois", nargs="*", help="one or more DOIs to check")
+    p.add_argument("--file", "-f", help="file to scan DOIs from")
+    p.add_argument("--catalog", help="sources/catalog.yaml file to audit")
+    p.add_argument("--csv", help="path to local Retraction Watch CSV")
+    p.add_argument("--openalex", action="store_true", help="cross-check with OpenAlex is_retracted")
     p = sub.add_parser("preprints"); p.add_argument("server", choices=preprints.SERVERS); p.add_argument("start"); p.add_argument("end")
     p.add_argument("--pattern", default=preprints.CF_PATTERN)
     p = sub.add_parser("variants"); p.add_argument("term"); p.add_argument("--limit", type=int, default=20)
@@ -423,12 +432,18 @@ REQUIRED_QUERY_ATTRS: dict[str, tuple[str, ...]] = {
     "cite-check": ("file",),
     "cftr-context": ("term",),
     "cftr-modulator": ("term",),
+    "pubs": ("doi",),
+    "preprint-pub": ("doi",),
 }
 
 
 def _check_blank_query(a: argparse.Namespace) -> str | None:
     """Return an error message if any required query argument is blank/whitespace-only, else None."""
     if a.cmd == "sources":
+        return None
+    if a.cmd in ("retraction-watch", "rw"):
+        if not getattr(a, "dois", None) and not getattr(a, "file", None) and not getattr(a, "catalog", None):
+            return f"{a.cmd} requires at least one DOI, a --file, or a --catalog"
         return None
     if a.cmd in ("retractions", "scite-batch", "scite-aggregate"):
         if not getattr(a, "dois", None) or any(guardrails.is_blank_query(d) for d in a.dois):
@@ -488,6 +503,52 @@ def _dispatch(a, ap, client: Client) -> list[Evidence]:
         return [openfda.label(client, a.brand, tuple(a.sections))]
     elif a.cmd == "preprint":
         return preprints.details(client, a.server, a.doi)
+    elif a.cmd in ("pubs", "preprint-pub"):
+        return preprints.lookup_published(client, a.doi, getattr(a, "server", None))
+    elif a.cmd in ("retraction-watch", "rw"):
+        csv_path = getattr(a, "csv", None)
+        index = {}
+        if csv_path and Path(csv_path).exists():
+            index = retraction_watch.parse_retraction_watch_csv(Path(csv_path).read_text(encoding="utf-8", errors="replace"))
+        if getattr(a, "catalog", None):
+            rep = retraction_watch.audit_catalog_sources(a.catalog, index)
+            return [Evidence(
+                status=Status.FOUND,
+                question=f"Retraction Watch audit of {a.catalog}",
+                source_id="retraction_watch",
+                url=retraction_watch.DEFAULT_GITLAB_URL,
+                provider=retraction_watch.PROVIDER,
+                fields=rep,
+                excerpt=f"Audited {rep['total_sources_scanned']} sources ({rep['unique_dois_checked']} DOIs); {rep['flagged_dois_count']} flagged notices.",
+                limitations=retraction_watch.LIMITATION,
+            )]
+        dois_to_check = list(getattr(a, "dois", None) or [])
+        if getattr(a, "file", None) and Path(a.file).exists():
+            text = Path(a.file).read_text(encoding="utf-8", errors="replace")
+            for m in cite_check._DOI.finditer(text):
+                cd = cite_check.clean_doi(m.group(0))
+                if cd and cd not in dois_to_check:
+                    dois_to_check.append(cd)
+        out = []
+        for d in dois_to_check:
+            oa_work = None
+            if getattr(a, "openalex", False):
+                try:
+                    oa_ev = openalex.work(client, d)
+                    if oa_ev.status is Status.FOUND:
+                        oa_work = {"is_retracted": oa_ev.fields.get("is_retracted", False), "title": oa_ev.fields.get("title")}
+                except Exception:
+                    oa_work = None
+            out.append(retraction_watch.check_doi(d, index, oa_work))
+        return out or [Evidence(
+            status=Status.NOT_FOUND,
+            question="Retraction Watch lookup",
+            source_id="retraction_watch",
+            url=retraction_watch.DEFAULT_GITLAB_URL,
+            provider=retraction_watch.PROVIDER,
+            fields={"dois": dois_to_check},
+            limitations=retraction_watch.LIMITATION,
+        )]
     elif a.cmd == "preprints":
         return preprints.window(client, a.server, a.start, a.end, a.pattern)
     elif a.cmd == "variants":

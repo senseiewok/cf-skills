@@ -19,6 +19,12 @@ PAGE = 100
 LIMITATION = ("Preprint: not peer reviewed. 'published' gives the journal DOI if the server has linked one; "
               "otherwise the work may be unpublished, under review, or published without a link. Abstract text is the authors'.")
 
+PUBS_LIMITATION = (
+    "Preprint publication status via api.biorxiv.org/pubs. When a published DOI is linked, "
+    "the peer-reviewed journal citation should be preferred over the preprint. An unpublished status "
+    "indicates the preprint has not yet been linked to a peer-reviewed publication on bioRxiv/medRxiv."
+)
+
 
 def _rec(item: dict, server: str, question: str, url: str) -> Evidence:
     return Evidence(
@@ -86,3 +92,104 @@ def window(client: Client, server: str, start: str, end: str, pattern: str = CF_
                             fields={"server": server, "start": start, "end": end, "pattern": pattern, "scanned": cursor},
                             limitations="No preprint in the window matched the pattern. The server was listed completely; the pattern may be too narrow."))
     return out
+
+
+def parse_pubs(data: dict, server: str, question: str, url: str) -> list[Evidence]:
+    """Parse api.biorxiv.org/pubs response into Evidence records."""
+    coll = data.get("collection") or []
+    out: list[Evidence] = []
+    for item in coll:
+        biorxiv_doi = item.get("biorxiv_doi") or item.get("doi")
+        pub_doi = item.get("published_doi") or item.get("published")
+        if pub_doi in ("NA", "", None) or (isinstance(pub_doi, str) and pub_doi.strip().upper() == "NA"):
+            pub_doi = None
+        else:
+            pub_doi = str(pub_doi).strip()
+
+        pub_journal = item.get("published_journal") or item.get("journal")
+        if pub_journal in ("NA", "", None):
+            pub_journal = None
+
+        pub_date = item.get("published_date") or item.get("date")
+        is_published = bool(pub_doi)
+
+        status_label = "PUBLISHED" if is_published else "UNPUBLISHED_PREPRINT"
+        rec = Evidence(
+            status=Status.FOUND,
+            question=question,
+            source_id=SOURCE,
+            url=url,
+            provider=PROVIDER,
+            publisher_date=pub_date,
+            fields={
+                "server": server,
+                "preprint_doi": biorxiv_doi,
+                "published_doi": pub_doi,
+                "published_journal": pub_journal,
+                "is_published": is_published,
+                "status_label": status_label,
+                "preprint_title": item.get("preprint_title") or item.get("title"),
+                "preprint_authors": (item.get("preprint_authors") or item.get("authors") or "")[:120],
+            },
+            excerpt=(f"Published as {pub_doi} in {pub_journal}" if is_published else "Unpublished preprint (no peer-reviewed publication linked on server)"),
+            limitations=PUBS_LIMITATION,
+        )
+        out.append(rec)
+    return out
+
+
+def pubs(client: Client, server: str, doi: str) -> list[Evidence]:
+    """Look up the published DOI and journal for a preprint via api.biorxiv.org/pubs/[server]/[doi]."""
+    assert server in SERVERS, server
+    q = f"What published version does {server} record for preprint DOI {doi}?"
+    f = client.get(SOURCE, f"pubs/{server}/{quote(doi, safe='/')}")
+    if f.status is not Status.FOUND:
+        return [
+            Evidence(
+                status=f.status,
+                question=q,
+                source_id=SOURCE,
+                url=f.url,
+                provider=PROVIDER,
+                fields={"http_status": f.http_status, "server": server, "doi": doi},
+                limitations="No data returned from pubs endpoint.",
+            )
+        ]
+    recs = parse_pubs(f.data, server, q, f.url)
+    if not recs:
+        return [
+            Evidence(
+                status=Status.FOUND,
+                question=q,
+                source_id=SOURCE,
+                url=f.url,
+                provider=PROVIDER,
+                fields={
+                    "server": server,
+                    "preprint_doi": doi,
+                    "published_doi": None,
+                    "published_journal": None,
+                    "is_published": False,
+                    "status_label": "UNPUBLISHED_PREPRINT",
+                },
+                excerpt="Unpublished preprint (no peer-reviewed publication linked on server)",
+                limitations=PUBS_LIMITATION,
+            )
+        ]
+    return recs
+
+
+def lookup_published(client: Client, doi: str, server: str | None = None) -> list[Evidence]:
+    """Auto-detect server or try biorxiv then medrxiv to locate the published version of a preprint DOI."""
+    if server:
+        return pubs(client, server, doi)
+    res = pubs(client, "biorxiv", doi)
+    if res and res[0].status is Status.FOUND and res[0].fields.get("is_published"):
+        return res
+    res_med = pubs(client, "medrxiv", doi)
+    if res_med and res_med[0].status is Status.FOUND and res_med[0].fields.get("is_published"):
+        return res_med
+    if res and res[0].status is Status.FOUND and res[0].fields.get("preprint_doi"):
+        return res
+    return res_med
+
