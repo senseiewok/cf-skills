@@ -55,10 +55,10 @@
     },
     {
       "name": "cf-answer-check",
-      "description": "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Use when someone asks is this answer right, can I trust what the chatbot said, check these facts, find the source for this, or before putting AI-written text into a handout, a post or a note. Includes a script that turns an answer into a claims worksheet. For anyone: patients, families, care teams, researchers and builders.",
-      "summary": "Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet.",
+      "description": "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Version 0.2 adds an automated source-support and retraction checker (scripts/answer_checker.py) that classifies each sentence as supported, not supported, no source, or cites a retracted or corrected paper (T-0926) with measured benchmark accuracy against a SourceCheckup-style dataset (Nat Commun 2025, doi:10.1038/s41467-025-58551-6). For anyone: patients, families, care teams, researchers and builders.",
+      "summary": "Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet.",
       "license": "CC0-1.0",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "path": ".claude/skills/cf-answer-check",
       "capabilities": [
         "python",
