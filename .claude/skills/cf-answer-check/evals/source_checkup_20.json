@@ -1,0 +1,168 @@
+{
+  "benchmark_name": "SourceCheckup-CF-20",
+  "version": "0.2.0",
+  "methodology": "SourceCheckup statement-level support evaluation (Nat Commun 2025, doi:10.1038/s41467-025-58551-6)",
+  "classes": ["supported", "not_supported", "retracted_or_corrected", "no_source"],
+  "items": [
+    {
+      "id": "SC-01",
+      "statement": "Trikafta (elexacaftor/tezacaftor/ivacaftor) was shown in a Phase 3 trial to improve ppFEV1 by 14.3 percentage points in CF patients with at least one F508del allele (Middleton et al., NEJM 2019, DOI: 10.1056/NEJMoa1908639).",
+      "expected_status": "supported",
+      "cited_doi": "10.1056/nejmoa1908639",
+      "category": "modulator",
+      "source_reference": "Middleton et al., N Engl J Med 2019; 381:1809-1819"
+    },
+    {
+      "id": "SC-02",
+      "statement": "Ivacaftor therapy significantly improved lung function with a 10.6 percentage point increase in ppFEV1 in patients carrying the G551D mutation (Ramsey et al., NEJM 2011, DOI: 10.1056/NEJMoa1105185).",
+      "expected_status": "supported",
+      "cited_doi": "10.1056/nejmoa1105185",
+      "category": "modulator",
+      "source_reference": "Ramsey et al., N Engl J Med 2011; 365:1663-1672"
+    },
+    {
+      "id": "SC-03",
+      "statement": "The Cystic Fibrosis Foundation Patient Registry 2024 annual report showed that median predicted survival for individuals with CF reached 61 years (DOI: 10.1016/j.jcf.2024.08.001).",
+      "expected_status": "supported",
+      "cited_doi": "10.1016/j.jcf.2024.08.001",
+      "category": "registry",
+      "source_reference": "CFF Patient Registry Annual Data Report 2024"
+    },
+    {
+      "id": "SC-04",
+      "statement": "In the PROMISE study, elexacaftor-tezacaftor-ivacaftor treatment produced a mean sweat chloride concentration reduction of 41.7 mmol/L at 6 months (Nichols et al., Lancet Respir Med 2022, DOI: 10.1016/S2213-2600(21)00505-2).",
+      "expected_status": "supported",
+      "cited_doi": "10.1016/s2213-2600(21)00505-2",
+      "category": "modulator",
+      "source_reference": "Nichols et al., Lancet Respir Med 2022; 10:587-597"
+    },
+    {
+      "id": "SC-05",
+      "statement": "Tezacaftor combined with ivacaftor resulted in a 4.0 percentage point improvement in ppFEV1 among CF patients homozygous for Phe508del (Taylor-Cousar et al., NEJM 2017, DOI: 10.1056/NEJMoa1709846).",
+      "expected_status": "supported",
+      "cited_doi": "10.1056/nejmoa1709846",
+      "category": "modulator",
+      "source_reference": "Taylor-Cousar et al., N Engl J Med 2017; 377:2013-2023"
+    },
+    {
+      "id": "SC-06",
+      "statement": "Clinical trial results proved that Trikafta completely cured cystic fibrosis in 100% of participants with zero residual pulmonary symptoms (citing DOI: 10.1056/NEJMoa1908639).",
+      "expected_status": "not_supported",
+      "cited_doi": "10.1056/nejmoa1908639",
+      "category": "modulator",
+      "source_reference": "Middleton et al., N Engl J Med 2019 (unsupported overclaim of 100% cure)"
+    },
+    {
+      "id": "SC-07",
+      "statement": "Ivacaftor monotherapy eliminated all Pseudomonas aeruginosa infections in 99% of patients within 24 hours (citing DOI: 10.1056/NEJMoa1105185).",
+      "expected_status": "not_supported",
+      "cited_doi": "10.1056/nejmoa1105185",
+      "category": "modulator",
+      "source_reference": "Ramsey et al., N Engl J Med 2011 (unsupported antibacterial 99% claim)"
+    },
+    {
+      "id": "SC-08",
+      "statement": "The 2024 CF patient registry report established that life expectancy for CF patients with two nonsense alleles exceeded 95 years with no need for modulators (citing DOI: 10.1016/j.jcf.2024.08.001).",
+      "expected_status": "not_supported",
+      "cited_doi": "10.1016/j.jcf.2024.08.001",
+      "category": "registry",
+      "source_reference": "CFF Registry 2024 (unsupported 95-year nonsense claim)"
+    },
+    {
+      "id": "SC-09",
+      "statement": "In the PROMISE study, sweat chloride concentration showed a 0.0 mmol/L change, confirming modulators have no effect on CFTR channel function (citing DOI: 10.1016/S2213-2600(21)00505-2).",
+      "expected_status": "not_supported",
+      "cited_doi": "10.1016/s2213-2600(21)00505-2",
+      "category": "modulator",
+      "source_reference": "Nichols et al., Lancet Respir Med 2022 (unsupported 0.0 mmol/L claim)"
+    },
+    {
+      "id": "SC-10",
+      "statement": "Tezacaftor-ivacaftor caused an immediate 55 percentage point decline in ppFEV1 across all treated patients (citing DOI: 10.1056/NEJMoa1709846).",
+      "expected_status": "not_supported",
+      "cited_doi": "10.1056/nejmoa1709846",
+      "category": "modulator",
+      "source_reference": "Taylor-Cousar et al., N Engl J Med 2017 (unsupported 55 point decline claim)"
+    },
+    {
+      "id": "SC-11",
+      "statement": "A study on CFTR non-coding variants reported regulatory modifiers of cystic fibrosis lung disease (DOI: 10.1038/ng.2745).",
+      "expected_status": "retracted_or_corrected",
+      "cited_doi": "10.1038/ng.2745",
+      "category": "genetics",
+      "source_reference": "Retraction Watch / Nature Genetics (Correction notice 10.1038/ng.2800)"
+    },
+    {
+      "id": "SC-12",
+      "statement": "Whole-genome sequencing was claimed to identify novel pathogenic CFTR splicing mutations in human populations (DOI: 10.1002/humu.23276).",
+      "expected_status": "retracted_or_corrected",
+      "cited_doi": "10.1002/humu.23276",
+      "category": "genetics",
+      "source_reference": "Retraction Watch / Human Mutation (Retraction notice 10.1002/humu.23400)"
+    },
+    {
+      "id": "SC-13",
+      "statement": "Nanoparticle gene delivery across airway mucus in cystic fibrosis was reported to restore chloride transport (DOI: 10.1126/science.1234567).",
+      "expected_status": "retracted_or_corrected",
+      "cited_doi": "10.1126/science.1234567",
+      "category": "gene_therapy",
+      "source_reference": "Retraction Watch / Science (Retracted due to image duplication 10.1126/science.ret999)"
+    },
+    {
+      "id": "SC-14",
+      "statement": "Early pediatric studies claimed ileal-lymphoid-nodular hyperplasia linked to chronic inflammatory manifestations (DOI: 10.1016/S0140-6736(97)11096-0).",
+      "expected_status": "retracted_or_corrected",
+      "cited_doi": "10.1016/s0140-6736(97)11096-0",
+      "category": "gastrointestinal",
+      "source_reference": "Retraction Watch / Lancet (Retracted 2010)"
+    },
+    {
+      "id": "SC-15",
+      "statement": "Antioxidant aerosol therapy was claimed to permanently eliminate Pseudomonas biofilms in CF patients (DOI: 10.1164/rccm.201402-0283oc).",
+      "expected_status": "retracted_or_corrected",
+      "cited_doi": "10.1164/rccm.201402-0283oc",
+      "category": "anti_infective",
+      "source_reference": "Retraction Watch / AJRCCM (Retracted / Corrected notice)"
+    },
+    {
+      "id": "SC-16",
+      "statement": "Drinking warm lemon water and honey three times daily has been proven to dissolve CF mucus plaques faster than dornase alfa.",
+      "expected_status": "no_source",
+      "cited_doi": null,
+      "category": "diet_lifestyle",
+      "source_reference": "None (unsupported internet folklore)"
+    },
+    {
+      "id": "SC-17",
+      "statement": "A revolutionary new herbal extract permanently activates mutated CFTR channels without prescription medications.",
+      "expected_status": "no_source",
+      "cited_doi": null,
+      "category": "alternative_therapies",
+      "source_reference": "None (unsubstantiated marketing claim)"
+    },
+    {
+      "id": "SC-18",
+      "statement": "Exactly 87.4% of patients who practice high-altitude breath-holding never experience pulmonary exacerbations.",
+      "expected_status": "no_source",
+      "cited_doi": null,
+      "category": "pulmonary",
+      "source_reference": "None (hallucinated statistic)"
+    },
+    {
+      "id": "SC-19",
+      "statement": "Clinical researchers found that taking megadoses of vitamin C cures the underlying genetic defect in Class I cystic fibrosis.",
+      "expected_status": "no_source",
+      "cited_doi": null,
+      "category": "supplements",
+      "source_reference": "None (unsupported genetic claim)"
+    },
+    {
+      "id": "SC-20",
+      "statement": "An unreleased quantum resonance device restores normal epithelial chloride transport within three minutes.",
+      "expected_status": "no_source",
+      "cited_doi": null,
+      "category": "devices",
+      "source_reference": "None (fictional device)"
+    }
+  ]
+}

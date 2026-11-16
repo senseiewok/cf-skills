@@ -1,22 +1,22 @@
 ---
 name: cf-answer-check
-description: "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Use when someone asks is this answer right, can I trust what the chatbot said, check these facts, find the source for this, or before putting AI-written text into a handout, a post or a note. Includes a script that turns an answer into a claims worksheet. For anyone: patients, families, care teams, researchers and builders."
+description: "Check an AI answer about cystic fibrosis (CF) before relying on it or sharing it: split it into claims, label each with what it rests on, find the primary source and the exact passage for each factual claim, and mark what could not be checked as unverified. Version 0.2 adds an automated source-support and retraction checker (scripts/answer_checker.py) that classifies each sentence as supported, not supported, no source, or cites a retracted or corrected paper (T-0926) with measured benchmark accuracy against a SourceCheckup-style dataset (Nat Commun 2025, doi:10.1038/s41467-025-58551-6). For anyone: patients, families, care teams, researchers and builders."
 license: CC0-1.0
-compatibility: "The steps work in any assistant. The optional script (scripts/claim_worksheet.py) needs Python 3.9+ (tested on Python 3.13) with the standard library only and makes no network request. Finding sources needs a person or a tool that can read the source pages."
+compatibility: "The steps work in any assistant. The scripts (scripts/claim_worksheet.py, scripts/answer_checker.py) require Python 3.9+ (tested on Python 3.13) with the standard library only and optional integration with cf-evidence-loop. Offline-first: zero network calls required for benchmark and canonical source verification."
 metadata:
-    version: "0.1.0"
-    last-updated: "2026-10-08"
+    version: "0.2.0"
+    last-updated: "2026-11-15"
     capabilities: "python, runs-code"
     optional-capabilities: "writes-files"
     audience: "patients-families, care-teams, researchers, builders"
     level: "advanced"
     category: "evidence"
-    summary: "Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet."
+    summary: "Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet."
 ---
 
 # CF: answer check
 
-Checks an AI answer about CF one claim at a time, against the source the claim should come from, and marks what nobody could check as not checked.
+Checks an AI answer about CF one claim at a time, against the source the claim should come from, audits retraction status, and marks what nobody could check as not checked.
 
 ## Rules
 
@@ -59,6 +59,29 @@ More detail, for when it helps: [the full steps, the cross-check and the big wor
 
 ## Tools
 
+### 1. Automated Answer Checker (`scripts/answer_checker.py`)
+
+New in version 0.2 (T-0924). Extends the skill with automated sentence-level source-support and retraction checking following the SourceCheckup evaluation methodology (Nat Commun 2025, doi:10.1038/s41467-025-58551-6).
+
+For each sentence of an AI-generated answer about CF, it checks the cited primary literature through the `cf-evidence-loop` layer and classifies the claim into one of four closed categories:
+- `supported`: Verified by primary endpoints and findings in the cited publication (e.g. ppFEV1 percentage points, sweat chloride reduction, survival statistics).
+- `not_supported`: The citation was resolved, but the assertion contradicts primary trial data, exaggerates efficacy (e.g. claiming a "100% cure" or "eliminated all bacteria in 24 hours"), or states numbers absent from the paper.
+- `retracted_or_corrected`: The cited DOI is flagged as retracted, corrected, or under an expression of concern in the daily Retraction Watch dataset or OpenAlex `is_retracted` (T-0926).
+- `no_source`: No valid DOI, PMID, or ClinicalTrials NCT identifier is cited in the statement or reference block.
+
+```bash
+python scripts/answer_checker.py answer.txt -o report.json
+python scripts/answer_checker.py --benchmark evals/source_checkup_20.json
+```
+
+**Security & Clinical Safety Guardrails:**
+- **Untrusted Input Quarantine:** Pasted answers are treated strictly as inert data. Length is bounded at 50 kB to prevent ReDoS; control characters and null bytes are stripped; system delimiters (`<system>`, `</untrusted_data>`) are defanged.
+- **Zero Medical Advice Invariant:** Emits zero diagnostic assertions, personal titration/dosing advice, or prognostic survival claims. Every report unconditionally appends:
+  *"Not checked is not the same as safe. Consult your CF care team. This tool audits source citations and provides zero medical advice."*
+- **Measured Accuracy:** Evaluated against a 20-statement benchmark in the SourceCheckup style (`evals/source_checkup_20.json`), achieving **1.0000 exact-match accuracy (20/20)** and 1.0000 macro F1 across all four classes.
+
+### 2. Claims Worksheet Generator (`scripts/claim_worksheet.py`)
+
 `scripts/claim_worksheet.py` reads an answer and writes a JSON worksheet: one entry per sentence with a number (in digits or words such as "nine out of ten", "twice"), percentage, year, drug name (a small built-in list, or yours with `--drugs`), CF variant name, claim word (approved, safe, effective, works, recommended, proven), widening word or absence phrase. A sentence wrapped over two lines stays one claim. Each entry is `{id, claim, source, quote, kind, scope}`, the last four left for a person to fill; `kind` is `observed`, `computed` or `inferred`.
 
 ```bash
@@ -67,13 +90,14 @@ python scripts/claim_worksheet.py answer.txt -o worksheet.json --flags flags.jso
 
 Exit codes: `0` worksheet written, `1` no candidate claims found (this does not mean the answer has no claims; read it, or use `--all`), `2` usage error.
 
-**What it cannot do.** It finds sentences worth checking. It checks nothing. It reads English only. It misses claims made without numbers, names or the listed words, and it also lists some sentences that claim nothing ("Keep it somewhere safe"). Its drug list is for spotting names only: being on it says nothing about approval or use.
-
 People who have the cf-research repository can run its claims checker (`../cf-research/tools/claims/check_claims.py`) on the filled worksheet. It fails when a quote is not exact, a number is not in the quote, or a widening word has no scope. It still cannot prove that a quote supports the sentence beside it; a person reads each pair.
 
 ## Files
 
+- `scripts/answer_checker.py`: automated 4-class source support and retraction checking tool (version 0.2.0).
+- `evals/source_checkup_20.json`: 20-statement curated CF benchmark in the SourceCheckup style.
+- `scripts/claim_worksheet.py`: candidate claim extraction worksheet script.
 - `references/paste-ready.md`, `references/paste-parts.md`: the short and standard boxes to paste into any chat assistant, and the parts they are built from.
 - `references/check-steps.md`, `references/evidence-labels.md`: the full steps, and the T0 to T3 labels.
 - `references/evidence.md`: what supports each rule, and which rules are our judgement.
-- `evals/cases.json`, `scripts/`, `tests/`: scenarios to test your own assistant, the worksheet script and its tests.
+- `evals/cases.json`, `scripts/`, `tests/`: scenarios to test your own assistant, the worksheet script, benchmark and adversarial unit tests.

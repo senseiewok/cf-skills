@@ -17,7 +17,7 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | Skill | What it does | Use it now, no install | Level | Category |
 | --- | --- | --- | --- | --- |
 | [`cf-ai-safe-use`](../.claude/skills/cf-ai-safe-use/SKILL.md) | Ground rules so an AI gives general CF information, keeps your details private, and sends urgent worries to people. | [Use it now](../.claude/skills/cf-ai-safe-use/references/paste-ready.md) | base | safe-ai-use |
-| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-plain-language-rewrite`](../.claude/skills/cf-plain-language-rewrite/SKILL.md) | Makes a CF handout or letter easier to read without changing any number, name or warning, as a draft to check. | [Use it now](../.claude/skills/cf-plain-language-rewrite/references/paste-ready.md) | base | communication |
 | [`cf-visit-prep`](../.claude/skills/cf-visit-prep/SKILL.md) | Turns your worries before a CF clinic visit into a short list of questions, in your own words, for the care team. | [Use it now](../.claude/skills/cf-visit-prep/references/paste-ready.md) | base | communication |
 
@@ -29,14 +29,14 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | --- | --- | --- | --- | --- |
 | [`cf-ai-safe-use`](../.claude/skills/cf-ai-safe-use/SKILL.md) | Ground rules so an AI gives general CF information, keeps your details private, and sends urgent worries to people. | [Use it now](../.claude/skills/cf-ai-safe-use/references/paste-ready.md) | base | safe-ai-use |
 | [`cf-ai-tool-review`](../.claude/skills/cf-ai-tool-review/SKILL.md) | A step-by-step review a clinic or patient group can use before trusting an AI tool; people make the final decision. | [Use it now](../.claude/skills/cf-ai-tool-review/references/paste-ready.md) | advanced | tool-evaluation |
-| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-plain-language-rewrite`](../.claude/skills/cf-plain-language-rewrite/SKILL.md) | Makes a CF handout or letter easier to read without changing any number, name or warning, as a draft to check. | [Use it now](../.claude/skills/cf-plain-language-rewrite/references/paste-ready.md) | base | communication |
 
 ## Researchers
 
 | Skill | What it does | Use it now, no install | Level | Category |
 | --- | --- | --- | --- | --- |
-| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
 | [`cf-math-verify`](../.claude/skills/cf-math-verify/SKILL.md) | Offline verifier for dimensional balance, complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds. | (install route only) | advanced | math |
 | [`complex-systems-monograph`](../.claude/skills/complex-systems-monograph/SKILL.md) | Structures and verifies interactive Living Executable Monographs with 4-Act narrative architectures, 4-Seat Council review, and portable SKILL.md companions. | (install route only) | advanced | communication |
@@ -46,7 +46,7 @@ You do not need to install anything. Open the "Use it now" link, copy the box, a
 | Skill | What it does | Use it now, no install | Level | Category |
 | --- | --- | --- | --- | --- |
 | [`cf-ai-tool-review`](../.claude/skills/cf-ai-tool-review/SKILL.md) | A step-by-step review a clinic or patient group can use before trusting an AI tool; people make the final decision. | [Use it now](../.claude/skills/cf-ai-tool-review/references/paste-ready.md) | advanced | tool-evaluation |
-| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
+| [`cf-answer-check`](../.claude/skills/cf-answer-check/SKILL.md) | Checks an AI answer about CF with you, one claim at a time, audits source support and retraction status, and marks what nobody could check yet. | [Use it now](../.claude/skills/cf-answer-check/references/paste-ready.md) | advanced | evidence |
 | [`cf-evidence-loop`](../.claude/skills/cf-evidence-loop/SKILL.md) | Walks public research sources one question at a time and returns dated evidence records with exact fields and limitations. | (install route only) | advanced | evidence |
 | [`cf-math-verify`](../.claude/skills/cf-math-verify/SKILL.md) | Offline verifier for dimensional balance, complex-step derivatives, Lean 4 proof DAGs, and 20 non-equilibrium thermodynamic bounds. | (install route only) | advanced | math |
 | [`complex-systems-monograph`](../.claude/skills/complex-systems-monograph/SKILL.md) | Structures and verifies interactive Living Executable Monographs with 4-Act narrative architectures, 4-Seat Council review, and portable SKILL.md companions. | (install route only) | advanced | communication |
