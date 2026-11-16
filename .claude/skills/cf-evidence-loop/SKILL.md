@@ -36,6 +36,8 @@ Research, not medical advice. The records this tool returns describe public docu
 | Which trials list this condition? | `trials "<condition>" [--term X] [--status RECRUITING]` | ClinicalTrials.gov v2 |
 | What does the registry hold for this trial? | `trial <NCTId>` | ClinicalTrials.gov v2 |
 | What is this preprint? | `preprint <biorxiv\|medrxiv> <DOI>` | bioRxiv / medRxiv |
+| Look up published version of a preprint | `pubs <DOI> [--server biorxiv\|medrxiv]` | bioRxiv / medRxiv pubs API (alias: `preprint-pub`) |
+| Check Retraction Watch daily data & OpenAlex | `retraction-watch [<DOI> ...] [--file PATH] [--catalog PATH] [--csv PATH] [--openalex]` | Retraction Watch daily CSV (GitLab) & OpenAlex (alias: `rw`) |
 | Which CF preprints appeared in a window? | `preprints <server> <YYYY-MM-DD> <YYYY-MM-DD> [--pattern]` | bioRxiv / medRxiv |
 | How is this variant classified? | `variants "<ClinVar query>"` | ClinVar via NCBI E-utilities |
 | Who does NIH fund on this topic? | `grants "<text>" [--fy 2025]` | NIH RePORTER |

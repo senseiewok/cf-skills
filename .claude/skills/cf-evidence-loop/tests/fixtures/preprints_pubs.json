@@ -1,0 +1,33 @@
+{
+  "messages": [
+    {
+      "status": "ok",
+      "interval": "all",
+      "cursor": 0,
+      "count": 2,
+      "total": 2
+    }
+  ],
+  "collection": [
+    {
+      "biorxiv_doi": "10.1101/2020.01.01.123456",
+      "published_doi": "10.1038/s41586-020-1234-5",
+      "published_journal": "Nature",
+      "published_date": "2020-05-15",
+      "preprint_title": "Cryo-EM structure of human CFTR in phosphorylated open state",
+      "preprint_authors": "Author One; Author Two; Author Three",
+      "preprint_category": "biophysics",
+      "preprint_date": "2020-01-01"
+    },
+    {
+      "biorxiv_doi": "10.1101/2025.02.14.25322057",
+      "published_doi": "NA",
+      "published_journal": "NA",
+      "published_date": "NA",
+      "preprint_title": "CFTR Gene Variant Detection via Nanopore Long-Read Sequencing",
+      "preprint_authors": "Author A; Author B",
+      "preprint_category": "genetics",
+      "preprint_date": "2025-02-14"
+    }
+  ]
+}
