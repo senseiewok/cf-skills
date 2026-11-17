@@ -13,7 +13,7 @@
 # Access policy evidence (what was tested, when): https://github.com/senseiewok/cf-research/blob/main/landscape/registry-data-access.md
 
 schema_version: 1
-updated: 2026-11-15
+updated: 2026-11-16
 
 # access  : fetch     - automated download is permitted; tools may retrieve it
 #           api       - queryable API, permitted; not a file download
@@ -1535,6 +1535,89 @@ sources:
       Robots.txt and terms of the publisher's site were not read.
       Published as Sousa M et al. PLoS One 2012;7(10):e47708.
 
+  # ---------------------------------------------------------------- CFF Research Priorities & 2025-2026 Consensus Papers (added 2026-11-16 via 4-Seat Council)
+
+  - id: debray-2026-hepatolcommun
+    title: Research priorities and knowledge gaps in understanding hepatobiliary disease in cystic fibrosis
+    publisher: Wolters Kluwer (AASLD Hepatology Communications)
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1097/HC9.0000000000001061
+    url: null
+    doi: 10.1097/HC9.0000000000001061
+    pmid: '42951884'
+    pmcid: PMC13668289
+    licence: CC BY-NC-ND 4.0 (the article states the Creative Commons Attribution-Non Commercial-No Derivatives License 4.0, https://creativecommons.org/licenses/by-nc-nd/4.0/)
+    accessed: 2026-11-16
+    site_use: None yet. Admitted as primary evidence for CFF hepatobiliary research priorities.
+    claim_label: verified
+    notes: >-
+      Verified 2026-11-16 via Europe PMC XML (PMC13668289; Scite retracted: false, contrasting: 0). STRICT CC BY-NC-ND 4.0
+      CONSTRAINTS: attribution required (BY), non-commercial educational/research use only (NC, redistribute stays false), and
+      NO DERIVATIVES (ND): never reproduce or adapt tables, diagnostic flowcharts, or rubric prose, never commit bulk XML excerpts,
+      and never translate sentences from Debray et al. into es-MX. Keep CFF hepatobiliary monitoring discussions distinct from
+      US FDA SPL Boxed Warnings on NDA 212273 and NDA 218730 (AH-4). Published as Debray D et al. Hepatol Commun 2026.
+
+  - id: mcgarry-2025-ijns
+    title: "Cystic Fibrosis Newborn Screening: A Systematic Review-Driven Consensus Guideline from the United States Cystic Fibrosis Foundation"
+    publisher: MDPI (International Journal of Neonatal Screening)
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.3390/ijns11020024
+    url: null
+    doi: 10.3390/ijns11020024
+    pmid: '40265445'
+    pmcid: PMC12015897
+    licence: CC BY 4.0 (the article states the Creative Commons Attribution license, https://creativecommons.org/licenses/by/4.0/)
+    accessed: 2026-11-16
+    site_use: None yet. Admitted as primary evidence for US CFF newborn screening consensus recommendations.
+    claim_label: verified
+    notes: >-
+      Verified 2026-11-16 via Europe PMC XML (PMC12015897; published 2025-04-02; Scite retracted: false, contrasting: 0).
+      Consensus guideline with time-bound publication date subject to periodic CFF revision. Published as McGarry ME et al.
+      Int J Neonatal Screen 2025;11(2):24.
+
+  - id: kraft-2026-bmcmedresmethodol
+    title: "Supporting high-quality enrollment decision-making in clinical research: development of a novel informed consent communication framework and curriculum"
+    publisher: BioMed Central (Springer Nature)
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1186/s12874-026-02885-2
+    url: null
+    doi: 10.1186/s12874-026-02885-2
+    pmid: '42958486'
+    pmcid: PMC13721633
+    licence: CC BY 4.0 (the article states a Creative Commons Attribution 4.0 International License, http://creativecommons.org/licenses/by/4.0/)
+    accessed: 2026-11-16
+    site_use: None yet. Admitted as primary evidence for clinical trial informed-consent communication.
+    claim_label: verified
+    notes: >-
+      Verified 2026-11-16 via Europe PMC XML (PMC13721633; published 2026-07-25; Scite retracted: false, contrasting: 0).
+      Published as Kraft SA et al. BMC Med Res Methodol 2026.
+
+  - id: barilla-2026-omtn
+    title: Targeted insertion of partial CFTR cDNA replicates native CFTR expression with restored channel function in CF airway epithelium
+    publisher: Elsevier BV (ASGCT Molecular Therapy Nucleic Acids)
+    kind: journal_article
+    access: manual
+    robots: unknown
+    landing_page: https://doi.org/10.1016/j.omtn.2026.103123
+    url: null
+    doi: 10.1016/j.omtn.2026.103123
+    pmid: '42959355'
+    pmcid: PMC13717110
+    licence: CC BY 4.0 (the article states the CC BY license, http://creativecommons.org/licenses/by/4.0/)
+    accessed: 2026-11-16
+    site_use: None yet. Admitted as primary evidence for CFF Lab Intron-1 TI-1 partial CFTR cDNA exons 2-27 integration.
+    claim_label: verified
+    notes: >-
+      Verified 2026-11-16 via Europe PMC XML (PMC13717110; published 2026-10-01; Scite retracted: false, contrasting: 0).
+      Gold open-access CC BY 4.0 paper describing preclinical airway basal stem cell TI-1 partial CFTR cDNA (exons 2-27)
+      insertion; does not establish clinical readiness. Published as Barilla C et al. Mol Ther Nucleic Acids 2026.
+
   # ---------------------------------------------------------------- single-channel kinetics and stochastic-thermodynamics sources (admitted 2026-11-09)
   # Admitted before any text is written, for the proposed leap essay L.01 (the thermodynamic arrow in CFTR gating) and the
   # Round 114 projection caveat. None of them backs a public sentence yet, so `site_use` says what each is admitted for.
@@ -1915,6 +1998,24 @@ sources:
       this on 2026-10-09 for nine pages). Not read: the site's terms of use; whether it permits links, short factual
       descriptions or an automated reader. Until a person reads them, the lab links and describes in its own words and
       copies no text, logo or image. Letter to the Foundation: not sent.
+
+  - id: cff-research-priorities
+    title: Cystic Fibrosis Foundation Research Approach and Path to a Cure Pages (www.cff.org)
+    publisher: Cystic Fibrosis Foundation
+    kind: resource_pages
+    access: manual
+    robots: unreadable
+    robots_checked: 2026-10-05
+    landing_page: https://www.cff.org/research-clinical-trials/our-research-approach
+    url: null
+    claim_label: unverified
+    notes: >-
+      Same host (www.cff.org) and robots evidence as cff-resource-pages and cffpr-adr-2024: robots.txt was unreadable on
+      2026-10-05 and www.cff.org refuses automated clients, so evidence/http.py aborts before opening any socket and no
+      headless browser or scraper requests this host. Cross-referenced with human-checked 2026-10-03 summary in cff-goals.md.
+      Terms of Use remain unread by a person; until read, link and summarize strictly in our own words (redistribute: false,
+      zero copied page text, charts, or logos). Never cite cff-research-priorities as a verified primary source inside
+      *-claims.json; anchor quantitative clinical/scientific claims to peer-reviewed DOIs, openFDA SPLs, or ClinicalTrials.gov.
 
   - id: cff-apps-resource-pages
     title: Cystic Fibrosis Foundation tools host (apps.cff.org)
