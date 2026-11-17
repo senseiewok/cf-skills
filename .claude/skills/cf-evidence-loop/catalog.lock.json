@@ -4,7 +4,7 @@
   "inputs": {
     "sources/catalog.yaml": "4cf0d3414058b59789887aa35a37d6a96f4ee87d3b7e9e34050b1b4e84ba4e7f"
   },
-  "pinned_on": "2026-11-16",
+  "pinned_on": "2026-11-17",
   "research_commit": "64d09d7a4cfe4dd7e0cfa00932a4506086816f8d",
   "schema_version": 1,
   "sources": 355
