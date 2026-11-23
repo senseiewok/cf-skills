@@ -158,6 +158,53 @@ x = 1
         self.assertFalse(res["passed"])
         self.assertTrue(any("metadata" in f for f in res["findings"]))
 
+    def test_verify_companion_catches_unquoted_yaml_colon_and_angle_brackets(self):
+        base = """---
+name: my-companion-skill
+description: "Safe: quoted colon description."
+license: CC0-1.0
+metadata:
+    audience: "researchers, builders"
+    level: "advanced"
+    category: "math"
+---
+
+# My Companion Skill
+Research, not medical advice. Scope and limitations apply.
+
+## Governing Equations & Principles
+Conservation law.
+
+```python
+x = 1
+```
+"""
+        self.assertTrue(monograph_verify.verify_companion_content(base, "quoted_ok")["passed"])
+
+        unquoted_colon = base.replace(
+            'description: "Safe: quoted colon description."',
+            "description: Hilbert's 6th (TUR): unquoted colon.",
+        )
+        res_colon = monograph_verify.verify_companion_content(unquoted_colon, "unquoted_colon")
+        self.assertFalse(res_colon["passed"])
+        self.assertTrue(any("Unquoted YAML colon" in f for f in res_colon["findings"]))
+
+        unquoted_meta = base.replace(
+            '    category: "math"',
+            '    category: "math"\n    summary: Scope: unquoted metadata colon',
+        )
+        res_meta = monograph_verify.verify_companion_content(unquoted_meta, "unquoted_meta")
+        self.assertFalse(res_meta["passed"])
+        self.assertTrue(any("metadata 'summary'" in f for f in res_meta["findings"]))
+
+        angles = base.replace(
+            'description: "Safe: quoted colon description."',
+            'description: "Bound Var(J) / <J>^2 >= 2."',
+        )
+        res_angles = monograph_verify.verify_companion_content(angles, "angles")
+        self.assertFalse(res_angles["passed"])
+        self.assertTrue(any("angle brackets" in f for f in res_angles["findings"]))
+
     def test_cli_verify_monograph(self):
         doc = """
         # CLI Monograph
