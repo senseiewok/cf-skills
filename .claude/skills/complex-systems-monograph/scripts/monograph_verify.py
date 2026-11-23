@@ -98,6 +98,43 @@ def verify_monograph_content(text: str, filename: str = "monograph") -> Dict[str
     }
 
 
+_YAML_BLOCK_MARKERS = (">", "|", ">-", "|-", ">+", "|+")
+
+
+def _is_quoted_yaml_scalar(raw: str) -> bool:
+    """Return True when *raw* is a single properly closed YAML quoted scalar."""
+    if len(raw) < 2 or raw[0] != raw[-1] or raw[0] not in ('"', "'"):
+        return False
+    quote = raw[0]
+    i = 1
+    end = len(raw) - 1
+    while i < end:
+        ch = raw[i]
+        if quote == '"':
+            if ch == "\\":
+                if i + 1 >= end:
+                    return False
+                i += 2
+                continue
+            if ch == '"':
+                return False
+        else:
+            if ch == "'":
+                if i + 1 < end and raw[i + 1] == "'":
+                    i += 2
+                    continue
+                return False
+        i += 1
+    return True
+
+
+def _has_unquoted_yaml_colon(raw: str) -> bool:
+    """Return True when an unquoted YAML scalar contains ': ', ':\\t', or ends with ':'."""
+    if not raw or raw in _YAML_BLOCK_MARKERS or _is_quoted_yaml_scalar(raw):
+        return False
+    return ": " in raw or ":\t" in raw or raw.endswith(":")
+
+
 def verify_companion_content(text: str, filename: str = "SKILL.md") -> Dict[str, Any]:
     """Verify a companion SKILL.md against Agent Skills and Living Monograph criteria."""
     findings: List[str] = []
@@ -124,6 +161,35 @@ def verify_companion_content(text: str, filename: str = "SKILL.md") -> Dict[str,
     for meta_key in ("audience", "level", "category"):
         if not re.search(rf"^\s+{meta_key}:", fm_text, re.MULTILINE):
             findings.append(f"Frontmatter metadata missing required sub-key: '{meta_key}'")
+
+    # Strict YAML scalar quoting and Agent Skills description safety
+    in_meta = False
+    for line in fm_text.splitlines():
+        if not line.strip():
+            continue
+        if line[0] not in (" ", "\t"):
+            in_meta = bool(re.match(r"^metadata:\s*$", line))
+            m = re.match(r"^([A-Za-z][\w-]*):\s*(.*)$", line)
+            if not m:
+                continue
+            key, raw = m.group(1), m.group(2).strip()
+            if _has_unquoted_yaml_colon(raw):
+                findings.append(
+                    f"Unquoted YAML colon in frontmatter '{key}'; wrap the value in quotes so strict YAML parsers accept it"
+                )
+            if key == "description" and raw not in _YAML_BLOCK_MARKERS:
+                desc_val = raw[1:-1] if _is_quoted_yaml_scalar(raw) else raw
+                if "<" in desc_val or ">" in desc_val:
+                    findings.append("Frontmatter 'description' must not contain angle brackets (< or >)")
+        elif in_meta:
+            m = re.match(r"^\s+([A-Za-z][\w-]*):\s*(.*)$", line)
+            if not m:
+                continue
+            subkey, raw = m.group(1), m.group(2).strip()
+            if _has_unquoted_yaml_colon(raw):
+                findings.append(
+                    f"Unquoted YAML colon in metadata '{subkey}'; wrap the value in quotes so strict YAML parsers accept it"
+                )
 
     # 2. Governing Equations / Core Laws
     if not re.search(r"(governing|equations|core laws|principles)", body_text, re.IGNORECASE):
@@ -231,6 +297,22 @@ license: CC0-1.0
 """
     res_comp_neg = verify_companion_content(neg_companion, "negative_companion")
     checks.append({"name": "companion_negative_control_catches_missing_metadata", "ok": not res_comp_neg["passed"]})
+
+    # Negative companion skill: unquoted YAML colon in description
+    neg_yaml_colon = pos_companion.replace(
+        'description: "Offline companion for structural analysis."',
+        "description: Governing law for B.01: Erdős Sidon sets.",
+    )
+    res_colon = verify_companion_content(neg_yaml_colon, "negative_yaml_colon")
+    checks.append({"name": "companion_negative_control_catches_unquoted_yaml_colon", "ok": not res_colon["passed"]})
+
+    # Negative companion skill: angle brackets in description
+    neg_angles = pos_companion.replace(
+        'description: "Offline companion for structural analysis."',
+        'description: "Bound Var(J) / <J>^2 >= 2."',
+    )
+    res_angles = verify_companion_content(neg_angles, "negative_angles")
+    checks.append({"name": "companion_negative_control_catches_angle_brackets", "ok": not res_angles["passed"]})
 
     total_passed = sum(1 for c in checks if c["ok"])
     all_ok = total_passed == len(checks)

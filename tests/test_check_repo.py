@@ -158,6 +158,35 @@ class CheckRepoTests(unittest.TestCase):
         self.assertEqual(code, 1, text)
         self.assertFalse(any("angle" in e for e in errs), errs)
 
+    def test_an_unquoted_yaml_colon_in_frontmatter_or_metadata_is_reported(self):
+        cases = (
+            ('description: "Does a thing. Use it when asked about the thing."', "description: Governing law for B.01: Sidon sets.", "frontmatter 'description'"),
+            ('description: "Does a thing. Use it when asked about the thing."', "description: Ends with trailing colon:", "frontmatter 'description'"),
+            ('description: "Does a thing. Use it when asked about the thing."', 'description: "Split": "quotes"', "frontmatter 'description'"),
+            ("license: CC0-1.0\n", "license: CC0-1.0\ncompatibility: Python 3.10: standard library only\n", "frontmatter 'compatibility'"),
+            ('    version: "1.0.0"', "    summary: Note: unquoted colon in metadata", "metadata 'summary'"),
+        )
+        for old, new, needle in cases:
+            with self.subTest(new=new):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", old, new)
+                code, errs, text = self.errors()
+                self.assertEqual(code, 1, text)
+                self.assertTrue(any("unquoted YAML colon" in e and needle in e for e in errs), errs)
+
+    def test_quoted_yaml_colons_and_unquoted_urls_pass(self):
+        cases = (
+            ('description: "Does a thing. Use it when asked about the thing."', 'description: "Quoted: colon with \\"escaped\\" quotes."'),
+            ('description: "Does a thing. Use it when asked about the thing."', "description: 'Single-quoted: it''s valid YAML.'"),
+            ('description: "Does a thing. Use it when asked about the thing."', "description: Uses https://example.org/spec and doi:10.1000/182 safely."),
+        )
+        for old, new in cases:
+            with self.subTest(new=new):
+                self.setUp()
+                self.edit(".claude/skills/alpha/SKILL.md", old, new)
+                code, errs, text = self.errors()
+                self.assertEqual((code, errs), (0, []), text)
+
     def test_a_compatibility_over_500_characters_is_reported_and_500_is_allowed(self):
         self.edit(".claude/skills/alpha/SKILL.md", "license: CC0-1.0\n", "license: CC0-1.0\ncompatibility: " + "x" * 500 + "\n")
         code, errs, text = self.errors()

@@ -55,6 +55,40 @@ def _read_text(p: Path):
         return None
 
 
+def _is_quoted_yaml_scalar(raw: str) -> bool:
+    """Return True when *raw* is a single properly closed YAML quoted scalar."""
+    if len(raw) < 2 or raw[0] != raw[-1] or raw[0] not in ('"', "'"):
+        return False
+    quote = raw[0]
+    i = 1
+    end = len(raw) - 1
+    while i < end:
+        ch = raw[i]
+        if quote == '"':
+            if ch == "\\":
+                if i + 1 >= end:
+                    return False
+                i += 2
+                continue
+            if ch == '"':
+                return False
+        else:
+            if ch == "'":
+                if i + 1 < end and raw[i + 1] == "'":
+                    i += 2
+                    continue
+                return False
+        i += 1
+    return True
+
+
+def _has_unquoted_yaml_colon(raw: str) -> bool:
+    """Return True when an unquoted YAML scalar contains ': ', ':\\t', or ends with ':'."""
+    if not raw or raw in _BLOCK_MARKERS or _is_quoted_yaml_scalar(raw):
+        return False
+    return ": " in raw or ":\t" in raw or raw.endswith(":")
+
+
 def _parse_frontmatter(text: str):
     """Return a dict of top-level key/value pairs from YAML-ish frontmatter.
 
@@ -84,7 +118,7 @@ def _parse_frontmatter(text: str):
             continue
         key = m.group(1)
         val = m.group(2).strip()
-        if len(val) >= 2 and val[0] == val[-1] and val[0] in ('"', "'"):
+        if _is_quoted_yaml_scalar(val):
             val = val[1:-1]
         fm[key] = val
     return fm
@@ -111,10 +145,48 @@ def _parse_metadata(text: str) -> dict:
         if not m:
             continue
         val = m.group(2).strip()
-        if len(val) >= 2 and val[0] == val[-1] and val[0] in ('"', "'"):
+        if _is_quoted_yaml_scalar(val):
             val = val[1:-1]
         meta[m.group(1)] = val
     return meta
+
+
+def _check_yaml_scalar_quoting(rel_md: str, text: str, errors: list):
+    """Report unquoted YAML ': ' or trailing ':' in single-line frontmatter scalars.
+
+    Strict YAML parsers (PyYAML and Agent Skills clients) reject plain scalars containing ': '
+    or a trailing ':' as nested mappings ('mapping values are not allowed here').
+    """
+    lines = text.splitlines()
+    in_meta = False
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break
+        if not line.strip():
+            continue
+        if line[0] not in (" ", "\t"):
+            in_meta = bool(re.match(r"^metadata:\s*$", line))
+            m = re.match(r"^([A-Za-z][\w-]*):\s*(.*)$", line)
+            if not m:
+                continue
+            key, raw = m.group(1), m.group(2).strip()
+            if _has_unquoted_yaml_colon(raw):
+                errors.append(
+                    "ERROR {}: unquoted YAML colon in frontmatter '{}'; wrap the value in quotes so strict YAML parsers accept it".format(
+                        rel_md, key
+                    )
+                )
+        elif in_meta:
+            m = re.match(r"^\s+([A-Za-z][\w-]*):\s*(.*)$", line)
+            if not m:
+                continue
+            subkey, raw = m.group(1), m.group(2).strip()
+            if _has_unquoted_yaml_colon(raw):
+                errors.append(
+                    "ERROR {}: unquoted YAML colon in metadata '{}'; wrap the value in quotes so strict YAML parsers accept it".format(
+                        rel_md, subkey
+                    )
+                )
 
 
 def _check_audience_keys(rel_md: str, meta: dict, errors: list):
@@ -219,6 +291,8 @@ def _check_skill_meta(root: Path, folder_name: str, errors: list):
         errors.append(
             "ERROR {}: unexpected frontmatter key(s): {}. Allowed: {}{}".format(rel_md, ", ".join(unknown), ", ".join(sorted(ALLOWED_KEYS)), hint)
         )
+
+    _check_yaml_scalar_quoting(rel_md, text, errors)
 
     _check_audience_keys(rel_md, _parse_metadata(text), errors)
 
