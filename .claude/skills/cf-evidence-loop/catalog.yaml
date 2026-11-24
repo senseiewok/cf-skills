@@ -5478,13 +5478,20 @@ sources:
     landing_page: https://zenodo.org/records/18511521
     terms_url: https://zenodo.org/records/18511521
     reference_doi: 10.5281/zenodo.18511521
-    claim_label: unverified
+    claim_label: verified
     notes: >-
       Bulk download archive of published variant effect data from Multiplexed
-      Assays of Variant Effect (MAVEs). Version 4 issued 2026-02-06 (DOI:
-      10.5281/zenodo.18511521; concept DOI: 10.5281/zenodo.11201736). Licensed
-      under Creative Commons Zero (CC0 1.0 Universal) per DataCite metadata.
-      Access set to manual until a human maintainer reviews the bundle size and terms.
+      Assays of Variant Effect (MAVEs) licensed under Creative Commons Zero
+      (CC0 1.0 Universal; concept DOI: 10.5281/zenodo.11201736). On 2026-11-23
+      maintainer manually downloaded the June 2026 archive
+      (mavedb-dump.2026062418131.tar.gz, 1,907,736,956 bytes, SHA-256
+      7101852e929c1458b8e437949c2ec6ac01a4af6ff1e5740f3a656b557be2bb22;
+      asOf 2026-06-24T18:13:15Z) and staged main.json (21,120,012 bytes, SHA-256
+      a3350ab7538172fd26cea79b5f10fe1e7f48912cdb971b62c152d8296da18fa8) in
+      git-ignored sources/downloads/mavedb-2026-06-24/: 1,254 experiment sets,
+      1,992 experiments, and 2,777 score sets; direct audit confirmed 0 CFTR
+      (P13569 / ABCC7) or checked CF modifier score sets (the 41 "fibrosis"
+      hits target MPL / P40238). Access remains manual.
 
   - id: cftr-dms-mckee-2023
     title: CFTR Deep Mutational Scanning Corrector Response (McKee et al. 2023)
@@ -5511,11 +5518,15 @@ sources:
     landing_page: https://doi.org/10.17632/ksfmxv8zts.1
     terms_url: https://www.mendeley.com/terms-and-conditions/
     reference_doi: 10.7554/eLife.107180
-    claim_label: unverified
+    claim_label: verified
     notes: >-
-      Deep mutational scanning dataset of 232 clinical CFTR variants measuring
-      calnexin chaperone dependence and pharmacological rescue. Dataset hosted
-      on Mendeley Data (DOI: 10.17632/ksfmxv8zts.1) under Creative Commons
-      Attribution 4.0 International (CC BY 4.0). Accompanying paper published
-      in eLife (DOI: 10.7554/eLife.107180; CC BY 4.0). Raw sequencing at NCBI
-      BioProject PRJNA1244365; proteomics at PRIDE PXD066492. Access set to manual.
+      Deep mutational scanning dataset of clinical CFTR variants measuring
+      calnexin chaperone dependence and pharmacological rescue (234 parental
+      variants across 182 codons in ALT 9-6-24 CFTR DMS Expanded Library Master
+      Tables.xlsx, SHA-256 2a702ee3744b8039a9c7c4c74aec9bb30a91301b138d4948e0e2c81a1931e51b;
+      103 cross-study pairs in AGM ALT Library Comparison.xlsx, SHA-256
+      6673ab2a480200e7d36133b98dfbeb4864d1a41aa22cf4fdddea59eda8dbe178). Hosted
+      on Mendeley Data (DOI: 10.17632/ksfmxv8zts.1) under CC BY 4.0; paper in
+      eLife (DOI: 10.7554/eLife.107180; CC BY 4.0). Manually downloaded by
+      maintainer on 2026-11-23 into git-ignored sources/downloads/tedman-2025/
+      and benchmarked in benchmarks/cftr_dms_expression/; access remains manual.
